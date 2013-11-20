@@ -1,0 +1,23 @@
+@CHARSET "UTF-8";
+
+/*
+ * @author ( Jürg Altwegg )
+ *
+ * CSS für Spezialitäten in der Komponente com_zeitbank
+*/
+
+
+/* ##########################  table  ########################### */
+
+
+table.zeitbank { 
+	width: 750px;
+	border: none;
+}
+
+table.zeitbank tr td { padding: 3px 5px 3px 5px; }
+table.zeitbank tr th { padding: 3px 5px 3px 5px; }
+
+table.zeitbank tr.head { background-color: #7BB72B; color:white; }
+table.zeitbank tr.odd { vertical-align: middle; background-color: #e9e2c8; }
+table.zeitbank tr.even { vertical-align: middle; background-color: #eeeeee; }
