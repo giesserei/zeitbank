@@ -95,9 +95,9 @@ function printTableHead($th) {
 
 		// Aktiviert oder nicht?
 		if($row->aktiviert):
-			$aktiv = "<img src=\"images/tick.png\" />";
+			$aktiv = "<img src=\"/administrator/components/com_zeitbank/assets/tick.png\" />";
 		else:
-			$aktiv = "<img src=\"images/publish_x.png\" />";
+			$aktiv = "<img src=\"/administrator/components/com_zeitbank/assets/publish_x.png\" />";
 		endif;
 		
         ?>
