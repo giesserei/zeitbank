@@ -57,7 +57,7 @@ if(check_user()):
 		echo '<input type="hidden" name="option" value="com_zeitbank" />';
 		echo '<input type="hidden" name="Itemid" value="'.$itemid.'" />';
 		echo '<input type="hidden" name="view" value="userJournal" /><br />
-		<input type="button" name="back" value="Zurück zur Übersicht" onclick="window.location.href=\'/zeitbank\'" />
+		<input type="button" name="back" value="Zurück zur Übersicht" onclick="window.location.href=\'/intern/zeitbank\'" />
 		</form>';
 else:
   echo ZB_BITTE_ANMELDEN;
