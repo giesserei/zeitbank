@@ -75,7 +75,7 @@ class ZeitbankModelZeitbank extends JModel {
     $rows = $db->loadObjectList();
     
 	$saldo = 0;
-	if($db->AffectedRows() > 0) foreach($rows as $jn):
+	if($db->getAffectedRows() > 0) foreach($rows as $jn):
 		if($jn->belastung_userid == $user->id):
 			$saldo -= $jn->minuten;
 		else:
