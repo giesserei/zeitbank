@@ -42,7 +42,7 @@ function shortenComment($ktext) {
 if(check_user()):
 
   echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
-  echo "Die Zeitbank ist für 2014 vorbereitet. Alle ab jetzt vorgenommenen Buchungen gelten für das Jahr 2014.";
+  echo "Die Zeitbank ist fÃ¼r das Jahr 2014 vorbereitet. Alle ab jetzt vorgenommenen Buchungen gelten fÃ¼r das Jahr 2014.";
   echo '</div>';
 
 	// Kategorien-Administrator?
