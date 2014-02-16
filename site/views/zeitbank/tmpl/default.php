@@ -41,9 +41,9 @@ function shortenComment($ktext) {
 
 if(check_user()):
 
-  echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
-  echo "Die Zeitbank ist für das Jahr 2014 vorbereitet. Alle ab jetzt vorgenommenen Buchungen gelten für das Jahr 2014.";
-  echo '</div>';
+  //echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
+  //echo "Die Zeitbank ist für das Jahr 2014 vorbereitet. Alle ab jetzt vorgenommenen Buchungen gelten für das Jahr 2014.";
+  //echo '</div>';
 
 	// Kategorien-Administrator?
 	if($kategorie=check_kat_admin(0)):
@@ -65,7 +65,11 @@ if(check_user()):
 	endif;
 	
 	/* Liste der persönlichen Zeitbankauszüge ausgeben */
-		echo "<h1><a href=\"index2.php?option=com_zeitbank&Itemid=".MENUITEM."&view=zeitbank\"	target=\"_blank\">
+	echo "<h1>Zeitbank: Ämtli-Liste</h1>";
+	echo "<ul><li><a href=\"/index.php?option=com_zeitbank&Itemid=".MENUITEM."&view=arbeitsliste\">Liste mit allen Ämtli und Zuständigkeiten</a></li></ul><br /><br />";
+	
+	/* Liste der persönlichen Zeitbankauszüge ausgeben */
+  echo "<h1><a href=\"index2.php?option=com_zeitbank&Itemid=".MENUITEM."&view=zeitbank\"	target=\"_blank\">
 			<img src=\"/images/M_images/printButton.png\" style=\"float: right;\"></a>Zeitbank: Dein Konto</h1>";
 
 ?>

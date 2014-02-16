@@ -62,10 +62,11 @@ function get_arbeitsliste($menuitem) {
 
 
 // Stellt die Liste aller Ämtli für die Endbenutzer dar
-function get_arbeitsliste_enduser($menuitem) {
+function get_arbeitsliste_enduser() {
 	$db =& JFactory::getDBO();
 	$user =& JFactory::getUser();
 	$zb = new ZeitbankModelZeitbank();
+	$output = "";
 	
     $query = "SELECT bezeichnung,id FROM #__mgh_zb_kategorie ORDER BY ordering";
     $db->setQuery($query);
@@ -116,8 +117,12 @@ function get_arbeitsliste_enduser($menuitem) {
 // Ermittelt die Summe der Stunden eines bestimmten Ämtlis während des laufenden Kalenderjahres
 function arbeit_summe($id,$pauschale) {
 	$db =& JFactory::getDBO();
+	$laufendes_jahr = date('Y');
 	
-	$query = "SELECT minuten FROM #__mgh_zb_journal WHERE datum_quittung > '0000-00-00' AND admin_del='0' AND arbeit_id='".$id."'";
+	$query = "SELECT minuten FROM #__mgh_zb_journal 
+	          WHERE datum_quittung > '0000-00-00' 
+	            AND datum_antrag >= '".$laufendes_jahr."-01-01' 
+	            AND admin_del='0' AND arbeit_id='".$id."'";
 	
 	$db->setQuery($query);
     $rows = $db->loadObjectList();
