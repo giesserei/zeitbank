@@ -21,3 +21,30 @@ table.zeitbank tr th { padding: 3px 5px 3px 5px; }
 table.zeitbank tr.head { background-color: #7BB72B; color:white; }
 table.zeitbank tr.odd { vertical-align: middle; background-color: #e9e2c8; }
 table.zeitbank tr.even { vertical-align: middle; background-color: #eeeeee; }
+
+/**
+ * Marktplatz
+ */
+table.market_details
+{
+  border: none;
+}
+
+table.market_details td.lb
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  vertical-align: top;
+  border: none;
+  font-weight:bold;
+}
+
+table.market_details td.value
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  vertical-align: top;
+  border: none;
+}
