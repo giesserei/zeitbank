@@ -30,11 +30,11 @@ class ZeitbankViewMarketPlace extends JView {
     else if ($this->isLayout("meine")) {
       $this->prepareTableMeine();
     }
-    else if ($this->isLayout("beziehen")) {
-      $this->prepareTableBeziehen();
+    else if ($this->isLayout("arbeiten")) {
+      $this->prepareTableArbeiten();
     }
-    else if ($this->isLayout("geben")) {
-      $this->prepareTableGeben();
+    else if ($this->isLayout("tauschen")) {
+      $this->prepareTableTauschen();
     }
     else {
       $this->prepareDefault();
@@ -65,14 +65,13 @@ class ZeitbankViewMarketPlace extends JView {
    */
   protected function renderTableMeineAngebote() {
     if (!empty($this->overview->meineAngebote)) {
-      echo "<h1>Marktplatz: Deine Einträge
+      echo "<h1>Deine Einträge
         (".count($this->overview->meineAngebote)."/".$this->overview->meineAngeboteTotal.")</h1>";
     
       echo '<table class="zeitbank" >';
       echo '<tr class="head">
 				  <th>Titel</th>
-          <th>Giessereistunden</th>
-          <th>Anbieter</th>
+          <th>Art</th>
           <th>Erstellt</th>
           <th>Aktion</th>
         </tr>';
@@ -83,8 +82,7 @@ class ZeitbankViewMarketPlace extends JView {
         $style = $i % 2 == 0 ? "even" : "odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
-            <td>'.($angebot->art == 1 ? "beziehen" : "eintauschen").'</td>
-            <td>'.($angebot->anbieter == 2 ? "Privat" : "Bereich " . $angebot->anbieter_name).'</td>
+            <td>'.($angebot->art == 1 ? "Arbeitsangebot" : "Tauschen").'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				    <td><input type="button" value="Bearbeiten" 
 				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id='.$angebot->id.'\'" /></td>
@@ -100,36 +98,35 @@ class ZeitbankViewMarketPlace extends JView {
       }
     }
     else {
-      echo "<h1>Marktplatz: Deine Einträge</h1>";
+      echo "<h1>Deine Einträge</h1>";
       echo "Du hast keine Einträge erfasst.";
     }
   }
   
   /**
-   * Erstellt die Tabelle mit den eigenen Arbeitsangeboten.
+   * Erstellt die Tabelle mit den Arbeitsangeboten.
    */
-  protected function renderTableBeziehen() {
-    if (!empty($this->overview->angeboteBeziehen)) {
-      echo "<h1 style='margin-top:25px'>Marktplatz: Arbeitsangebote
-         (".count($this->overview->angeboteBeziehen)."/".$this->overview->angeboteBeziehenTotal.")</h1>";
-      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Arbeitsangebote unserer Bereiche
-      oder Arbeitsangebote von Bewohnern.</div>";
+  protected function renderTableArbeiten() {
+    if (!empty($this->overview->angeboteArbeiten)) {
+      echo "<h1 style='margin-top:25px'>Arbeitsangebote
+         (".count($this->overview->angeboteArbeiten)."/".$this->overview->angeboteArbeitenTotal.")</h1>";
+      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du aktuelle Arbeitsangebote unserer Bereiche.</div>";
     
       echo '<table class="zeitbank" >';
       echo '<tr class="head">
 				  <th>Titel</th>
-          <th>Anbieter der Arbeit</th>
+          <th>Arbeitskategorie</th>
           <th>Ansprechpartner</th>
           <th>Erstellt</th>
         </tr>';
     
       $i = 0;
     
-      foreach($this->overview->angeboteBeziehen as $angebot) {
+      foreach($this->overview->angeboteArbeiten as $angebot) {
         $style = $i % 2 == 0 ? "even" : "odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
-            <td>'.($angebot->anbieter == 2 ? "Privat" : "Bereich " . $angebot->anbieter_name).'</td>
+            <td>Bereich '.$angebot->anbieter_name.'</td>
             <td>'.$angebot->ansprechpartner.'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
@@ -137,14 +134,14 @@ class ZeitbankViewMarketPlace extends JView {
       }
       echo "</table>";
       
-      if (count($this->overview->angeboteBeziehen) < $this->overview->angeboteBeziehenTotal) {
+      if (count($this->overview->angeboteArbeiten) < $this->overview->angeboteArbeitenTotal) {
         echo '<div style="margin-top:10px">
-                <a href="index.php?option=com_zeitbank&view=marketplace&layout=beziehen&Itemid='.$this->menuId.'">Alle Angebote</a>
+                <a href="index.php?option=com_zeitbank&view=marketplace&layout=arbeiten&Itemid='.$this->menuId.'">Alle Angebote</a>
               </div>';
       }
     }
     else {
-      echo "<h1 style='margin-top:25px'>Marktplatz: Arbeitsangebote</h1>";
+      echo "<h1 style='margin-top:25px'>Arbeitsangebote</h1>";
       echo "Es gibt aktuell keine Arbeitsangebote";
     }
   }
@@ -153,27 +150,26 @@ class ZeitbankViewMarketPlace extends JView {
    * Erstellt die Tabelle mit den eigenen Tauschangeboten.
    */
   protected function renderTableTauschen() {
-    if (!empty($this->overview->angeboteGeben)) {
-      echo "<h1 style='margin-top:25px'>Marktplatz: Giessereistunden eintauschen
-        (".count($this->overview->angeboteGeben)."/".$this->overview->angeboteGebenTotal.")</h1>";
-      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Angebote von Bewohnern oder des Gewerbes,
-      die du mit deinen Giessereistunden begleichen kannst.</div>";
+    if (!empty($this->overview->angeboteTauschen)) {
+      echo "<h1 style='margin-top:25px'>Marktplatz zum Tauschen von Giessereistunden
+        (".count($this->overview->angeboteTauschen)."/".$this->overview->angeboteTauschenTotal.")</h1>";
+      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Angebote für einen privaten Stundentausch.</div>";
     
       echo '<table class="zeitbank" >';
       echo '<tr class="head">
 				  <th>Titel</th>
-          <th>Anbieter der Leistung</th>
+          <th>Suche / Angebot</th>
           <th>Ansprechpartner</th>
           <th>Erstellt</th>
         </tr>';
     
       $i = 0;
     
-      foreach($this->overview->angeboteGeben as $angebot) {
+      foreach($this->overview->angeboteTauschen as $angebot) {
         $style = $i % 2 == 0 ? "even" : "odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
-            <td>Privat</td>
+            <td>'.($angebot->richtung == 1 ? 'Suche Stunden' : 'Biete Stunden').'</td>
             <td>'.$angebot->ansprechpartner.'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
@@ -181,15 +177,15 @@ class ZeitbankViewMarketPlace extends JView {
       }
       echo "</table>";
       
-      if (count($this->overview->angeboteGeben) < $this->overview->angeboteGebenTotal) {
+      if (count($this->overview->angeboteTauschen) < $this->overview->angeboteTauschenTotal) {
         echo '<div style="margin-top:10px">
-                <a href="index.php?option=com_zeitbank&view=marketplace&layout=geben&Itemid='.$this->menuId.'">Alle Angebote</a>
+                <a href="index.php?option=com_zeitbank&view=marketplace&layout=tauschen&Itemid='.$this->menuId.'">Alle Tauschangebote</a>
               </div>';
       }
     }
     else {
-      echo "<h1 style='margin-top:25px'>Marktplatz: Giessereistunden eintauschen</h1>";
-      echo "Es gibt aktuell keine Angebote, wie du deine Giessereistunden eintauschen kannst.";
+      echo "<h1 style='margin-top:25px'>Marktplatz zum Tauschen von Giessereistunden</h1>";
+      echo "Es gibt aktuell keine Tauschangebote.";
     }
   }
   
@@ -244,22 +240,22 @@ class ZeitbankViewMarketPlace extends JView {
     $this->menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
   }
   
-  private function prepareTableBeziehen() {
+  private function prepareTableArbeiten() {
     $app = JFactory::getApplication();
   
     $model = $this->getModel();
-    $this->overview = $model->getAngeboteBeziehen();
+    $this->overview = $model->getAngeboteArbeiten();
   
     ZeitbankFrontendHelper::addComponentStylesheet();
   
     $this->menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
   }
   
-  private function prepareTableGeben() {
+  private function prepareTableTauschen() {
     $app = JFactory::getApplication();
   
     $model = $this->getModel();
-    $this->overview = $model->getAngeboteGeben();
+    $this->overview = $model->getAngeboteTauschen();
   
     ZeitbankFrontendHelper::addComponentStylesheet();
   

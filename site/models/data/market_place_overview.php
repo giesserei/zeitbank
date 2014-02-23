@@ -18,22 +18,22 @@ class MarketPlaceOverview extends JObject {
   public $meineAngeboteTotal = 0;
   
   /**
-   * Array mit den Angeboten zum Beziehen von Stunden.
+   * Array mit den Arbeitsangeboten.
    * 
    * @var array
    */
-  public $angeboteBeziehen = array();
+  public $angeboteArbeiten = array();
   
-  public $angeboteBeziehenTotal = 0;
+  public $angeboteArbeitenTotal = 0;
   
   /**
-   * Array mit den Angeboten zum Ausgeben von Stunden.
+   * Array mit den Tauschangeboten.
    *
    * @var array
    */
-  public $angeboteGeben = array();
+  public $angeboteTauschen = array();
   
-  public $angeboteGebenTotal = 0;
+  public $angeboteTauschenTotal = 0;
   
   /**
    * Konstruktor

@@ -38,6 +38,18 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   }
   
   /**
+   * Liefert die Liste mit den Arbeitskategorien.
+   */
+  public function getKategorien() {
+    $query = "SELECT k.*
+              FROM #__mgh_zb_kategorie as k
+              WHERE k.bezeichnung NOT IN ('Privat')
+              ORDER BY k.bezeichnung";
+    $this->db->setQuery($query);
+    return $this->db->loadObjectList();
+  }
+  
+  /**
    * @see JModel::getTable()
    */
   public function getTable($type = 'Marketplace', $prefix = 'ZeitbankTable', $config = array()) {

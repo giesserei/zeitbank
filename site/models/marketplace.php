@@ -33,8 +33,8 @@ class ZeitbankModelMarketPlace extends JModel {
     $overview = new MarketPlaceOverview();
     
     $this->addMeineAngebote($overview, $limit);
-    $this->addAngeboteBeziehen($overview, $limit);
-    $this->addAngeboteGeben($overview, $limit);
+    $this->addAngeboteArbeiten($overview, $limit);
+    $this->addAngeboteTauschen($overview, $limit);
     
     return $overview;
   }
@@ -55,9 +55,9 @@ class ZeitbankModelMarketPlace extends JModel {
    *
    * @return MarketPlaceOverview
    */
-  public function getAngeboteBeziehen() {
+  public function getAngeboteArbeiten() {
     $overview = new MarketPlaceOverview();
-    $this->addAngeboteBeziehen($overview, 0);
+    $this->addAngeboteArbeiten($overview, 0);
     return $overview;
   }
   
@@ -66,9 +66,9 @@ class ZeitbankModelMarketPlace extends JModel {
    *
    * @return MarketPlaceOverview
    */
-  public function getAngeboteGeben() {
+  public function getAngeboteTauschen() {
     $overview = new MarketPlaceOverview();
-    $this->addAngeboteGeben($overview, 0);
+    $this->addAngeboteTauschen($overview, 0);
     return $overview;
   }
   
@@ -119,7 +119,7 @@ class ZeitbankModelMarketPlace extends JModel {
     $overview->meineAngeboteTotal = $this->db->loadResult();
   }
   
-  private function addAngeboteBeziehen(&$overview, $limit) {
+  private function addAngeboteArbeiten(&$overview, $limit) {
     $query = "SELECT m.*, k.bezeichnung as anbieter_name, 
                 (SELECT concat(m1.vorname, ' ', m1.nachname) FROM #__mgh_mitglied m1 WHERE m1.userid = m.userid) as ansprechpartner
               FROM #__mgh_zb_market_place as m
@@ -130,7 +130,7 @@ class ZeitbankModelMarketPlace extends JModel {
               ORDER BY m.erstellt DESC" .
               ($limit > 0 ? ' LIMIT ' . $limit : '');
     $this->db->setQuery($query);
-    $overview->angeboteBeziehen = $this->db->loadObjectList();
+    $overview->angeboteArbeiten = $this->db->loadObjectList();
     
     $query = "SELECT count(*)
               FROM #__mgh_zb_market_place as m
@@ -139,10 +139,10 @@ class ZeitbankModelMarketPlace extends JModel {
                 AND m.ablauf > NOW()
                 AND m.status = 1";
     $this->db->setQuery($query);
-    $overview->angeboteBeziehenTotal = $this->db->loadResult();
+    $overview->angeboteArbeitenTotal = $this->db->loadResult();
   }
   
-  private function addAngeboteGeben(&$overview, $limit) {
+  private function addAngeboteTauschen(&$overview, $limit) {
     $query = "SELECT m.*, k.bezeichnung as anbieter_name,
                 (SELECT concat(m1.vorname, ' ', m1.nachname) FROM #__mgh_mitglied m1 WHERE m1.userid = m.userid) as ansprechpartner
               FROM #__mgh_zb_market_place as m
@@ -153,7 +153,7 @@ class ZeitbankModelMarketPlace extends JModel {
               ORDER BY m.erstellt DESC" . 
               ($limit > 0 ? ' LIMIT ' . $limit : '');
     $this->db->setQuery($query);
-    $overview->angeboteGeben = $this->db->loadObjectList();
+    $overview->angeboteTauschen = $this->db->loadObjectList();
     
     $query = "SELECT count(*)
               FROM #__mgh_zb_market_place as m
@@ -162,7 +162,7 @@ class ZeitbankModelMarketPlace extends JModel {
                 AND m.ablauf > NOW()
                 AND m.status = 1";
     $this->db->setQuery($query);
-    $overview->angeboteGebenTotal = $this->db->loadResult();
+    $overview->angeboteTauschenTotal = $this->db->loadResult();
   }
   
 }

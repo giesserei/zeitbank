@@ -13,10 +13,18 @@ echo "<tr>
         <td class='value'>".getAnsprechpartner($this->details->ansprechpartner)."</td>
       </tr>";
 
-echo "<tr>
-        <td class='lb'>Anbieter:</td>
-        <td class='value'>".($this->details->item->anbieter == 2 ? "Privat" : "Bereich " . $this->details->item->anbieter_name)."</td>
-      </tr>";
+if ($this->details->item->art == 1) {
+  echo "<tr>
+          <td class='lb'>Arbeitskategorie:</td>
+          <td class='value'>".$this->details->item->anbieter_name."</td>
+        </tr>";
+}
+else {
+  echo "<tr>
+          <td class='lb'>Suche / Biete:</td>
+          <td class='value'>".($this->details->item->richtung == 1 ? "Suche Stunden" : "Biete Stunden")."</td>
+        </tr>";
+}
 
 echo "<tr>
         <td class='lb'>Erstellt:</td>

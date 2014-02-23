@@ -27,10 +27,31 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('art'); ?></td>
 			  <td class="value"><?php echo $this->form->getInput('art'); ?></td>
-			</tr>	
+			</tr>
 			<tr>
-			  <td class="lb"><?php echo $this->form->getLabel('anbieter'); ?></td>
-			  <td class="value"><?php echo $this->form->getInput('anbieter'); ?></td>
+			  <td class="lb"><?php echo $this->form->getLabel('kategorie_id'); ?></td>
+			  <td class="value">
+          <?php
+          $kategorien = array(-1 => '-');
+          foreach($this->getKategorien() as $kat) {
+            $kategorien[$kat->id] = $kat->bezeichnung;
+          }
+          
+          $options = array();
+          foreach($kategorien as $key=>$value) {
+    	      $options[] = JHTML::_('select.option', $key, $value);
+          }
+          
+          $dropdownKategorien = JHTML::_('select.genericlist', $options, 'kategorie_id', 
+                  array('class'=>'inputbox'), 'value', 'text', $this->form->getValue('kategorie_id'));
+    
+          echo $dropdownKategorien;
+          ?>			  
+			  </td>
+			</tr>		
+			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('richtung'); ?></td>
+			  <td class="value"><?php echo $this->form->getInput('richtung'); ?></td>
 			</tr>
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('status'); ?></td>
@@ -59,6 +80,8 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			  </td>
 			</tr>
     </table>	
+    
+    <?php echo $this->form->getInput('beschreibung'); ?>
 			
 		<fieldset>
 			<input type="submit" value="Speichern"></button>

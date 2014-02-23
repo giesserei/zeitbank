@@ -10,5 +10,5 @@ JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank
 echo $this->getLinkOverview();
 
 
-$this->renderTableMeineAngebote();
+$this->renderTableArbeiten();
 

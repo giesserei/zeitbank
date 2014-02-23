@@ -42,6 +42,11 @@ class ZeitbankViewUpdAngebot extends JView {
     parent::display($tpl);
   }
   
+  protected function getKategorien() {
+    $model = $this->getModel();
+    return $model->getKategorien();
+  }
+  
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------

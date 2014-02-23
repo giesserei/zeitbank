@@ -6,20 +6,21 @@
 		<field name="titel" type="text" label="Titel:" class="inputbox" size="52" maxlength="100" />
 		
 		<!-- Filter funktioniert mit Joomla 2.5 noch nicht -> siehe daher ZeitbankModelUpdangebot -->
-    <field name="beschreibung" type="editor" label="Beschreibung" height="300" hide="article,pagebreak,readmore,image" 
+    <field name="beschreibung" type="editor" label="Beschreibung" height="200" hide="article,pagebreak,readmore,image" 
            filter="JComponentHelper::filterText"/>
 		
 		<field name="art" type="list" default="1" label="Art des Angebotes: " description="Bitte auswählen" class="inputbox">
-      <option value="1">Arbeitsangebot (Bereich oder privat)</option>
-      <option value="2">Eintauschen von Giessereistunden (privat)</option>
+      <option value="1">Arbeitsangebot</option>
+      <option value="2">Stundentausch</option>
     </field> 
     
-    <field name="anbieter" type="list" default="1" label="Anbieter: " description="Bitte auswählen" class="inputbox">
-      <option value="1">Bereich</option>
-      <option value="2">Privat</option>
+    <field name="richtung" type="list" default="0" label="Suche / Biete: " description="Bitte auswählen" class="inputbox">
+      <option value="0">-</option>
+      <option value="1">Suche Stunden</option>
+      <option value="2">Biete Stunden</option>
     </field> 
     
-    <field name="kategorie_id" type="text" default="-1" label="Bereich: " filter="integer"/>
+    <field name="kategorie_id" type="text" default="-1" label="Arbeitskategorie: " filter="integer"/>
 		
 		<field name="status" type="list" default="1" label="Status: " description="Bitte auswählen" class="inputbox">
       <option value="0">Inaktiv</option>

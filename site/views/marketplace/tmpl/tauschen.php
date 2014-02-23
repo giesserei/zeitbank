@@ -9,9 +9,6 @@ JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank
 
 echo $this->getLinkOverview();
 
-// -------------------------------------------------------------------------
-// Angebote zum Bezug von Giessereistunden
-// -------------------------------------------------------------------------
 
-$this->renderTableBeziehen();
+$this->renderTableTauschen();
 

@@ -15,7 +15,7 @@ class ZeitbankTableMarketplace extends JTable {
   public $termin = null;
   public $status = null;
   public $art = null;
-  public $anbieter = null;
+  public $richtung = null;
   public $kategorie_id = null;
   public $unterkategorie = null;
   public $beschreibung = null;
