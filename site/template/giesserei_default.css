@@ -48,3 +48,27 @@ table.market_details td.value
   vertical-align: top;
   border: none;
 }
+
+table.market_form
+{
+  border: none;
+}
+
+table.market_form td.lb
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  vertical-align: top;
+  border: none;
+  font-weight:bold;
+}
+
+table.market_form td.value
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  vertical-align: top;
+  border: none;
+}

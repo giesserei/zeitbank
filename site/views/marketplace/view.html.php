@@ -86,7 +86,8 @@ class ZeitbankViewMarketPlace extends JView {
             <td>'.($angebot->art == 1 ? "beziehen" : "eintauschen").'</td>
             <td>'.($angebot->anbieter == 2 ? "Privat" : "Bereich " . $angebot->anbieter_name).'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
-				    <td></td>
+				    <td><input type="button" value="Bearbeiten" 
+				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id='.$angebot->id.'\'" /></td>
 				  </tr>';
         $i ++;
       }
@@ -109,15 +110,15 @@ class ZeitbankViewMarketPlace extends JView {
    */
   protected function renderTableBeziehen() {
     if (!empty($this->overview->angeboteBeziehen)) {
-      echo "<h1 style='margin-top:25px'>Marktplatz: Giessereistunden beziehen
+      echo "<h1 style='margin-top:25px'>Marktplatz: Arbeitsangebote
          (".count($this->overview->angeboteBeziehen)."/".$this->overview->angeboteBeziehenTotal.")</h1>";
-      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Angebote, wie du Giessereistunden durch das Leisten von Gemeinschaftsarbeit
-      oder durch das Leisten einer Arbeit für einen Bewohner beziehen kannst.</div>";
+      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Arbeitsangebote unserer Bereiche
+      oder Arbeitsangebote von Bewohnern.</div>";
     
       echo '<table class="zeitbank" >';
       echo '<tr class="head">
 				  <th>Titel</th>
-          <th>Anbieter der Giessereistunden</th>
+          <th>Anbieter der Arbeit</th>
           <th>Ansprechpartner</th>
           <th>Erstellt</th>
         </tr>';
@@ -143,8 +144,8 @@ class ZeitbankViewMarketPlace extends JView {
       }
     }
     else {
-      echo "<h1 style='margin-top:25px'>Marktplatz: Giessereistunden beziehen</h1>";
-      echo "Es gibt aktuell keine Angebote zum Bezug von Giessereistunden";
+      echo "<h1 style='margin-top:25px'>Marktplatz: Arbeitsangebote</h1>";
+      echo "Es gibt aktuell keine Arbeitsangebote";
     }
   }
   

@@ -7,11 +7,9 @@ JHTML::_('behavior.modal');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 
-// -------------------------------------------------------------------------
-// Deine Einträge
-// -------------------------------------------------------------------------
-
-$this->renderTableMeineAngebote();
+echo '<div style="margin-top:10px">
+        <a href="index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid='.$this->menuId.'">Verwaltung deiner Angebote</a>
+      </div>';
 
 // -------------------------------------------------------------------------
 // Angebote zum Bezug von Giessereistunden

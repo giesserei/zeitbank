@@ -6,7 +6,7 @@ defined('_JEXEC') or die;
  * 
  * @author Steffen Förster
  */
-class TableMarketPlace extends JTable {
+class ZeitbankTableMarketplace extends JTable {
   
   public $id = null;
   public $userid = null;
@@ -23,7 +23,7 @@ class TableMarketPlace extends JTable {
   public $tags = null;
   public $update_timestamp = null;
   
-	function TableMarketPlace($db) {
+	function ZeitbankTableMarketplace($db) {
 		parent::__construct('#__mgh_zb_market_place', 'id', $db);
 	}
 	

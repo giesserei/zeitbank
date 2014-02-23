@@ -1,8 +1,12 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-require_once (JPATH_COMPONENT.DS.'controller.php');
-$controller = new ZeitbankController();
-$controller->execute(JRequest::getVar('task'));
+jimport ('joomla.application.component.controller');
+
+$controller = JController::getInstance('zeitbank');
+//$controller = new ZeitbankController();
+
+$input = JFactory::getApplication()->input;
+$controller->execute($input->get('task'));
 $controller->redirect();
 ?>

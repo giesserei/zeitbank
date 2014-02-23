@@ -55,6 +55,25 @@ class ZeitbankFrontendHelper {
     return $result;
   }
   
+  /**
+   * Liefert den Javascript-Code, welcher das Header-Image ausblendet.
+   */
+  public static function getScriptToHideHeaderImage() {
+    return '<!-- Header-Images ausblenden -->'
+        . '<script type="text/javascript">'
+        . 'document.getElementById("header-image").style.display = "none";'
+        . '</script>';
+  }
+  
+  /**
+   * Liefert ein Datum, welches $days Tage in der Zukunft liegt.
+   */
+  public static function getMySqlDateInFuture($days) {
+    $date = new DateTime();
+    $date->add(new DateInterval('P'.$days.'D'));
+    return $date->format('d.m.Y');
+  }
+  
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------
