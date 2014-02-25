@@ -8,6 +8,8 @@ JHtml::_('behavior.formvalidation');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 
+$params = $this->state->get('params');
+
 ?>
 
 <h1 style="font-weight:bold;color: #7BA428; margin-bottom:10px;padding-bottom:0px;">
@@ -42,8 +44,8 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
     	      $options[] = JHTML::_('select.option', $key, $value);
           }
           
-          $dropdownKategorien = JHTML::_('select.genericlist', $options, 'kategorie_id', 
-                  array('class'=>'inputbox'), 'value', 'text', $this->form->getValue('kategorie_id'));
+          $dropdownKategorien = JHTML::_('select.genericlist', $options, 'jform[kategorie_id]', 
+                  array('class'=>'inputbox', 'id'=>'jform_kategorie_id]'), 'value', 'text', $this->form->getValue('kategorie_id'));
     
           echo $dropdownKategorien;
           ?>			  
@@ -62,32 +64,36 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			  <td class="value">
           <?php
           $ablauf = array(
-              ZeitbankFrontendHelper::getMySqlDateInFuture(7) => '7 Tagen ('.ZeitbankFrontendHelper::getMySqlDateInFuture(7).')', 
-              ZeitbankFrontendHelper::getMySqlDateInFuture(14) => '14 Tagen ('.ZeitbankFrontendHelper::getMySqlDateInFuture(14).')',
-              ZeitbankFrontendHelper::getMySqlDateInFuture(21) => '21 Tagen ('.ZeitbankFrontendHelper::getMySqlDateInFuture(21).')',
-              ZeitbankFrontendHelper::getMySqlDateInFuture(28) => '28 Tagen ('.ZeitbankFrontendHelper::getMySqlDateInFuture(28).')');
+              ZeitbankFrontendHelper::getMySqlDateInFuture(7) => '7 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(7).')', 
+              ZeitbankFrontendHelper::getMySqlDateInFuture(14) => '14 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(14).')',
+              ZeitbankFrontendHelper::getMySqlDateInFuture(21) => '21 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(21).')',
+              ZeitbankFrontendHelper::getMySqlDateInFuture(28) => '28 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(28).')');
           $options = array();
     
           foreach($ablauf as $key=>$value) {
     	      $options[] = JHTML::_('select.option', $key, $value);
           }
           
-          $dropdownAblauf = JHTML::_('select.genericlist', $options, 'filter_quality', 
-                  array('class'=>'inputbox'), 'value', 'text', $this->form->getValue('ablauf'));
+          $dropdownAblauf = JHTML::_('select.genericlist', $options, 'jform[ablauf]', 
+                  array('class'=>'inputbox', 'id'=>'jform_ablauf'), 'value', 'text', $this->form->getValue('ablauf'));
     
           echo $dropdownAblauf;
           ?>			  
 			  </td>
 			</tr>
+			<tr>
+        <td class="lb" colspan="2"><span class="star">* </span> Eingabe ist obligatorisch</td>
+      </tr>
     </table>	
     
     <?php echo $this->form->getInput('beschreibung'); ?>
 			
 		<fieldset>
-			<input type="submit" value="Speichern"></button>
+			<input type="submit" value="Speichern" />
 			<input type="button" value="Abbrechen" 
-			       onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_giesserei&view=profil&layout=view')?>'" />
+			       onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=marketplace&layout=meine')?>'" />
 			<?php echo JHtml::_('form.token'); ?>
+			<input type="hidden" value="<?php echo $this->getId(); ?>" name="jform[id]" />
 		</fieldset>	
   </form>
 </div>

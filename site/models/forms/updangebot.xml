@@ -3,11 +3,11 @@
 <form>
 	<fieldset name="updangebot">
 
-		<field name="titel" type="text" label="Titel:" class="inputbox" size="52" maxlength="100" />
+		<field name="titel" type="text" label="Titel:" class="inputbox" size="52" maxlength="100" required="true" />
 		
 		<!-- Filter funktioniert mit Joomla 2.5 noch nicht -> siehe daher ZeitbankModelUpdangebot -->
     <field name="beschreibung" type="editor" label="Beschreibung" height="200" hide="article,pagebreak,readmore,image" 
-           filter="JComponentHelper::filterText"/>
+           filter="JComponentHelper::filterText" required="true"/>
 		
 		<field name="art" type="list" default="1" label="Art des Angebotes: " description="Bitte auswählen" class="inputbox">
       <option value="1">Arbeitsangebot</option>
@@ -28,5 +28,6 @@
     </field>  
 		
 		<field name="ablauf" type="text" label="Ablauf in: " description="Bitte auswählen"/>
+
 	</fieldset>
 </form>

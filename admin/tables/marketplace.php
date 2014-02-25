@@ -33,6 +33,25 @@ class ZeitbankTableMarketplace extends JTable {
 	public function store($updateNulls = false) {
 	  $this->update_timestamp = date('Y-m-d H:i:s');
 	
+	  if (empty($this->tags)) {
+	    $this->tags = "";
+	  }
+	  if (empty($this->unterkategorie)) {
+	    $this->unterkategorie = -1;
+	  }
+	  if ($this->art == 1) {
+	    $this->richtung = -1;
+	  }
+	  if ($this->art == 2) {
+	    $this->kategorie_id = -1;
+	  }
+	  if (empty($this->erstellt)) {
+	    $this->erstellt = $this->update_timestamp;
+	  }
+	  if (empty($this->userid)) {
+	    $this->userid = JFactory::getUser()->id;
+	  }
+	  
 	  return parent::store($updateNulls);
 	}
 }

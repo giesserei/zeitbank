@@ -88,8 +88,8 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     }
     
     $valid = 1;
-    $valid &= $this->validateBirthdate($validateResult['birthdate']);
-    $valid &= $this->validateEmail($validateResult['email']);
+    $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
+    $valid &= $this->validateKategorie($validateResult['art'], $validateResult['kategorie_id']);
     
     if (!(bool) $valid) {
       return false;
@@ -104,17 +104,16 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
    * 
    * @see JModelAdmin::save()
    */
-  public function save($data) {
+  public function save($data, $id) {
     $user = JFactory::getUser();
     $table = $this->getTable();
   
     try {
       // Daten in die Tabellen-Instanz laden
-      $table->load($user->id);
+      $table->load($id);
       
-      // Properties mit neuen Daten überschreiben 
-      // ID und User-ID nicht überschreiben -> sicherstellen, dass diese nicht verändert werden
-      if (!$table->bind($data, "id, userid")) {
+      // Properties mit neuen Daten überschreiben
+      if (!$table->bind($data, 'id')) {
         $this->setError($table->getError());
         return false;
       }
@@ -130,10 +129,6 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
         $this->setError($table->getError());
         return false;
       }
-      
-      // Nun müssen wir noch den User in der Joomla-User in der Session aktualisieren
-      // Sonst sieht man nach der E-Mail Änderung die alte E-Mail noch im Forum-Profil
-      $this->reloadUserInSession($user->id);
     }
     catch (Exception $e) {
       JLog::add($e->getMessage(), JLog::ERROR);
@@ -155,7 +150,11 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, array ());
     
     if (empty($data)) {
-      $data = $this->getItem($this->getState('angebot.id'));
+      $data = $this->getItem();
+    }
+    else {
+      // ID im State setzen, damit diese von der View ausgelesen werden kann
+      $this->state->set($this->getName().'.id', $data['id']);
     }
     
     return $data;
@@ -165,5 +164,41 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   // private section
   // -------------------------------------------------------------------------
   
-
+  /**
+   * Liefert true, wenn Suche oder Biete beim Stundentausch gewählt wurde; sonst false.
+   * True wird auch geliefert, wenn Arbeitsangebot gewählt wurde.
+   * Die Fehlermeldung wird im Model gespeichert.
+   */
+  private function validateArtRichtung($art, $richtung) {
+    if ($art == 2 && $richtung != 1 && $richtung != 2) {
+      $this->setError('Bitte treffe eine Auswahl beim Feld "Suche / Biete"');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Liefert true, wenn 'Stundentausch' gewählt wurde. Wurde 'Arbeitsangebot' gewählt, so muss der 
+   * User eine Berechtigung für ein Ämtli in der gewählten Kategorie haben. Ausserdem muss eine 
+   * Kategorie gewählt worden sein.
+   */
+  private function validateKategorie($art, $kategorieId) {
+    if ($art == 1 && $kategorieId <= 0) {
+      $this->setError('Bitte wähle eine Arbeitskategorie aus');
+      return false;
+    }
+    else if ($art == 1) {
+      $query = sprintf(
+          "SELECT count(*)
+           FROM #__mgh_zb_arbeit AS a 
+           WHERE a.kategorie_id = %s AND a.admin_id = %s", mysql_real_escape_string($kategorieId), $this->user->id);
+      $this->db->setQuery($query);
+      $count = $this->db->loadResult();
+      if ($count == 0) {
+        $this->setError('Du hast keine Berechtigung, diese Arbeitskategorie auszuwählen');
+        return false;
+      }
+    }
+    return true;
+  }
 }

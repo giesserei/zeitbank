@@ -37,32 +37,27 @@ class ZeitbankControllerUpdAngebot extends ZeitbankControllerUpdAngebotBase {
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
-    $dataAllowed['email'] = $data['email'];
-    $dataAllowed['telefon'] = $data['telefon'];
-    $dataAllowed['telefon_frei'] = $data['telefon_frei'];
-    $dataAllowed['handy'] = $data['handy'];
-    $dataAllowed['handy_frei'] = $data['handy_frei'];
-    $dataAllowed['birthdate'] = $data['birthdate'];
+    $dataAllowed['id'] = $data['id'];
+    $dataAllowed['titel'] = $data['titel'];
+    $dataAllowed['beschreibung'] = $data['beschreibung'];
+    $dataAllowed['art'] = $data['art'];
+    $dataAllowed['richtung'] = $data['richtung'];
+    $dataAllowed['kategorie_id'] = $data['kategorie_id'];
+    $dataAllowed['status'] = $data['status'];
+    $dataAllowed['ablauf'] = $data['ablauf'];
     
     return $dataAllowed;
   }
   
   /**
-   * Daten ggf. in die DB-Darstellung umformatieren.
+   * @see ZeitbankControllerUpdAngebotBase::redirectSuccessView()
    */
-  protected function formatData($data) {
-    // Checkboxen auf 0 setzen, wenn nicht abgefüllt
-    if (empty($data['telefon_frei'])) {
-      $data['telefon_frei'] = 0;
-    }
-    if (empty($data['handy_frei'])) {
-      $data['handy_frei'] = 0;
-    }
-  
-    // Geburtstag formatieren
-    $data['birthdate'] = GiessereiFrontendHelper::viewDateToMySqlDate($data['birthdate']);
-  
-    return $data;
+  protected function redirectSuccessView() {
+    $app = JFactory::getApplication();
+    $menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
+    $this->setRedirect(
+        JRoute::_('index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid='.$menuId, false)
+    );
   }
   
 }

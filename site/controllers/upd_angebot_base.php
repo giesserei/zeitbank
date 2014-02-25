@@ -17,9 +17,14 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    * Führt nach ein paar Vorarbeiten einen Redirect auf die View durch, welche das Formular anzeigt.
    */
   public function edit() {
+    $app = JFactory::getApplication();
+    
     if (!ZeitbankFrontendHelper::checkAuthMarket()) {
       return false;
     }
+    
+    // Daten in der Session löschen -> alte Daten
+    $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
     
     $id = $this->getId();
     
@@ -36,9 +41,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    * Speichert die Formulardaten des Profils in der Datenbank.
    */
   public function save() {
-    GiessereiFrontendHelper::methodBegin('GiessereiControllerUpdBase', 'save');
-    
-    if (!GiessereiFrontendHelper::checkAuth()) {
+    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
       return false;
     }
     
@@ -48,18 +51,24 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
     
     $formData = $this->getFormData();
+    $id = $formData['id'];
+    
+    // Prüfen, ob der User das Angebot bearbeiten darf
+    if (!$this->isEditAllowed($id)) {
+      return false;
+    }
 
     // Validierung -> Validierungsmeldungen werden direkt ausgegeben
-    $validateResult = $this->validateData($formData);
+    $validateResult = $this->validateData($formData, $id);
     if ($validateResult === false) {
       return false;
     }
     
     // Daten Speichern
-    if ($this->processSave($validateResult)) {
+    if ($this->processSave($validateResult, $id)) {
       // Daten in der Session löschen
-      $app->setUserState(GiessereiConst::SESSION_KEY_PROFIL_DATA, null);
-      $this->redirectProfilView();
+      $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
+      $this->redirectSuccessView();
       return true;
     }
     
@@ -88,6 +97,11 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
   abstract protected function getViewName();
   
   /**
+   * Führt einen Redirect auf die Seite durch, die nach dem Speichern angezeigt werden soll.
+   */
+  abstract protected function redirectSuccessView();
+  
+  /**
    * Auf die Edit-View weiterleiten.
    */
   protected function redirectEditView($id) {
@@ -113,14 +127,15 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    *
    * @return boolean True, wenn das Speichern erfolgreich war
    */
-  protected function processSave($data) {
+  protected function processSave($data, $id) {
     $app = JFactory::getApplication();
+    
     $model = $this->getModel();
   
     $data = $this->formatData($data);
   
     // Fehlermeldung dem Benutzer anzeigen
-    if (!$model->save($data)) {
+    if (!$model->save($data, $id)) {
       $errors = $model->getErrors();
       foreach ($errors as $error) {
         $app->enqueueMessage($error, 'warning');
@@ -128,11 +143,11 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
   
       // Daten in der Session speichern
       if ($this->saveDataInSession()) {
-        $app->setUserState(GiessereiConst::SESSION_KEY_PROFIL_DATA, $data);
+        $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, $data);
       }
   
       // Zurück zum Formular
-      $this->redirectEditView();
+      $this->redirectEditView($id);
   
       return false;
     }
@@ -165,7 +180,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    */
-  private function validateData($data) {
+  private function validateData($data, $id) {
     $app = JFactory::getApplication();
     $model = $this->getModel();
     $form = $model->getForm($data, false);
@@ -187,11 +202,11 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     
       // Daten in der Session speichern
       if ($this->saveDataInSession()) {
-        $app->setUserState(GiessereiConst::SESSION_KEY_PROFIL_DATA, $data);
+        $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, $data);
       }
     
       // Zurück zum Formular
-      $this->redirectEditView();
+      $this->redirectEditView($id);
     
       return false;
     }

@@ -71,6 +71,15 @@ class ZeitbankFrontendHelper {
   public static function getMySqlDateInFuture($days) {
     $date = new DateTime();
     $date->add(new DateInterval('P'.$days.'D'));
+    return $date->format('Y-m-d');
+  }
+  
+  /**
+   * Liefert ein Datum, welches $days Tage in der Zukunft liegt.
+   */
+  public static function getViewDateInFuture($days) {
+    $date = new DateTime();
+    $date->add(new DateInterval('P'.$days.'D'));
     return $date->format('d.m.Y');
   }
   

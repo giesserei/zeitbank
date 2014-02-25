@@ -73,6 +73,8 @@ class ZeitbankViewMarketPlace extends JView {
 				  <th>Titel</th>
           <th>Art</th>
           <th>Erstellt</th>
+          <th>Ablauf</th>
+          <th>Status</th>
           <th>Aktion</th>
         </tr>';
     
@@ -84,6 +86,8 @@ class ZeitbankViewMarketPlace extends JView {
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
             <td>'.($angebot->art == 1 ? "Arbeitsangebot" : "Tauschen").'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
+				    <td>'.JHTML::date($angebot->ablauf,"d.m.Y").'</td>
+				    <td>'.($angebot->status == 1 ? "aktiv" : "inaktiv").'</td>
 				    <td><input type="button" value="Bearbeiten" 
 				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id='.$angebot->id.'\'" /></td>
 				  </tr>';

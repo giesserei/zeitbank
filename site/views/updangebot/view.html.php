@@ -47,14 +47,8 @@ class ZeitbankViewUpdAngebot extends JView {
     return $model->getKategorien();
   }
   
-  // -------------------------------------------------------------------------
-  // private section
-  // -------------------------------------------------------------------------
-  
-  private function setId() {
-    $app = JFactory::getApplication();
-    $input = $app->input;
-    $id = $input->get("id", "0");
-    $this->state->set('angebot.id');
+  protected function getId() {
+    return (int) $this->state->get($this->getModel()->getName().'.id');
   }
+  
 }
