@@ -81,6 +81,31 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     return false;
   }
   
+  /**
+   * Löscht einen Eintrag.
+   */
+  public function delete() {
+    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+      return false;
+    }
+    
+    $id = $this->getId();
+    
+    // Prüfen, ob der User das Angebot löschen darf
+    if (!$this->isEditAllowed($id)) {
+      return false;
+    }
+    
+    // Eintrag löschen
+    $model = $this->getModel();
+    if ($model->delete($id)) {
+      $this->redirectSuccessView();
+      return true;
+    }
+    
+    return false;
+  }
+  
   // -------------------------------------------------------------------------
   // protected section
   // -------------------------------------------------------------------------

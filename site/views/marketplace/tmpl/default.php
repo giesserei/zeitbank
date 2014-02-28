@@ -26,3 +26,5 @@ $this->renderTableArbeiten();
 
 $this->renderTableTauschen();
 
+echo '<div style="margin-top:50px;color:red">Version: 0.8 - 2014-02-28</div>';
+

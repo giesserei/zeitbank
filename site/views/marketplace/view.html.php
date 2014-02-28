@@ -96,7 +96,10 @@ class ZeitbankViewMarketPlace extends JView {
 				    <td>'.JHTML::date($angebot->ablauf,"d.m.Y").'</td>
 				    <td>'.($angebot->status == 1 ? "aktiv" : "inaktiv").'</td>
 				    <td><input type="button" value="Bearbeiten" 
-				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id='.$angebot->id.'\'" /></td>
+				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id='.$angebot->id.'\'" />
+				        <input type="button" value="Löschen" 
+				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.delete&id='.$angebot->id.'\'" />
+				    </td>
 				  </tr>';
         $i ++;
       }

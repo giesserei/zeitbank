@@ -142,6 +142,23 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     return true;
   }
   
+  public function delete($id) {
+    $table = $this->getTable();
+    
+    try {
+      if (!$table->delete($id)) {
+        $this->setError($table->getError());
+        return false;
+      }
+    }
+    catch (Exception $e) {
+      JLog::add($e->getMessage(), JLog::ERROR);
+      $this->setError('Löschen fehlgeschlagen!');
+      return false;
+    }
+    return true;
+  }
+  
   // -------------------------------------------------------------------------
   // protected section
   // -------------------------------------------------------------------------
