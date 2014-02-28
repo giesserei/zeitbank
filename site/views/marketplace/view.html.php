@@ -61,6 +61,13 @@ class ZeitbankViewMarketPlace extends JView {
   }
   
   /**
+   * Liefert true, wenn der Benutzer bereits Einträge erstellt hat.
+   */
+  protected function hasEntries() {
+    return !empty($this->overview->meineAngebote);
+  }
+  
+  /**
    * Erstellt die Tabelle mit den eigenen Angeboten.
    */
   protected function renderTableMeineAngebote() {
@@ -130,7 +137,7 @@ class ZeitbankViewMarketPlace extends JView {
         $style = $i % 2 == 0 ? "even" : "odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
-            <td>Bereich '.$angebot->anbieter_name.'</td>
+            <td>'.$angebot->anbieter_name.'</td>
             <td>'.$angebot->ansprechpartner.'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
@@ -214,7 +221,7 @@ class ZeitbankViewMarketPlace extends JView {
     
     // Marktplatz aus Model laden
     $model = $this->getModel();
-    $this->overview = $model->getOverview(1);
+    $this->overview = $model->getOverview(5);
     
     ZeitbankFrontendHelper::addComponentStylesheet();
     

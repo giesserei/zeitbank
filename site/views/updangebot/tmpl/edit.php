@@ -8,33 +8,35 @@ JHtml::_('behavior.formvalidation');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 
-$params = $this->state->get('params');
+$isNew = $this->isNew();
+$titelArbeit = $isNew ? "Arbeitsangebot erstellen" : "Arbeitsangebot bearbeiten";
+$titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
 
 ?>
 
 <h1 style="font-weight:bold;color: #7BA428; margin-bottom:10px;padding-bottom:0px;">
-  Angebot bearbeiten
+  <?php echo ($this->isArbeitView() ? $titelArbeit : $titelTausch); ?>
 </h1>
 
 <div class="component">
   
 	<form action="<?php echo JRoute::_("index.php?option=com_zeitbank&task=updangebot.save&Itemid=".$this->menuId); ?>" 
 			  id="angebotForm" name="angebotForm" method="post" class="form-validate">
+	  
+	  <!-- Art des Eintrags ist fixiert -->		
+		<input type="hidden" value="<?php echo $this->getArt(); ?>" name="jform[art]" />	
 			
 		<table class="market_form">
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('titel'); ?></td>
 			  <td class="value"><?php echo $this->form->getInput('titel'); ?></td>
 			</tr>	
-			<tr>
-			  <td class="lb"><?php echo $this->form->getLabel('art'); ?></td>
-			  <td class="value"><?php echo $this->form->getInput('art'); ?></td>
-			</tr>
+			<?php if($this->isArbeitView()) { ?>
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('kategorie_id'); ?></td>
 			  <td class="value">
           <?php
-          $kategorien = array(-1 => '-');
+          $kategorien = array();
           foreach($this->getKategorien() as $kat) {
             $kategorien[$kat->id] = $kat->bezeichnung;
           }
@@ -51,10 +53,13 @@ $params = $this->state->get('params');
           ?>			  
 			  </td>
 			</tr>		
+			<?php } ?>
+			<?php if($this->isTauschView()) { ?>
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('richtung'); ?></td>
 			  <td class="value"><?php echo $this->form->getInput('richtung'); ?></td>
 			</tr>
+			<?php } ?>
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('status'); ?></td>
 			  <td class="value"><?php echo $this->form->getInput('status'); ?></td>

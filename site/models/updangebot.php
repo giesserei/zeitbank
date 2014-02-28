@@ -38,12 +38,12 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   }
   
   /**
-   * Liefert die Liste mit den Arbeitskategorien.
+   * Liefert die Liste mit den Arbeitskategorien, für die der Benutzer Ämtli-Administrator ist.
    */
   public function getKategorien() {
     $query = "SELECT k.*
               FROM #__mgh_zb_kategorie as k
-              WHERE k.bezeichnung NOT IN ('Privat')
+              WHERE k.id IN (SELECT a.kat_id FROM #__mgh_zb_x_kat_arbeitadmin AS a WHERE a.user_id = " . $this->user->id . ")
               ORDER BY k.bezeichnung";
     $this->db->setQuery($query);
     return $this->db->loadObjectList();
@@ -86,6 +86,9 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     if ($validateResult === false) {
       return false;
     }
+    
+    // Beschreibung extra filtern, da Form-Filterung des Editors mit Joomla2.5 nicht funktioniert
+    $validateResult['beschreibung'] = JComponentHelper::filterText($validateResult['beschreibung']);
     
     $valid = 1;
     $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
@@ -179,8 +182,7 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   
   /**
    * Liefert true, wenn 'Stundentausch' gewählt wurde. Wurde 'Arbeitsangebot' gewählt, so muss der 
-   * User eine Berechtigung für ein Ämtli in der gewählten Kategorie haben. Ausserdem muss eine 
-   * Kategorie gewählt worden sein.
+   * User Ämtliadministrator in der gewählten Kategorie sein. Ausserdem muss eine Kategorie gewählt worden sein.
    */
   private function validateKategorie($art, $kategorieId) {
     if ($art == 1 && $kategorieId <= 0) {
@@ -190,12 +192,12 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     else if ($art == 1) {
       $query = sprintf(
           "SELECT count(*)
-           FROM #__mgh_zb_arbeit AS a 
-           WHERE a.kategorie_id = %s AND a.admin_id = %s", mysql_real_escape_string($kategorieId), $this->user->id);
+           FROM #__mgh_zb_x_kat_arbeitadmin AS a 
+           WHERE a.kat_id = %s AND a.user_id = %s", mysql_real_escape_string($kategorieId), $this->user->id);
       $this->db->setQuery($query);
       $count = $this->db->loadResult();
       if ($count == 0) {
-        $this->setError('Du hast keine Berechtigung, diese Arbeitskategorie auszuwählen');
+        $this->setError('Du bist kein Ämtli-Administrator für die gewählte Kategorie.');
         return false;
       }
     }

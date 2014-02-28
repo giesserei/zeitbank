@@ -38,6 +38,19 @@ class ZeitbankFrontendHelper {
   }
   
   /**
+   * Liefert true, wenn der Benutzer Ämtli-Administrator ist.
+   */
+  public static function isAemtliAdmin() {
+    $user = JFactory::getUser();
+    $db = JFactory::getDBO();
+    $query = "SELECT count(*)
+              FROM #__mgh_zb_x_kat_arbeitadmin AS a 
+              WHERE a.user_id = " . $user->id;
+    $db->setQuery($query);
+    return $db->loadResult() > 0;
+  }
+  
+  /**
    * Fügt das Stylesheet dieser Komponente zum Dokument hinzu.
    */
   public static function addComponentStylesheet() {

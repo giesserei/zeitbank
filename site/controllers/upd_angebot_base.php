@@ -25,8 +25,12 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     
     // Daten in der Session löschen -> alte Daten
     $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
+    $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, null);
     
     $id = $this->getId();
+    if ($id == 0) {
+      $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, $this->getArt());
+    }
     
     if (!$this->isEditAllowed($id)) {
       return false;
@@ -68,6 +72,8 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     if ($this->processSave($validateResult, $id)) {
       // Daten in der Session löschen
       $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
+      $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, null);
+      
       $this->redirectSuccessView();
       return true;
     }
@@ -221,6 +227,14 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     $app = JFactory::getApplication();
     $input = $app->input;
     return $input->get("id", "0");
+  }
+  
+  /**
+   * Liefert die Art des Angebots, welches erstellt werden soll.
+   */
+  private function getArt() {
+    $jinput = JFactory::getApplication()->input;
+    return $jinput->get("art", 2);
   }
   
   /**

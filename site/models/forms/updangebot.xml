@@ -15,7 +15,6 @@
     </field> 
     
     <field name="richtung" type="list" default="0" label="Suche / Biete: " description="Bitte auswählen" class="inputbox">
-      <option value="0">-</option>
       <option value="1">Suche Stunden</option>
       <option value="2">Biete Stunden</option>
     </field> 

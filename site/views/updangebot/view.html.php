@@ -18,6 +18,8 @@ class ZeitbankViewUpdAngebot extends JView {
   protected $menuId;
   
   protected $state;
+  
+  protected $art;
 
   /**
    * @see JView::display()
@@ -29,6 +31,7 @@ class ZeitbankViewUpdAngebot extends JView {
     $this->state = $this->get('State');
     
     $this->form	= $this->get('Form');
+    $this->setArt();
 
     if (count($errors = $this->get('Errors'))) {
       throw new Exception(implode('\n', $errors));
@@ -51,4 +54,36 @@ class ZeitbankViewUpdAngebot extends JView {
     return (int) $this->state->get($this->getModel()->getName().'.id');
   }
   
+  protected function isTauschView() {
+    return $this->getArt() == 2;
+  }
+  
+  protected function isArbeitView() {
+    return $this->getArt() == 1;
+  }
+  
+  protected function getArt() {
+    return $this->art;
+  }
+  
+  protected function isNew() {
+    return $this->getId() == 0;
+  }
+  
+  // -------------------------------------------------------------------------
+  // private section
+  // -------------------------------------------------------------------------
+  
+  /**
+   * Speichert die Art des Eintrag für den Aufbau der View.
+   */
+  private function setArt() {
+    if ($this->isNew()) {
+      $app = JFactory::getApplication();
+      $this->art = $app->getUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART);
+    }
+    else {
+      $this->art = $this->form->getValue('art');
+    }
+  }
 }
