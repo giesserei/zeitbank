@@ -39,7 +39,9 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
           $arbeiten = $this->getArbeitsgattungen();
 
           $dropdownArbeiten = JHTML::_('select.groupedlist', $arbeiten, 'jform[arbeit_id]', 
-                  array('class'=>'inputbox', 'id'=>'jform_arbeit_id]', 'group.items'=>'items'), 'value', 'text', $this->form->getValue('arbeit_id'));
+                  array('class'=>'inputbox', 'id'=>'jform_arbeit_id]', 'group.items'=>'items', 
+                        'list.select'=>$this->form->getValue('arbeit_id'))
+          );
     
           echo $dropdownArbeiten;
           ?>			  
