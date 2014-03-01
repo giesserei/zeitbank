@@ -16,12 +16,15 @@ class ZeitbankTableMarketplace extends JTable {
   public $status = null;
   public $art = null;
   public $richtung = null;
-  public $kategorie_id = null;
+  public $arbeit_id = null;
   public $unterkategorie = null;
   public $beschreibung = null;
   public $titel = null;
   public $tags = null;
   public $update_timestamp = null;
+  public $anforderung = null;
+  public $zeit = null;
+  public $aufwand = null;
   
 	function ZeitbankTableMarketplace($db) {
 		parent::__construct('#__mgh_zb_market_place', 'id', $db);
@@ -43,7 +46,7 @@ class ZeitbankTableMarketplace extends JTable {
 	    $this->richtung = -1;
 	  }
 	  if ($this->art == 2) {
-	    $this->kategorie_id = -1;
+	    $this->arbeit_id = -1;
 	  }
 	  if (empty($this->erstellt)) {
 	    $this->erstellt = $this->update_timestamp;

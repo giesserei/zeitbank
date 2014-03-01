@@ -42,9 +42,12 @@ class ZeitbankControllerUpdAngebot extends ZeitbankControllerUpdAngebotBase {
     $dataAllowed['beschreibung'] = $data['beschreibung'];
     $dataAllowed['art'] = $data['art'];
     $dataAllowed['richtung'] = $data['richtung'];
-    $dataAllowed['kategorie_id'] = $data['kategorie_id'];
+    $dataAllowed['arbeit_id'] = $data['arbeit_id'];
     $dataAllowed['status'] = $data['status'];
     $dataAllowed['ablauf'] = $data['ablauf'];
+    $dataAllowed['zeit'] = $data['zeit'];
+    $dataAllowed['anforderung'] = $data['anforderung'];
+    $dataAllowed['aufwand'] = $data['aufwand'];
     
     return $dataAllowed;
   }

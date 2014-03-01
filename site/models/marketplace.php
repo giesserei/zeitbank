@@ -81,9 +81,12 @@ class ZeitbankModelMarketPlace extends JModel {
     $details = new MarketPlaceDetails();
     
     $query = sprintf(
-        "SELECT m.*, k.bezeichnung as anbieter_name
+        "SELECT m.*, 
+           (SELECT CONCAT(k.bezeichnung, ' / ', a.kurztext) 
+            FROM #__mgh_zb_kategorie k 
+              JOIN #__mgh_zb_arbeit a ON k.id = a.kategorie_id
+            WHERE a.id = m.arbeit_id) AS konto
          FROM #__mgh_zb_market_place as m
-         LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id
 		     WHERE m.id = %s", mysql_real_escape_string($id));
     $this->db->setQuery($query);
     $details->item = $this->db->loadObject();
@@ -102,28 +105,36 @@ class ZeitbankModelMarketPlace extends JModel {
   // -------------------------------------------------------------------------
   
   private function addMeineAngebote(&$overview, $limit) {
-    $query = 'SELECT m.*, k.bezeichnung as anbieter_name 
-              FROM #__mgh_zb_market_place as m
-              LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id 
-		    	    WHERE m.userid=' . $this->user->id . ' 
-		    	    ORDER BY m.erstellt DESC' .
-		    	    ($limit > 0 ? ' LIMIT ' . $limit : '');
+    $query = "SELECT m.*, 
+                CASE WHEN m.art = 1 THEN
+                  (SELECT CONCAT(k.bezeichnung, ' / ', a.kurztext) 
+                   FROM #__mgh_zb_kategorie k 
+                   JOIN #__mgh_zb_arbeit a ON k.id = a.kategorie_id
+                   WHERE a.id = m.arbeit_id) 
+                ELSE '' END AS konto
+              FROM #__mgh_zb_market_place m
+		    	    WHERE m.userid=" . $this->user->id . "
+		    	    ORDER BY m.erstellt DESC" .
+		    	    ($limit > 0 ? " LIMIT " . $limit : "");
     $this->db->setQuery($query);
     $overview->meineAngebote = $this->db->loadObjectList();
     
     $query = 'SELECT count(*)
-              FROM #__mgh_zb_market_place as m
-              LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id 
+              FROM #__mgh_zb_market_place m
 		    	    WHERE m.userid=' . $this->user->id;
     $this->db->setQuery($query);
     $overview->meineAngeboteTotal = $this->db->loadResult();
   }
   
   private function addAngeboteArbeiten(&$overview, $limit) {
-    $query = "SELECT m.*, k.bezeichnung as anbieter_name, 
-                (SELECT concat(m1.vorname, ' ', m1.nachname) FROM #__mgh_mitglied m1 WHERE m1.userid = m.userid) as ansprechpartner
-              FROM #__mgh_zb_market_place as m
-              LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id 
+    $query = "SELECT m.*, mgl.vorname, mgl.nachname, u.email,
+                (SELECT CONCAT(k.bezeichnung, ' / ', a.kurztext) 
+                   FROM #__mgh_zb_kategorie k 
+                     JOIN #__mgh_zb_arbeit a ON k.id = a.kategorie_id
+                   WHERE a.id = m.arbeit_id) AS konto
+              FROM #__mgh_zb_market_place m
+                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
+                JOIN #__users u ON m.userid = u.id
 		    	    WHERE m.art = 1 
                 AND m.ablauf > NOW() 
                 AND m.status = 1 
@@ -134,7 +145,8 @@ class ZeitbankModelMarketPlace extends JModel {
     
     $query = "SELECT count(*)
               FROM #__mgh_zb_market_place as m
-              LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id
+                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
+                JOIN #__users u ON m.userid = u.id
 		    	    WHERE m.art = 1
                 AND m.ablauf > NOW()
                 AND m.status = 1";
@@ -143,10 +155,10 @@ class ZeitbankModelMarketPlace extends JModel {
   }
   
   private function addAngeboteTauschen(&$overview, $limit) {
-    $query = "SELECT m.*, k.bezeichnung as anbieter_name,
-                (SELECT concat(m1.vorname, ' ', m1.nachname) FROM #__mgh_mitglied m1 WHERE m1.userid = m.userid) as ansprechpartner
+    $query = "SELECT m.*, mgl.vorname, mgl.nachname, u.email
               FROM #__mgh_zb_market_place as m
-              LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id 
+                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
+                JOIN #__users u ON m.userid = u.id
 		    	    WHERE m.art = 2
                 AND m.ablauf > NOW()
                 AND m.status = 1 
@@ -157,7 +169,8 @@ class ZeitbankModelMarketPlace extends JModel {
     
     $query = "SELECT count(*)
               FROM #__mgh_zb_market_place as m
-              LEFT OUTER JOIN #__mgh_zb_kategorie k ON m.kategorie_id = k.id
+                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
+                JOIN #__users u ON m.userid = u.id
 		    	    WHERE m.art = 2
                 AND m.ablauf > NOW()
                 AND m.status = 1";

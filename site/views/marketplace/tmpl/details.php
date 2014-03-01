@@ -1,10 +1,20 @@
 <?php
 
-echo "<div style='margin-bottom:20px'><strong>"
-      .$this->details->item->titel."</strong></div>";
+JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 
-echo "<div style='margin-bottom:20px'>"
-      .$this->details->item->beschreibung."</div>";
+echo "<div style='margin-bottom:20px;color:#7BB72B;font-size:14pt'><strong>".$this->details->item->titel."</strong></div>";
+
+echo "<div style='margin-bottom:5px'><strong>Beschreibung:</strong></div>";
+echo "<div style='margin-bottom:10px'>".$this->details->item->beschreibung."&nbsp;</div>";
+
+echo "<div style='margin-bottom:5px'><strong>Anforderung:</strong></div>";
+echo "<div style='margin-bottom:10px'>".$this->details->item->anforderung."&nbsp;</div>";
+
+echo "<div style='margin-bottom:5px'><strong>Zeit:</strong></div>";
+echo "<div style='margin-bottom:10px'>".$this->details->item->zeit."&nbsp;</div>";
+
+echo "<div style='margin-bottom:5px'><strong>Buchbarer Aufwand:</strong></div>";
+echo "<div style='margin-bottom:20px'>".$this->details->item->aufwand."&nbsp;</div>";
 
 echo "<table class='market_details'>";
 
@@ -15,8 +25,8 @@ echo "<tr>
 
 if ($this->details->item->art == 1) {
   echo "<tr>
-          <td class='lb'>Arbeitskategorie:</td>
-          <td class='value'>".$this->details->item->anbieter_name."</td>
+          <td class='lb'>Arbeitsgattung:</td>
+          <td class='value'>".$this->details->item->konto."</td>
         </tr>";
 }
 else {
@@ -35,12 +45,7 @@ echo "</table>";
 
 
 function getAnsprechpartner($person) {
-  $name = $person->vorname . " " . $person->nachname;
-  $linkName = $name;
-
-  if (substr($person->email, 0, 11) != "kein.email.") {
-    $linkName = '<a href="mailto:'.$person->email.'?subject=Marktplatz&body=Liebe/Lieber '.$person->vorname.'">'.$name.'</a>'; 
-  }
+  $linkName = ZeitbankFrontendHelper::getEmailLink($person->vorname, $person->nachname, $person->email);
   
   $telefon = "";
   if (!empty($person->telefon) && $person->telefon_frei) {

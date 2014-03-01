@@ -50,6 +50,45 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   }
   
   /**
+   * Liefert die Liste mit den Arbeiten, für die der Benutzer Arbeiten ausschreiben darf. Dies sind alle aktiven Arbeiten,
+   * die einer der Arbeitskategorie zugeordnet sind, für die der Benutzer als Ämtli-Administrator registriert ist.
+   * 
+   * Die Liste ist eine geschachtelte Liste von Arrays. In der ersten Dimension sind die Arbeitskategorien gelistet. 
+   * in der zweiten Dimension sind die zugehörigen Arbeiten gelistet.
+   */
+  public function getArbeitsgattungen() {
+    // Zunächst alle relevanten Arbeitskategorien selektieren
+    $query = "SELECT k.*
+              FROM #__mgh_zb_kategorie as k
+              WHERE k.id IN (SELECT a.kat_id FROM #__mgh_zb_x_kat_arbeitadmin AS a WHERE a.user_id = " . $this->user->id . ")
+              ORDER BY k.bezeichnung";
+    $this->db->setQuery($query);
+    $kategorien = $this->db->loadObjectList();
+    
+    // Für jede Kategorie nun die Arbeiten laden
+    $liste = array();
+    foreach ($kategorien as $kat) {
+      $liste[$kat->bezeichnung] = array();
+      
+      $query = "SELECT a.*
+                FROM #__mgh_zb_arbeit as a
+                WHERE a.kategorie_id = ".$kat->id."
+                  AND a.aktiviert = '1'
+                ORDER BY a.kurztext";
+      $this->db->setQuery($query);
+      $arbeiten = $this->db->loadObjectList();
+      
+      $groupItems = array();
+      foreach ($arbeiten as $arb) {
+        $groupItems[$arb->id] = $arb->kurztext;
+      }
+      $liste[$kat->bezeichnung]['items'] = $groupItems;
+    }
+    
+    return $liste;
+  }
+  
+  /**
    * @see JModel::getTable()
    */
   public function getTable($type = 'Marketplace', $prefix = 'ZeitbankTable', $config = array()) {
@@ -92,7 +131,9 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     
     $valid = 1;
     $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
-    $valid &= $this->validateKategorie($validateResult['art'], $validateResult['kategorie_id']);
+    $valid &= $this->validateKategorie($validateResult['art'], $validateResult['arbeit_id']);
+    $valid &= $this->validateRequiredFields($validateResult['art'], $validateResult['aufwand'], 
+                       $validateResult['zeit'], $validateResult['anforderung'], $validateResult['beschreibung']);
     
     if (!(bool) $valid) {
       return false;
@@ -199,24 +240,51 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   
   /**
    * Liefert true, wenn 'Stundentausch' gewählt wurde. Wurde 'Arbeitsangebot' gewählt, so muss der 
-   * User Ämtliadministrator in der gewählten Kategorie sein. Ausserdem muss eine Kategorie gewählt worden sein.
+   * User ein Ämtli-Administrator in der gewählten Kategorie sein. Ausserdem muss eine Arbeitsgattung gewählt worden sein.
    */
-  private function validateKategorie($art, $kategorieId) {
-    if ($art == 1 && $kategorieId <= 0) {
-      $this->setError('Bitte wähle eine Arbeitskategorie aus');
+  private function validateKategorie($art, $arbeitId) {
+    if ($art == 1 && $arbeitId <= 0) {
+      $this->setError('Bitte wähle eine Arbeitsgattung aus');
       return false;
     }
     else if ($art == 1) {
       $query = sprintf(
           "SELECT count(*)
-           FROM #__mgh_zb_x_kat_arbeitadmin AS a 
-           WHERE a.kat_id = %s AND a.user_id = %s", mysql_real_escape_string($kategorieId), $this->user->id);
+           FROM #__mgh_zb_x_kat_arbeitadmin ka
+             JOIN #__mgh_zb_arbeit a ON ka.kat_id = a.kategorie_id
+           WHERE a.id = %s AND ka.user_id = %s", mysql_real_escape_string($arbeitId), $this->user->id);
       $this->db->setQuery($query);
       $count = $this->db->loadResult();
       if ($count == 0) {
-        $this->setError('Du bist kein Ämtli-Administrator für die gewählte Kategorie.');
+        $this->setError('Du bist kein Ämtli-Administrator für die gewählte Arbeitskategorie.');
         return false;
       }
+    }
+    return true;
+  }
+  
+  /**
+   * Wenn ein 'Arbeitsangebot' bearbeitet oder angelegt wird, müssen verschiedene Felder zwingend angefüllt werden.
+   */
+  private function validateRequiredFields($art, $aufwand, $zeit, $anforderung, $beschreibung) {
+    if ($art != 1) {
+      return true;
+    }
+    if (ZeitbankFrontendHelper::isBlank($beschreibung)) {
+      $this->setError('Bitte beschreibe die Arbeit.');
+      return false;
+    }
+    if (ZeitbankFrontendHelper::isBlank($anforderung)) {
+      $this->setError('Bitte erfasse die Anforderungen für die Arbeit.');
+      return false;
+    }
+    if (ZeitbankFrontendHelper::isBlank($zeit)) {
+      $this->setError('Bitte gebe an, bis wann die Arbeit ausgeführt werden soll.');
+      return false;
+    }
+    if (ZeitbankFrontendHelper::isBlank($aufwand)) {
+      $this->setError('Bitte gebe an, wie viel Aufwand für die Arbeit verbucht werden kann.');
+      return false;
     }
     return true;
   }

@@ -50,6 +50,11 @@ class ZeitbankViewUpdAngebot extends JView {
     return $model->getKategorien();
   }
   
+  protected function getArbeitsgattungen() {
+    $model = $this->getModel();
+    return $model->getArbeitsgattungen();
+  }
+  
   protected function getId() {
     return (int) $this->state->get($this->getModel()->getName().'.id');
   }

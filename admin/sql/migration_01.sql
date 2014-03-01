@@ -18,12 +18,3 @@ CREATE TABLE IF NOT EXISTS `joomghjos_mgh_zb_market_place` (
    update_timestamp DATETIME NOT NULL,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- Testdaten
-INSERT INTO joomghjos_mgh_zb_market_place (userid, erstellt, ablauf, termin, status, art, richtung, kategorie_id, beschreibung, titel, tags, update_timestamp) 
-    VALUES (134, '2014-02-10', '2014-03-10', null, 1, 1, 0, 3, 'Erstellung und Überarbeitung von Texten im Internet', 'RedakteurIn Webseite', 'Redakteur,Computer,schreiben', now());
-INSERT INTO joomghjos_mgh_zb_market_place (userid, erstellt, ablauf, termin, status, art, richtung, kategorie_id, beschreibung, titel, tags, update_timestamp) 
-    VALUES (134, '2014-02-09', '2014-03-09', null, 1, 2, 2, null, 'Ich esse gerne Sauerteigbrot aus Roggenmehl', 'Brot backen', 'Brot,backen', now());
-INSERT INTO joomghjos_mgh_zb_market_place (userid, erstellt, ablauf, termin, status, art, richtung, kategorie_id, beschreibung, titel, tags, update_timestamp) 
-    VALUES (134, '2014-02-08', '2014-03-08', null, 1, 2, 1, null, 'Ich kann leckeren Kuchen backen', 'Kuchen backen', 'Kuchen,backen', now());
-

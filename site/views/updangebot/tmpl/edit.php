@@ -31,28 +31,32 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
 			  <td class="lb"><?php echo $this->form->getLabel('titel'); ?></td>
 			  <td class="value"><?php echo $this->form->getInput('titel'); ?></td>
 			</tr>	
-			<?php if($this->isArbeitView()) { ?>
+			<?php if($this->isArbeitView()) { ?>	
 			<tr>
-			  <td class="lb"><?php echo $this->form->getLabel('kategorie_id'); ?></td>
+			  <td class="lb"><?php echo $this->form->getLabel('arbeit_id'); ?><span class="star">* </span> </td>
 			  <td class="value">
           <?php
-          $kategorien = array();
-          foreach($this->getKategorien() as $kat) {
-            $kategorien[$kat->id] = $kat->bezeichnung;
-          }
-          
-          $options = array();
-          foreach($kategorien as $key=>$value) {
-    	      $options[] = JHTML::_('select.option', $key, $value);
-          }
-          
-          $dropdownKategorien = JHTML::_('select.genericlist', $options, 'jform[kategorie_id]', 
-                  array('class'=>'inputbox', 'id'=>'jform_kategorie_id]'), 'value', 'text', $this->form->getValue('kategorie_id'));
+          $arbeiten = $this->getArbeitsgattungen();
+
+          $dropdownArbeiten = JHTML::_('select.groupedlist', $arbeiten, 'jform[arbeit_id]', 
+                  array('class'=>'inputbox', 'id'=>'jform_arbeit_id]', 'group.items'=>'items'), 'value', 'text', $this->form->getValue('arbeit_id'));
     
-          echo $dropdownKategorien;
+          echo $dropdownArbeiten;
           ?>			  
 			  </td>
 			</tr>		
+			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('anforderung'); ?><span class="star">* </span> </td>
+			  <td class="value"><?php echo $this->form->getInput('anforderung'); ?></td>
+			</tr>	
+			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('zeit'); ?><span class="star">* </span> </td>
+			  <td class="value"><?php echo $this->form->getInput('zeit'); ?></td>
+			</tr>	
+			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('aufwand'); ?><span class="star">* </span> </td>
+			  <td class="value"><?php echo $this->form->getInput('aufwand'); ?></td>
+			</tr>	
 			<?php } ?>
 			<?php if($this->isTauschView()) { ?>
 			<tr>

@@ -96,6 +96,35 @@ class ZeitbankFrontendHelper {
     return $date->format('d.m.Y');
   }
   
+  /**
+   * Erstellt mit den übergebenen Parametern einen Mailto-Link. Wenn die Mail-Adresse mit "kein.mail" beginnt,
+   * wird einfach nur der Name (ohne Link) zurückgeliefert,
+   */
+  public static function getEmailLink($vorname, $nachname, $email) {
+      $name = $vorname . " " . $nachname;
+      $link = $name;
+    
+      if (substr($email, 0, 11) != "kein.email.") {
+        $link = '<a href="mailto:'.$email.'?subject=Marktplatz&body=Liebe/Lieber '.$vorname.'">'.$name.'</a>';
+      }
+      
+      return $link;
+  }
+  
+  /**
+   * Liefert true, wenn der übergebene String-Wert NULL ist oder eine leere Zeichenkette ist. 
+   * Alle Whitespaces werden für den Test entfernt.
+   * 
+   * @param string $value
+   */
+  public static function isBlank($value) {
+    if (empty($value)) {
+      return true;
+    }
+    $trimedValue = trim($value);
+    return empty($trimedValue);
+  }
+  
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------

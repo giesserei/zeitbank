@@ -75,7 +75,7 @@ class ZeitbankViewMarketPlace extends JView {
       echo "<h1>Deine Einträge
         (".count($this->overview->meineAngebote)."/".$this->overview->meineAngeboteTotal.")</h1>";
     
-      echo '<table class="zeitbank" >';
+      echo '<table class="market_overview" >';
       echo '<tr class="head">
 				  <th>Titel</th>
           <th>Art</th>
@@ -126,10 +126,10 @@ class ZeitbankViewMarketPlace extends JView {
          (".count($this->overview->angeboteArbeiten)."/".$this->overview->angeboteArbeitenTotal.")</h1>";
       echo "<div style='width:700px;margin-bottom:10px'>Hier findest du aktuelle Arbeitsangebote unserer Bereiche.</div>";
     
-      echo '<table class="zeitbank" >';
+      echo '<table class="market_overview" >';
       echo '<tr class="head">
 				  <th>Titel</th>
-          <th>Arbeitskategorie</th>
+          <th>Arbeitsgattung</th>
           <th>Ansprechpartner</th>
           <th>Erstellt</th>
         </tr>';
@@ -140,8 +140,8 @@ class ZeitbankViewMarketPlace extends JView {
         $style = $i % 2 == 0 ? "even" : "odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
-            <td>'.$angebot->anbieter_name.'</td>
-            <td>'.$angebot->ansprechpartner.'</td>
+            <td>'.ZeitbankFrontendHelper::cropText($angebot->konto, 50).'</td>
+            <td>'.ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email).'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
         $i ++;
@@ -169,7 +169,7 @@ class ZeitbankViewMarketPlace extends JView {
         (".count($this->overview->angeboteTauschen)."/".$this->overview->angeboteTauschenTotal.")</h1>";
       echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Angebote für einen privaten Stundentausch.</div>";
     
-      echo '<table class="zeitbank" >';
+      echo '<table class="market_overview" >';
       echo '<tr class="head">
 				  <th>Titel</th>
           <th>Suche / Angebot</th>
@@ -184,7 +184,7 @@ class ZeitbankViewMarketPlace extends JView {
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
             <td>'.($angebot->richtung == 1 ? 'Suche Stunden' : 'Biete Stunden').'</td>
-            <td>'.$angebot->ansprechpartner.'</td>
+            <td>'.ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email).'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
         $i ++;
@@ -221,6 +221,7 @@ class ZeitbankViewMarketPlace extends JView {
     
     // Form-Daten aus Session löschen -> User hat die letzte Eingabe vielleicht nicht abgeschlossen
     $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
+    $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, null);
     
     // Marktplatz aus Model laden
     $model = $this->getModel();
