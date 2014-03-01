@@ -126,8 +126,12 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
       return false;
     }
     
-    // Beschreibung extra filtern, da Form-Filterung des Editors mit Joomla2.5 nicht funktioniert
+    // Beschreibung und Anforderung extra filtern, da Form-Filterung des Editors mit Joomla2.5 nicht funktioniert
     $validateResult['beschreibung'] = JComponentHelper::filterText($validateResult['beschreibung']);
+    $validateResult['anforderung'] = JComponentHelper::filterText($validateResult['anforderung']);
+    
+    // Anforderung darf nur 255 Zeichen haben
+    $validateResult['anforderung'] = ZeitbankFrontendHelper::cropText($validateResult['anforderung'], 255, false);
     
     $valid = 1;
     $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);

@@ -3,19 +3,21 @@
 <form>
 	<fieldset name="updangebot">
 
-		<field name="titel" type="text" label="Titel:" class="inputbox" size="52" maxlength="100" required="true" />
-		
-		<field name="anforderung" type="textarea" label="Anforderungen: " description="Was benötigt man für Voraussetzungen für die Arbeit" 
-		       class="inputbox" rows="4" cols="52" maxlength="255" />
-		       
-		<field name="zeit" type="text" label="Termin/Zeitraum: " description="Innerhalb welcher Zeit soll die Arbeit ausgeführt werden" 
-           class="inputbox" size="52" maxlength="255" />
-           
-    <field name="aufwand" type="text" label="Buchbarer Aufwand: " description="Wieviel Stunden können verbucht werden" 
-           class="inputbox" size="52" maxlength="255" />
+		<field name="titel" type="text" label="Titel:" class="inputbox" size="110" maxlength="100" required="true" />
 		
 		<!-- Filter funktioniert mit Joomla 2.5 noch nicht -> siehe daher ZeitbankModelUpdangebot -->
-    <field name="beschreibung" type="editor" label="Beschreibung" height="200" hide="article,pagebreak,readmore,image" 
+		<field name="anforderung" type="editor" label="Anforderungen: " height="200" width="700" hide="article,pagebreak,readmore,image" 
+           description="Was benötigt man für Voraussetzungen für die Arbeit"
+           filter="JComponentHelper::filterText" />
+		       
+		<field name="zeit" type="text" label="Termin/Zeitraum: " description="Innerhalb welcher Zeit soll die Arbeit ausgeführt werden" 
+           class="inputbox" size="110" maxlength="255" />
+           
+    <field name="aufwand" type="text" label="Buchbarer Aufwand: " description="Innerhalb welcher Zeit soll die Arbeit ausgeführt werden" 
+           class="inputbox" size="110" maxlength="255" />
+		
+		<!-- Filter funktioniert mit Joomla 2.5 noch nicht -> siehe daher ZeitbankModelUpdangebot -->
+    <field name="beschreibung" type="editor" label="Beschreibung" height="200" width="700" hide="article,pagebreak,readmore,image" 
            filter="JComponentHelper::filterText" required="true"/>
 		
 		<field name="art" type="list" default="1" label="Art des Angebotes: " description="Bitte auswählen" class="inputbox">

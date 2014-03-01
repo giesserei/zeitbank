@@ -60,10 +60,10 @@ class ZeitbankFrontendHelper {
   /**
    * Kürzt den übergebenen Text, wenn erforderlich.
    */
-  public static function cropText($text, $maxLength) {
+  public static function cropText($text, $maxLength, $addDots = true) {
     $result = $text;
     if(strlen($text) > $maxLength) {
-      $result = substr($text, 0, $maxLength)."...";
+      $result = substr($text, 0, $maxLength).($addDots ? "..." : "");
     }
     return $result;
   }

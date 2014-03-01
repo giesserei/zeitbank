@@ -26,5 +26,5 @@ $this->renderTableArbeiten();
 
 $this->renderTableTauschen();
 
-echo '<div style="margin-top:50px;color:red">Version: 0.81 - 2014-03-01</div>';
+echo '<div style="margin-top:50px;color:red">Version: 0.82 - 2014-03-01</div>';
 

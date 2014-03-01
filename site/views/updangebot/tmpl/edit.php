@@ -48,6 +48,10 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
 			  </td>
 			</tr>		
 			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('beschreibung'); ?></td>
+			  <td class="value"><?php echo $this->form->getInput('beschreibung'); ?></td>
+			</tr>	
+			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('anforderung'); ?><span class="star">* </span> </td>
 			  <td class="value"><?php echo $this->form->getInput('anforderung'); ?></td>
 			</tr>	
@@ -93,11 +97,9 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
 			  </td>
 			</tr>
 			<tr>
-        <td class="lb" colspan="2"><span class="star">* </span> Eingabe ist obligatorisch</td>
+        <td class="lb" colspan="2" style="font-weight:normal"><span class="star">* </span> Eingabe ist obligatorisch</td>
       </tr>
     </table>	
-    
-    <?php echo $this->form->getInput('beschreibung'); ?>
 			
 		<fieldset>
 			<input type="submit" value="Speichern" />
