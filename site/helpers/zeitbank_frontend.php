@@ -36,6 +36,28 @@ class ZeitbankFrontendHelper {
   }
   
   /**
+   * Prüft ob der Benutzer angemeldet ist und ob der Benutzer Zugriff auf die Reports der Zeitbank hat.
+   * 
+   * TODO: Verwendung der ACL statt fester User-IDs.
+   */
+  public static function checkAuthReports() {
+    $user = JFactory::getUser();
+    if ($user->guest) {
+      JFactory::getApplication()->enqueueMessage('Die Registrierung ist abgelaufen. Bitte neu anmelden.');
+      return false;
+    } 
+    else {
+      // Zugriff für Steffen
+      if ($user->id != 134) {
+        JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt.');
+        return false;
+      }
+      
+      return true;
+    }
+  }
+  
+  /**
    * Liefert true, wenn der Benutzer Ämtli-Administrator ist.
    */
   public static function isAemtliAdmin() {
