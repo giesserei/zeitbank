@@ -82,7 +82,9 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
               ZeitbankFrontendHelper::getMySqlDateInFuture(7) => '7 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(7).')', 
               ZeitbankFrontendHelper::getMySqlDateInFuture(14) => '14 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(14).')',
               ZeitbankFrontendHelper::getMySqlDateInFuture(21) => '21 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(21).')',
-              ZeitbankFrontendHelper::getMySqlDateInFuture(28) => '28 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(28).')');
+              ZeitbankFrontendHelper::getMySqlDateInFuture(28) => '28 Tagen ('.ZeitbankFrontendHelper::getViewDateInFuture(28).')',
+              ZeitbankFrontendHelper::getMySqlDateInFuture(60) => '2 Monate ('.ZeitbankFrontendHelper::getViewDateInFuture(60).')',
+              ZeitbankFrontendHelper::getMySqlDateInFuture(90) => '2 Monate ('.ZeitbankFrontendHelper::getViewDateInFuture(90).')');
           $options = array();
     
           foreach($ablauf as $key=>$value) {

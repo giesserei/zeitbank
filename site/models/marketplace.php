@@ -91,8 +91,8 @@ class ZeitbankModelMarketPlace extends JModel {
     $this->db->setQuery($query);
     $details->item = $this->db->loadObject();
     
-    $query = "SELECT m.*, u.email 
-              FROM #__mgh_mitglied m JOIN #__users u ON m.userid = u.id
+    $query = "SELECT m.*
+              FROM #__mgh_aktiv_mitglied m
               WHERE m.userid = " . $details->item->userid;
     $this->db->setQuery($query);
     $details->ansprechpartner = $this->db->loadObject();
@@ -126,15 +126,17 @@ class ZeitbankModelMarketPlace extends JModel {
     $overview->meineAngeboteTotal = $this->db->loadResult();
   }
   
+  /**
+   * Es werden nur die Einträge von aktiven Mitgliedern berücksichtigt.
+   */
   private function addAngeboteArbeiten(&$overview, $limit) {
-    $query = "SELECT m.*, mgl.vorname, mgl.nachname, u.email,
+    $query = "SELECT m.*, mgl.vorname, mgl.nachname, mgl.email,
                 (SELECT CONCAT(k.bezeichnung, ' / ', a.kurztext) 
                    FROM #__mgh_zb_kategorie k 
                      JOIN #__mgh_zb_arbeit a ON k.id = a.kategorie_id
                    WHERE a.id = m.arbeit_id) AS konto
               FROM #__mgh_zb_market_place m
-                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
-                JOIN #__users u ON m.userid = u.id
+                JOIN #__mgh_aktiv_mitglied mgl ON m.userid = mgl.userid
 		    	    WHERE m.art = 1 
                 AND m.ablauf > NOW() 
                 AND m.status = 1 
@@ -145,8 +147,7 @@ class ZeitbankModelMarketPlace extends JModel {
     
     $query = "SELECT count(*)
               FROM #__mgh_zb_market_place as m
-                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
-                JOIN #__users u ON m.userid = u.id
+                JOIN #__mgh_aktiv_mitglied mgl ON m.userid = mgl.userid
 		    	    WHERE m.art = 1
                 AND m.ablauf > NOW()
                 AND m.status = 1";
@@ -154,11 +155,13 @@ class ZeitbankModelMarketPlace extends JModel {
     $overview->angeboteArbeitenTotal = $this->db->loadResult();
   }
   
+  /**
+   * Es werden nur die Einträge von aktiven Mitgliedern berücksichtigt.
+   */
   private function addAngeboteTauschen(&$overview, $limit) {
-    $query = "SELECT m.*, mgl.vorname, mgl.nachname, u.email
+    $query = "SELECT m.*, mgl.vorname, mgl.nachname, mgl.email
               FROM #__mgh_zb_market_place as m
-                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
-                JOIN #__users u ON m.userid = u.id
+                JOIN #__mgh_aktiv_mitglied mgl ON m.userid = mgl.userid
 		    	    WHERE m.art = 2
                 AND m.ablauf > NOW()
                 AND m.status = 1 
@@ -169,8 +172,7 @@ class ZeitbankModelMarketPlace extends JModel {
     
     $query = "SELECT count(*)
               FROM #__mgh_zb_market_place as m
-                JOIN #__mgh_mitglied mgl ON m.userid = mgl.userid
-                JOIN #__users u ON m.userid = u.id
+                JOIN #__mgh_aktiv_mitglied mgl ON m.userid = mgl.userid
 		    	    WHERE m.art = 2
                 AND m.ablauf > NOW()
                 AND m.status = 1";
