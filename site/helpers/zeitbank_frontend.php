@@ -22,13 +22,11 @@ class ZeitbankFrontendHelper {
     } 
     else {
       $db = JFactory::getDBO();
-      $query = "SELECT mgl.id FROM #__mgh_mitglied AS mgl 
-                WHERE mgl.typ IN (1,2) 
-                  AND (mgl.austritt = '0000-00-00' OR mgl.austritt > NOW()) 
-                  AND mgl.userid=" . $user->id;
+      $query = "SELECT count(*) FROM #__mgh_aktiv_mitglied AS mgl 
+                WHERE mgl.userid=" . $user->id;
       $db->setQuery($query);
-      $row = $db->loadObject();
-      if ($db->getAffectedRows() == 0) {
+      $count = $db->loadResult();
+      if ($count == 0) {
         JFactory::getApplication()->enqueueMessage('Zutritt nur für Bewohner und Gewerbe der Giesserei.');
         return false;
       }
