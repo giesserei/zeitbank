@@ -13,6 +13,8 @@ require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check
 require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'arbeit_func.php');
 require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'kategorie_func.php');
 
+JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+
 // Lokales CSS laden
 $doc = JFactory::getDocument();
 $base = JURI::base(true);
@@ -52,7 +54,7 @@ if(check_user()):
 		echo "<p>Du kannst:";
 		echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Manager&Itemid=".MENUITEM."\">Deine Ämtli-Verantwortlichen verwalten</a></li>";
 		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Budget&Itemid=".MENUITEM."\">Dein Kategorienbudget verwalten</a></li>";
-		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Amt_Zuweisen&Itemid=".MENUITEM."\">Ämtli-Zuteilung anpassen</a></li></ul></p><br /><br />";
+		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Amt_Zuweisen&Itemid=".MENUITEM."\">Ämtli-Zuteilung anpassen</a></li></ul></p><br />";
 	endif;
 		
 	// Ämtli-Administrator?
@@ -61,8 +63,15 @@ if(check_user()):
 		echo "Du kannst:";
 		echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Amt_Manager&Itemid=".MENUITEM."\">Ämtli verwalten</a></li>";
 		echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=".MENUITEM."\">Anträge quittieren</a> (offene Anträge: ".get_anzahl_offen().")</li>";
-		echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=".MENUITEM."\">Quittierte Buchungen anzeigen</a></li></ul><br /><br />";
+		echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=".MENUITEM."\">Quittierte Buchungen anzeigen</a></li></ul><br />";
 	endif;
+	
+	// Berechtigung für Reports?
+	if (ZeitbankFrontendHelper::hasReportPermission()) {
+    echo "<h1>Zeitbank: Du hast Zugriff auf die Zeitbank-Reports</h1>";
+    echo "Du kannst:";
+    echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Reports erstellen</a></li></ul><br />';
+  }
 	
 	/* Liste der persönlichen Zeitbankauszüge ausgeben */
 	echo "<h1>Zeitbank: Ämtli-Liste</h1>";

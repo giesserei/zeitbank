@@ -36,9 +36,7 @@ class ZeitbankFrontendHelper {
   }
   
   /**
-   * Prüft ob der Benutzer angemeldet ist und ob der Benutzer Zugriff auf die Reports der Zeitbank hat.
-   * 
-   * TODO: Verwendung der ACL statt fester User-IDs.
+   * Prüft ob der Benutzer angemeldet ist und ob der Benutzer Zugriff auf die Reports der Zeitbank hat. 
    */
   public static function checkAuthReports() {
     $user = JFactory::getUser();
@@ -48,13 +46,23 @@ class ZeitbankFrontendHelper {
     } 
     else {
       // Zugriff für Steffen
-      if ($user->id != 134) {
+      if (!ZeitbankFrontendHelper::hasReportPermission()) {
         JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt.');
         return false;
       }
       
       return true;
     }
+  }
+  
+  /**
+   * Liefert true, wenn der User die Berechtigung besitzt, die Reports der Zeitbank anzusehen.
+   * 
+   * TODO: Verwendung der ACL statt fester User-IDs.
+   */
+  public static function hasReportPermission() {
+    $user = JFactory::getUser();
+    return $user->id == 134;
   }
   
   /**
