@@ -18,7 +18,7 @@ $doc->addStyleSheet($base.'/components/com_zeitbank/template/giesserei_default.c
 <?php
 
 if(check_user()):
-	echo "<h2>Zeitbank: Ämtliliste</h2>";
+	echo "<h2>Zeitbank: Ämtli-Liste</h2>";
 	echo "<p>Du erhältst hier eine Übersicht, wer für welches Ämtli zuständig ist und worum es geht.";
 	echo get_arbeitsliste_enduser();
 else:
