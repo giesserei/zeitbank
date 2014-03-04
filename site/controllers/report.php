@@ -1,12 +1,12 @@
 <?php
 defined('_JEXEC') or die;
 
-jimport ('joomla.application.component.controller');
+jimport ('joomla.application.component.controllerform');
 
 /**
  * Controller für die Reportseite.
  *
  * @author Steffen Förster
 */
-class ZeitbankControllerMarketPlace extends JController {
+class ZeitbankControllerMarketPlace extends JControllerForm {
 }

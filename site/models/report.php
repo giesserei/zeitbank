@@ -21,8 +21,7 @@ class ZeitbankModelReport extends JModel {
   
   /**
    * Erstellt eine CSV-Datei mit den aktuellen Kontosaldo der Bewohner und des Gewerbes
-   * und schreibt diese in den Response. Die Bewohner und das Gewerbe müssen noch aktives 
-   * Mitglied sein (nicht ausgezogen).
+   * und schreibt diese in den Response. 
    */
   public function exportKontosaldoToCSV() {
     $filename = 'kontosaldo.csv';
@@ -41,6 +40,85 @@ class ZeitbankModelReport extends JModel {
     }
   }
   
+  /**
+   * Liefert die Summe der verbuchten Arbeitstunden ohne den Stundentausch. 
+   */
+  public function getSummeArbeitStunden() {
+    $db = $this->getDBO();
+    
+    $query = "
+      SELECT ROUND((sum(j.minuten) / 60), 0) stunden_verbucht
+      FROM #__mgh_zb_journal_quittiert_laufend j
+      WHERE arbeit_id != 1";
+    $db->setQuery($query);
+    return $db->loadResult();
+  }
+  
+  /**
+   * Liefert die Summe der nicht quittierten Arbeitstunden ohne den Stundentausch.
+   */
+  public function getSummeNichtQuittierteStunden() {
+    $db = $this->getDBO();
+  
+    $query = "
+      SELECT ROUND((sum(j.minuten) / 60), 0) stunden_unquittiert
+      FROM joomghjos_mgh_zb_journal j
+      WHERE arbeit_id != 1
+        AND datum_quittung = '0000-00-00'
+        AND admin_del = 0
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')";
+    $db->setQuery($query);
+    return $db->loadResult();
+  }
+  
+  /**
+   * Liefert die Summen der verbuchten Stunden je Arbeitskategorie.
+   */
+  public function getSummeStundenNachKategorie() {
+    $db = $this->getDBO();
+  
+    $query = "
+      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.bezeichnung
+      FROM #__mgh_zb_journal_quittiert_laufend j 
+        JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
+        JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
+      GROUP BY k.bezeichnung
+      ORDER BY k.bezeichnung";
+    $db->setQuery($query);
+    return $db->loadObjectList();
+  }
+  
+  /**
+   * Liefert die maximale und die durchschnittliche Dauer zwischen einer Buchung und der Quittierung.
+   */
+  public function getQuittungDauer() {
+    $db = $this->getDBO();
+    
+    $query = "
+      SELECT MAX(DATEDIFF(datum_quittung, datum_antrag)) max_dauer, ROUND(AVG(DATEDIFF(datum_quittung, datum_antrag)), 0) avg_dauer
+      FROM #__mgh_zb_journal_quittiert_laufend j
+      WHERE arbeit_id != 1";
+    $db->setQuery($query);
+    return $db->loadObject();
+  }
+  
+  /**
+   * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen.
+   */
+  public function getWartezeitUnquittierteBuchungen() {
+    $db = $this->getDBO();
+  
+    $query = "
+      SELECT ROUND(AVG(DATEDIFF(NOW(), datum_antrag)), 0) 
+      FROM joomghjos_mgh_zb_journal j
+      WHERE arbeit_id != 1
+        AND datum_quittung = '0000-00-00'
+        AND admin_del = 0
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')";
+    $db->setQuery($query);
+    return $db->loadResult();
+  }
+    
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------
@@ -50,36 +128,26 @@ class ZeitbankModelReport extends JModel {
    */
   private function createKontosaldoCSVFile($filepath) {
     $db = $this->getDBO();
-    $csv_output = 'Nachname;Vorname;Einzug;Dispensionsgrad;Saldo;User-ID';
+    $csv_output = 'Nachname;Vorname;Einzug;Austritt;Dispensionsgrad;Saldo;User-ID';
     $csv_output .= "\n";
   
-    $laufendesJahr = date('Y');
     $query = "
-      SELECT m.vorname, m.nachname, m.einzug, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid  
+      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid  
       FROM (
         SELECT haben-soll saldo, userid
         FROM (
           SELECT ROUND(COALESCE((
-            SELECT SUM(j1.minuten) / 60 FROM #__mgh_zb_journal j1
+            SELECT SUM(j1.minuten) / 60 FROM #__mgh_zb_journal_quittiert_laufend j1
             WHERE j1.belastung_userid = h.gutschrift_userid
-              AND j1.datum_quittung != '0000-00-00'
-              AND j1.admin_del = 0
-              AND datum_antrag BETWEEN '".$laufendesJahr."-01-01' AND '".$laufendesJahr."-12-31'
           ),0), 2) soll, h.haben, h.gutschrift_userid AS userid
           FROM (
             SELECT ROUND((sum(j2.minuten) / 60), 2) haben, j2.gutschrift_userid
-            FROM #__mgh_zb_journal j2   
-            WHERE
-            j2.datum_quittung != '0000-00-00'
-            AND j2.admin_del = 0
-            AND datum_antrag BETWEEN '".$laufendesJahr."-01-01' AND '".$laufendesJahr."-12-31'
+            FROM #__mgh_zb_journal_quittiert_laufend j2   
             GROUP BY j2.gutschrift_userid
           ) h
         ) s
       ) r RIGHT OUTER JOIN #__mgh_mitglied m ON r.userid = m.userid
-      WHERE 
-        m.typ IN (1,2)
-        AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
+      WHERE m.typ IN (1,2)
       ORDER BY m.nachname     
     ";
     

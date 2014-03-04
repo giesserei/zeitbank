@@ -27,6 +27,46 @@ class ZeitbankViewReport extends JView {
     parent::display($tpl);
   }
   
+  /**
+   * Liefert die Summe der verbuchten Arbeitstunden ohne den Stundentausch.
+   */
+  public function getSummeArbeitStunden() {
+    $model = $this->getModel();
+    return $model->getSummeArbeitStunden();
+  }
+  
+  /**
+   * Liefert die Summe der nicht quittierten Arbeitstunden ohne den Stundentausch.
+   */
+  public function getSummeNichtQuittierteStunden() {
+    $model = $this->getModel();
+    return $model->getSummeNichtQuittierteStunden();
+  }
+  
+  /**
+   * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen.
+   */
+  public function getWartezeitUnquittierteBuchungen() {
+    $model = $this->getModel();
+    return $model->getWartezeitUnquittierteBuchungen();
+  }
+  
+  /**
+   * Liefert die Summen der verbuchten Stunden je Arbeitskategorie.
+   */
+  protected function getSummeStundenNachKategorie() {
+    $model = $this->getModel();
+    return $model->getSummeStundenNachKategorie();
+  }
+  
+  /**
+   * Liefert die maximale und die durchschnittliche Dauer zwischen einer Buchung und der Quittierung.
+   */
+  public function getQuittungDauer() {
+    $model = $this->getModel();
+    return $model->getQuittungDauer();
+  }
+  
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------
