@@ -7,14 +7,16 @@ echo "<div style='margin-bottom:20px;color:#7BB72B;font-size:14pt'><strong>".$th
 echo "<div style='margin-bottom:5px'><strong>Beschreibung:</strong></div>";
 echo "<div style='margin-bottom:10px'>".$this->details->item->beschreibung."&nbsp;</div>";
 
-echo "<div style='margin-bottom:5px'><strong>Anforderung:</strong></div>";
-echo "<div style='margin-bottom:10px'>".$this->details->item->anforderung."&nbsp;</div>";
-
-echo "<div style='margin-bottom:5px'><strong>Zeit:</strong></div>";
-echo "<div style='margin-bottom:10px'>".$this->details->item->zeit."&nbsp;</div>";
-
-echo "<div style='margin-bottom:5px'><strong>Buchbarer Aufwand:</strong></div>";
-echo "<div style='margin-bottom:20px'>".$this->details->item->aufwand."&nbsp;</div>";
+if ($this->details->item->art == 1) {
+  echo "<div style='margin-bottom:5px'><strong>Anforderung:</strong></div>";
+  echo "<div style='margin-bottom:10px'>".$this->details->item->anforderung."&nbsp;</div>";
+  
+  echo "<div style='margin-bottom:5px'><strong>Zeit:</strong></div>";
+  echo "<div style='margin-bottom:10px'>".$this->details->item->zeit."&nbsp;</div>";
+  
+  echo "<div style='margin-bottom:5px'><strong>Buchbarer Aufwand:</strong></div>";
+  echo "<div style='margin-bottom:20px'>".$this->details->item->aufwand."&nbsp;</div>";
+}
 
 echo "<table class='market_details'>";
 

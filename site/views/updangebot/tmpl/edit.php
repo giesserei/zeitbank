@@ -66,6 +66,10 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
 			<?php } ?>
 			<?php if($this->isTauschView()) { ?>
 			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('beschreibung'); ?></td>
+			  <td class="value"><?php echo $this->form->getInput('beschreibung'); ?></td>
+			</tr>	
+			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('richtung'); ?></td>
 			  <td class="value"><?php echo $this->form->getInput('richtung'); ?></td>
 			</tr>
