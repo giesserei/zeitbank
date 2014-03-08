@@ -11,6 +11,44 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 class ZeitbankFrontendHelper {
 
   /**
+   * Folgende Bedingungen müssen erfüllt sein, damit der Benutzer Zugriff auf die Zeitbank hat:
+   * 
+   * - Der Benutzer muss angemeldet sein 
+   * - Der Benutzer muss ein Bewohner oder ein Gewerbe der Giesserei sein
+   * - Der Zugriff auf die Zeitbank darf nicht gesperrt sein
+   * 
+   * Ist eine der Bedingungen nicht erfüllt, wird eine Systemmeldung hinzugefügt und false geliefert
+   */
+  public static function checkAuthZeitbank() {
+    $user = JFactory::getUser();
+    if ($user->guest) {
+      JFactory::getApplication()->enqueueMessage('Die Registrierung ist abgelaufen. Bitte neu anmelden.');
+      return false;
+    }
+    
+    $db = JFactory::getDBO();
+    $query = "SELECT count(*) FROM #__mgh_aktiv_mitglied AS mgl
+              WHERE mgl.userid=" . $user->id;
+    $db->setQuery($query);
+    $count = $db->loadResult();
+    if ($count == 0) {
+      JFactory::getApplication()->enqueueMessage('Zutritt nur für Bewohner und Gewerbe der Giesserei.');
+      return false;
+    }
+    
+    $query = "SELECT count(*) FROM #__mgh_zb_gesperrte_user 
+              WHERE userid=".$user->id;
+    $db->setQuery($query);
+    $count = $db->loadResult();
+    if ($count > 0) {
+      JFactory::getApplication()->enqueueMessage('Der Zugriff wurde gesperrt.');
+      return false;
+    }
+    
+    return true;
+  }
+  
+  /**
    * Prüft ob der Benutzer angemeldet ist und ob der Benutzer ein Bewohner oder ein Gewerbe der Giesserei ist.
    * Wenn nicht, wird eine Systemmeldung hinzugefügt und false geliefert.
    */

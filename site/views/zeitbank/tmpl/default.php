@@ -78,8 +78,10 @@ if(check_user()):
 	echo "<ul><li><a href=\"/index.php?option=com_zeitbank&Itemid=".MENUITEM."&view=arbeitsliste\">Liste mit allen Ämtli und Zuständigkeiten</a></li></ul><br /><br />";
 	
 	/* Liste der persönlichen Zeitbankauszüge ausgeben */
+	/*
   echo "<h1><a href=\"index2.php?option=com_zeitbank&Itemid=".MENUITEM."&view=zeitbank\"	target=\"_blank\">
 			<img src=\"/images/M_images/printButton.png\" style=\"float: right;\"></a>Zeitbank: Dein Konto</h1>";
+	*/
 
 ?>
 
@@ -136,10 +138,16 @@ if(check_user()):
 			echo "Keine offenen Anträge";
 		endif;
 		
-		echo "<br /><input type=\"button\" value=\"Neuer Antrag\" onclick=\"window.location.href='/index.php?option=com_chronoforms&chronoform=Zeitbank_Buchung&Itemid=".MENUITEM."'\" />";
+		
+		echo '<br />
+          <fieldset>
+            <input type="button" value="Neuer Antrag" onclick="window.location.href=\'/index.php?option=com_chronoforms&chronoform=Zeitbank_Buchung&Itemid='.MENUITEM.'\'" />
+		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" />
+		      </fieldset>';
 
 		
 		// Alle verbuchten Posten aus dem Journal
+		// TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
 		echo "<br /><br /><br /><h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4>";
 		
 		if(count($this->journal) > 0 ):		

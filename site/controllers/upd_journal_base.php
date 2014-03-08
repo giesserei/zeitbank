@@ -7,11 +7,11 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 jimport('joomla.application.component.controllerform');
 
 /**
- * Basis-Klasse für die Controller zum Editieren eines Angebots im Marktplatz.
+ * Basis-Klasse für die Controller zum Editieren eines Journaleintrags der Zeitbank.
  *
  * @author Steffen Förster
  */
-abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
+abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
   
   /**
    * Führt nach ein paar Vorarbeiten einen Redirect auf die View durch, welche das Formular anzeigt.
@@ -19,22 +19,19 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
   public function edit() {
     $app = JFactory::getApplication();
     
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+    if (!ZeitbankFrontendHelper::checkAuthZeitbank()) {
       return false;
     }
     
     // Daten in der Session löschen -> alte Daten
-    $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
-    $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, null);
+    $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, null);
     
     $id = $this->getId();
-    if ($id == 0) {
-      $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, $this->getArt());
-    }
     
-    if (!$this->isEditAllowed($id)) {
-      return false;
-    }
+    // TODO Bisher keine Bearbeitung von Journal-Einträgen durch den Controller -> Prüfung daher noch nicht nötig
+    //if (!$this->isEditAllowed($id)) {
+    //  return false;
+    //}
     
     $this->redirectEditView($id);
     
@@ -45,7 +42,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    * Speichert die Formulardaten in der Datenbank.
    */
   public function save() {
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+    if (!ZeitbankFrontendHelper::checkAuthZeitbank()) {
       return false;
     }
     
@@ -58,9 +55,10 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
     $id = $formData['id'];
     
     // Prüfen, ob der User das Angebot bearbeiten darf
-    if (!$this->isEditAllowed($id)) {
-      return false;
-    }
+    // TODO Bisher keine Bearbeitung von Journal-Einträgen durch den Controller -> Prüfung daher noch nicht nötig
+    //if (!$this->isEditAllowed($id)) {
+    //  return false;
+    //}
 
     // Validierung -> Validierungsmeldungen werden direkt ausgegeben
     $validateResult = $this->validateData($formData, $id);
@@ -275,6 +273,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
       JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.','warning');
       return false;
     }
+
     return true;
   }
   

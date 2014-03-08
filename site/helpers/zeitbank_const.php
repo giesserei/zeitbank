@@ -22,5 +22,10 @@ class ZeitbankConst {
    * Unter diesem Key wird die Menü-Id der Zeitbank gespeichert.
    */
   const SESSION_KEY_ZEITBANK_MENU_ID = 'com_zeitbank.market.place.menuid';
+  
+  /**
+   * Unter diesem Key werden die Formulardaten der Zeitbank gespeichert werden, wenn eine Validierung fehlschlägt.
+   */
+  const SESSION_KEY_ZEITBANK_DATA = 'com_zeitbank.data';
 
 }

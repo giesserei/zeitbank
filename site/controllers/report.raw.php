@@ -7,7 +7,7 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 jimport('joomla.application.component.controller');
 
 /**
- * Basis-Klasse für die Controller zum Editieren eines Angebots im Marktplatz.
+ * Controller für den Download von Reports.
  *
  * @author Steffen Förster
 */
@@ -20,9 +20,6 @@ class ZeitbankControllerReport extends JController {
     if (!ZeitbankFrontendHelper::checkAuthReports()) {
       return false;
     }
-    
-    //$document = JFactory::getDocument();
-    //$document->setType('raw');
     
     $model = $this->getModel('report');
     $model->exportKontosaldoToCSV();
