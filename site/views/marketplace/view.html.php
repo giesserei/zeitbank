@@ -96,11 +96,15 @@ class ZeitbankViewMarketPlace extends JView {
     
       foreach($this->overview->meineAngebote as $angebot) {
         $style = $i % 2 == 0 ? "even" : "odd";
+        $now = new DateTime('now');
+        $ablauf = new DateTime($angebot->ablauf);
+        $styleAblauf = ($now < $ablauf ? '' : 'style="color:red"');
+        
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
             <td>'.($angebot->art == 1 ? "Arbeitsangebot" : "Tauschen").'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
-				    <td>'.JHTML::date($angebot->ablauf,"d.m.Y").'</td>
+				    <td '.$styleAblauf.'>'.JHTML::date($angebot->ablauf,"d.m.Y").'</td>
 				    <td>'.($angebot->status == 1 ? "aktiv" : "inaktiv").'</td>
 				    <td><input type="button" value="Bearbeiten" 
 				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id='.$angebot->id.'\'" />

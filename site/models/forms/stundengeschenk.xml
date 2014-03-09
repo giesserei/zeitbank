@@ -9,7 +9,7 @@
     
     <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
 
-		<field name="kommentar" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="40" />
+		<field name="kommentar" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45" />
 
 	</fieldset>
 </form>
