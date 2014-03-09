@@ -6,7 +6,7 @@ jimport('joomla.application.component.model');
 class ZeitbankModelBuchung extends JModel {
     function getBuchung($token) {
         $db =& JFactory::getDBO();
-        $query = "SELECT journal.id as id,minuten,busers.name as bel_name,gusers.name as gut_name,arbeit.kurztext,datum_antrag,datum_quittung
+        $query = "SELECT journal.id as id,minuten,busers.name as bel_name,gusers.name as gut_name,arbeit.kurztext,datum_antrag,datum_quittung,journal.arbeit_id
             FROM #__mgh_zb_arbeit as arbeit,#__mgh_zb_journal as journal
             LEFT JOIN #__users as busers ON journal.belastung_userid = busers.id
             LEFT JOIN #__users as gusers ON journal.gutschrift_userid = gusers.id

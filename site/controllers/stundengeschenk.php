@@ -37,19 +37,30 @@ class ZeitbankControllerStundenGeschenk extends ZeitbankControllerUpdJournalBase
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
-    $dataAllowed['id'] = $data['id'];
-    $dataAllowed['titel'] = $data['titel'];
-    $dataAllowed['beschreibung'] = $data['beschreibung'];
-    $dataAllowed['art'] = $data['art'];
-    $dataAllowed['richtung'] = $data['richtung'];
-    $dataAllowed['arbeit_id'] = $data['arbeit_id'];
-    $dataAllowed['status'] = $data['status'];
-    $dataAllowed['ablauf'] = $data['ablauf'];
-    $dataAllowed['zeit'] = $data['zeit'];
-    $dataAllowed['anforderung'] = $data['anforderung'];
-    $dataAllowed['aufwand'] = $data['aufwand'];
+    $dataAllowed['id'] = 0;
+    $dataAllowed['empfaenger_id'] = $data['empfaenger_id'];
+    $dataAllowed['empfaenger'] = $data['empfaenger'];
+    $dataAllowed['minuten'] = $data['minuten'];
+    $dataAllowed['kommentar'] = $data['kommentar'];
     
     return $dataAllowed;
+  }
+  
+  /**
+   * Buchung vervollständigen.
+   */
+  protected function completeBuchung($data) {
+    $buchung = array();
+    $buchung['minuten'] = intval($data['minuten']);
+    $buchung['belastung_userid'] = JFactory::getUser()->id;
+    $buchung['gutschrift_userid'] = $data['empfaenger_id'];
+    $buchung['datum_antrag'] = date('Y-m-d');
+    $buchung['datum_quittung'] = date('Y-m-d');
+    $buchung['admin_del'] = 0;
+    $buchung['arbeit_id'] = ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK;
+    $buchung['cf_uid'] = md5(uniqid(rand(), true));
+    $buchung['kommentar'] = $data['kommentar'];
+    return $buchung;
   }
   
   /**
@@ -59,7 +70,7 @@ class ZeitbankControllerStundenGeschenk extends ZeitbankControllerUpdJournalBase
     $app = JFactory::getApplication();
     $menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
     $this->setRedirect(
-        JRoute::_('index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid='.$menuId, false)
+        JRoute::_('index.php?option=com_zeitbank&view=zeitbank&Itemid='.$menuId, false)
     );
   }
   

@@ -26,13 +26,12 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     // Daten in der Session löschen -> alte Daten
     $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, null);
     
+    // Menü-Id in der User-Session speichern
+    $jinput = $app->input;
+    $menuId = $jinput->get("Itemid", "0", "INT");
+    $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID, $menuId);
+    
     $id = $this->getId();
-    
-    // TODO Bisher keine Bearbeitung von Journal-Einträgen durch den Controller -> Prüfung daher noch nicht nötig
-    //if (!$this->isEditAllowed($id)) {
-    //  return false;
-    //}
-    
     $this->redirectEditView($id);
     
     return true;
@@ -42,23 +41,17 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
    * Speichert die Formulardaten in der Datenbank.
    */
   public function save() {
+    $app = JFactory::getApplication();
+    
     if (!ZeitbankFrontendHelper::checkAuthZeitbank()) {
       return false;
     }
-    
-    $app = JFactory::getApplication();
     
     // Form-Token prüfen -> Token wird in Template gesetzt
     JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
     
     $formData = $this->getFormData();
     $id = $formData['id'];
-    
-    // Prüfen, ob der User das Angebot bearbeiten darf
-    // TODO Bisher keine Bearbeitung von Journal-Einträgen durch den Controller -> Prüfung daher noch nicht nötig
-    //if (!$this->isEditAllowed($id)) {
-    //  return false;
-    //}
 
     // Validierung -> Validierungsmeldungen werden direkt ausgegeben
     $validateResult = $this->validateData($formData, $id);
@@ -69,34 +62,8 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     // Daten Speichern
     if ($this->processSave($validateResult, $id)) {
       // Daten in der Session löschen
-      $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, null);
-      $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_ENTRY_ART, null);
+      $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, null);
       
-      $this->redirectSuccessView();
-      return true;
-    }
-    
-    return false;
-  }
-  
-  /**
-   * Löscht einen Eintrag.
-   */
-  public function delete() {
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
-      return false;
-    }
-    
-    $id = $this->getId();
-    
-    // Prüfen, ob der User das Angebot löschen darf
-    if (!$this->isEditAllowed($id)) {
-      return false;
-    }
-    
-    // Eintrag löschen
-    $model = $this->getModel();
-    if ($model->delete($id)) {
       $this->redirectSuccessView();
       return true;
     }
@@ -142,9 +109,9 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
   }
   
   /**
-   * Daten vor dem Speichern ggf. in die DB-Darstellung umformatieren.
+   * Buchungsdaten vervollständigen.
    */
-  protected function formatData($data) {
+  protected function completeBuchung($data) {
     return $data;
   }
   
@@ -161,7 +128,7 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     
     $model = $this->getModel();
   
-    $data = $this->formatData($data);
+    $data = $this->completeBuchung($data);
   
     // Fehlermeldung dem Benutzer anzeigen
     if (!$model->save($data, $id)) {
@@ -172,7 +139,7 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
   
       // Daten in der Session speichern
       if ($this->saveDataInSession()) {
-        $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, $data);
+        $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, $data);
       }
   
       // Zurück zum Formular
@@ -189,7 +156,7 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
   // -------------------------------------------------------------------------
   
   /**
-   * Holt die Formulardaten des Profilformulars aus dem JInput.
+   * Holt die Formulardaten aus dem JInput.
    */
   private function getFormData() {
     $app = JFactory::getApplication();
@@ -231,7 +198,7 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     
       // Daten in der Session speichern
       if ($this->saveDataInSession()) {
-        $app->setUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, $data);
+        $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, $data);
       }
     
       // Zurück zum Formular
@@ -249,32 +216,7 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
   private function getId() {
     $app = JFactory::getApplication();
     $input = $app->input;
-    return $input->get("id", "0");
-  }
-  
-  /**
-   * Liefert die Art des Angebots, welches erstellt werden soll.
-   */
-  private function getArt() {
-    $jinput = JFactory::getApplication()->input;
-    return $jinput->get("art", 2);
-  }
-  
-  /**
-   * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
-   */
-  private function isEditAllowed($id) {
-    if ($id == 0) {
-      return true;
-    }
-    
-    $model = $this->getModel();
-    if(!$model->isOwner($id)) {
-      JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.','warning');
-      return false;
-    }
-
-    return true;
+    return $input->get("id", 0, "INT");
   }
   
 }

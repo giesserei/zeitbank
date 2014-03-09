@@ -25,9 +25,10 @@ class ZeitbankControllerStundenGeschenk extends JController {
     $doc->setMimeEncoding('text/plain');
     
     $model = $this->getModel('stundengeschenk');
+    $query = $this->getQuery();
     $empfaenger = $model->getEmpfaengerLike($this->getQuery());
     
-    $json = '{"query":"Unit","suggestions":[';
+    $json = '{"query":"'.$query.'","suggestions":[';
     foreach($empfaenger as $e) {
       $json = $json . '{"value":"'.$e->vorname.' '.$e->nachname.'","data":"'.$e->userid.'"},';
     }
@@ -45,7 +46,7 @@ class ZeitbankControllerStundenGeschenk extends JController {
   private function getQuery() {
     $app = JFactory::getApplication();
     $input = $app->input;
-    return $input->get("query", "");
+    return $input->get("query", "", "STRING");
   }
   
 }

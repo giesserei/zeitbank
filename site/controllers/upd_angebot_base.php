@@ -191,7 +191,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
   // -------------------------------------------------------------------------
   
   /**
-   * Holt die Formulardaten des Profilformulars aus dem JInput.
+   * Holt die Formulardaten aus dem JInput.
    */
   private function getFormData() {
     $app = JFactory::getApplication();

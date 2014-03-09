@@ -2,8 +2,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-//JHtml::_('behavior.keepalive');
-//JHtml::_('behavior.formvalidation');
+// Autocompletion: https://github.com/devbridge/jQuery-Autocomplete
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
@@ -29,8 +28,9 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
   			    	$('#autocomplete').autocomplete({
   	  			        serviceUrl: '/index.php?option=com_zeitbank&task=stundengeschenk.users&format=raw',
   	  			        minChars: 3,
+  	  			        paramName: 'query',
   	  			        onSelect: function (suggestion) {
-  	  			            $('empfaenger_id').value=suggestion.data;
+  	  			            $('#empfaenger_id').val(suggestion.data);
   	  			        }
   	  			    });
   			    }, false);
@@ -53,9 +53,10 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 		<fieldset>
 			<input type="submit" value="Speichern" />
 			<input type="button" value="Abbrechen" 
-			       onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=zeitbank')?>'" />
+			       onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=zeitbank&Itemid='.$this->menuId)?>'" />
 			<?php echo JHtml::_('form.token'); ?>
 			<input type="hidden" value="" name="jform[empfaenger_id]" id="empfaenger_id"/>
+			<input type="hidden" value="0" name="jform[id]" />
 		</fieldset>	
   </form>
 </div>

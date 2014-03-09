@@ -6,6 +6,8 @@ JHTML::_('behavior.modal');
 
 require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check_user.php');
 
+JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+
 $user =& JFactory::getUser();
 $model =& $this->getModel();
 
@@ -17,8 +19,10 @@ $model =& $this->getModel();
 if(check_user()):
 		echo "<h1>Zeitbank: Buchungsdetail</h1>";
 		echo "<ul><li>Beleg-Nummer: <strong>".$this->Buchung->id."</strong> vom <strong>".JHTML::date($this->Buchung->datum_antrag,'d.m.Y')."</strong></li>";
-		echo "<li>Antrag von: <strong>".$this->Buchung->gut_name."</strong></li>";
-		echo "<li>Quittiert von: <strong>".$this->Buchung->bel_name."</strong> am <strong>".JHTML::date($this->Buchung->datum_quittung,'d.m.Y')."</strong></li>";
+		if ($this->Buchung->arbeit_id != ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK) {
+		  echo "<li>Antrag von: <strong>".$this->Buchung->gut_name."</strong></li>";
+		  echo "<li>Quittiert von: <strong>".$this->Buchung->bel_name."</strong> am <strong>".JHTML::date($this->Buchung->datum_quittung,'d.m.Y')."</strong></li>";
+		}
 		echo "<li>Arbeitsgattung: <strong>".$this->Buchung->kurztext."</strong></li>";
 		echo "<li>Zeitbetrag: <strong>".$this->Buchung->minuten." Minuten</strong></li>";
 		$akom = $model->getBelastungskommentar( $this->Buchung->id );

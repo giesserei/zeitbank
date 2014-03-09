@@ -14,6 +14,7 @@ require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'arbei
 require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'kategorie_func.php');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 
 // Lokales CSS laden
 $doc = JFactory::getDocument();
@@ -35,6 +36,19 @@ function shortenComment($ktext) {
 	return($ktext);
 } // shortenComment
 
+/**
+ * Buchungslink bei einem Geschenk nur anzeigen, wenn es die eigene Buchung ist.
+ */
+function getBuchungsLink($isGeschenk, $jn, $user) {
+  $belastung = $jn->belastung_userid == $user->id;
+  
+  if ($isGeschenk && !$belastung) {
+    return JHTML::date($jn->datum_antrag,'d.m.Y');
+  }
+  else {
+    return '<a href="index.php?option=com_zeitbank&view=buchung&Itemid='.MENUITEM.'&token='.$jn->cf_uid.'">'.JHTML::date($jn->datum_antrag,'d.m.Y').'</a>';
+  }
+}
 
 ?>
 
@@ -164,42 +178,62 @@ if(check_user()):
 			echo "<p>Dein Jahressaldo ".date('Y').": <strong>".$model->showTime($saldo)."h</strong>"; 
 			echo "</p>";
 			echo "<table class=\"zeitbank\" >";
-			echo "<tr style=\"background-color: #7BB72B; color:white;\">
-				<th style=\"text-align:right\">Datum</th><th>bekommen von</th><th>übergeben an</th><th>Arbeitsgattung</th><th>Zeit<br />[min]</th><th>Saldo<br />[h:m]</th><th>B-Nr.</th></tr>";
+			echo '<tr style="background-color: #7BB72B; color:white;">
+				      <th>Datum</th>
+		          <th>bekommen von</th>
+		          <th>übergeben an</th>
+		          <th>Arbeitsgattung</th>
+		          <th style="text-align:right">Zeit<br />[min]</th>
+		          <th style="text-align:right">Saldo<br />[h:m]</th>
+		          <th style="text-align:right">B-Nr.</th>
+		        </tr>';
 			
 			$k = 0;	// Zebra start
 			$zaehler = 0;
 			
-			foreach($this->journal as $jn):
+			foreach($this->journal as $jn) {
 				if($zaehler < $max_journal_buchungen):
 					$zaehler++;
-					if($jn->belastung_userid != $user->id):
-						$geber_name = $model->getUserName($jn->belastung_userid);
-						$empf_name = "";
-						$op_sign = "+";
-					else:
-						$geber_name = "";
-						$empf_name = $model->getUserName($jn->gutschrift_userid);
-						$op_sign = "-";
-					endif;
+				  // Der Schenker bleibt anonym & die Buchungsdetails können nicht betrachtet werden
+				  $isGeschenk = $jn->arbeit_id == ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK;  
+				
+				  $op_sign = ($jn->belastung_userid == $user->id ? "-" : "+");
+          $geber_name = "";
+          $empf_name = "";
+          
+          if ($isGeschenk) {
+            if ($jn->belastung_userid == $user->id) {
+              $empf_name = $model->getUserName($jn->gutschrift_userid);
+            }
+          }
+					else {
+  					if ($jn->belastung_userid != $user->id) {
+  						$geber_name = $model->getUserName($jn->belastung_userid);
+  				  }
+  					else {
+  						$empf_name = $model->getUserName($jn->gutschrift_userid);
+  					}
+          }
 	
 					$style = $k ? "e9e2c8" : "EEE"; // Zebramuster				
-					echo "<tr style=\"vertical-align:top; background-color: #".$style."\">
-						<td><a href=\"index.php?option=com_zeitbank&view=buchung&Itemid=".MENUITEM."&token=".$jn->cf_uid."\">".JHTML::date($jn->datum_antrag,'d.m.Y')."</a></td><td>".$geber_name."</td><td>".$empf_name."</td><td>".
-						$jn->kurztext."</td><td style=\"text-align:right\">".$op_sign.$jn->minuten."</td>
-						<td style=\"text-align:right;";
-
-					if($saldo < 0) echo " color:red;"; 
-					
-					echo "\">".$model->showTime($saldo)."</td><td style=\"text-align:right\">".$jn->id."</td></tr>";
+					echo '<tr style="vertical-align:top; background-color: #'.$style.'">
+						      <td>'.getBuchungsLink($isGeschenk, $jn, $user).'</td>
+		              <td>'.$geber_name.'</td>
+		              <td>'.$empf_name.'</td>
+		              <td>'.$jn->kurztext.'</td>
+			            <td style="text-align:right">'.$op_sign.$jn->minuten.'</td>
+						      <td style="text-align:right;'.($saldo < 0 ? 'color:red;"' : '"').'>'.$model->showTime($saldo).'</td>
+			            <td style="text-align:right">'.$jn->id.'</td>
+				        </tr>';
 					$k = 1 - $k; 
-					if($jn->belastung_userid != $user->id):		// Umgekehrte Sortierung!
+					if($jn->belastung_userid != $user->id) {
 						$saldo -= $jn->minuten; 
-					else:
+					}
+					else {
 						$saldo += $jn->minuten;
-					endif;
+					}
 				endif;
-			endforeach;
+			}
 			echo "</table>";
 		else:
 			// Noch keine Buchungen diese Jahr: Darum Saldo = 0

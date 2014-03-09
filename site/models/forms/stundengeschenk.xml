@@ -3,7 +3,9 @@
 <form>
 	<fieldset name="stundengeschenk">
 
-    <field name="empfaenger" size="60" maxlength="150" type="text" default="-1" label="Empfänger: " filter="integer"/>
+    <field name="empfaenger_id" type="text" filter="integer"/>
+
+    <field name="empfaenger" size="60" maxlength="150" type="text" default="-1" label="Empfänger: " />
     
     <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
 

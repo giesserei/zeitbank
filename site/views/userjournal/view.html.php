@@ -4,14 +4,12 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 class ZeitbankViewUserjournal extends JView {
+  
+  protected $journal;
+  
   function display($tpl = null) {
     $model =& $this->getModel();
-    $journal = $model->getUserJournal();
-
- 	$pagination =& $this->get('Pagination');
- 
-	$this->assignRef('pagination', $pagination); 
-    $this->assignRef('journal',$journal);
+    $this->journal = $model->getUserJournal();
     
     parent::display($tpl);
   }

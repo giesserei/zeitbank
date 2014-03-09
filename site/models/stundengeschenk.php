@@ -62,18 +62,12 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
       return false;
     }
     
-    // Beschreibung und Anforderung extra filtern, da Form-Filterung des Editors mit Joomla2.5 nicht funktioniert
-    $validateResult['beschreibung'] = JComponentHelper::filterText($validateResult['beschreibung']);
-    $validateResult['anforderung'] = JComponentHelper::filterText($validateResult['anforderung']);
-    
-    // Anforderung darf nur 255 Zeichen haben
-    $validateResult['anforderung'] = ZeitbankFrontendHelper::cropText($validateResult['anforderung'], 255, false);
+    // Kommentar darf nur 300 Zeichen haben
+    $validateResult['kommentar'] = ZeitbankFrontendHelper::cropText($validateResult['kommentar'], 300, false);
     
     $valid = 1;
-    $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
-    $valid &= $this->validateKategorie($validateResult['art'], $validateResult['arbeit_id']);
-    $valid &= $this->validateRequiredFields($validateResult['art'], $validateResult['aufwand'], 
-                       $validateResult['zeit'], $validateResult['anforderung'], $validateResult['beschreibung']);
+    $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
+    $valid &= $this->validateMinuten($validateResult['minuten']);
     
     if (!(bool) $valid) {
       return false;
@@ -113,6 +107,9 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
         $this->setError($table->getError());
         return false;
       }
+      
+      // Kommentar speichern
+      $this->saveComment($data);
     }
     catch (Exception $e) {
       JLog::add($e->getMessage(), JLog::ERROR);
@@ -128,10 +125,6 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
    * welche mit dem Like-Operator gefunden werden.
    */
   public function getEmpfaengerLike($search) {
-    // Ersetzt Umlaute durch ein Jokerzeichen
-    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü");
-    $search = str_replace($umlaute, "_", $search);
-    
     $searchMySql = mysql_real_escape_string($search);
     $query = "SELECT userid, vorname, nachname 
               FROM #__mgh_aktiv_mitglied 
@@ -148,7 +141,7 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
 
   /**
    * Es werden keine Buchungen bearbeitet, damit muss auch nichts aus der DB geladen werden.
-   * Im Falle einer fehlgeschlagenen Valisdierung werden die Eingabe-Daten aus der Session geholt.
+   * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
    * 
    * @see JModelForm::loadFormData()
    */
@@ -162,66 +155,76 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
   // -------------------------------------------------------------------------
   
   /**
-   * Liefert true, wenn Suche oder Biete beim Stundentausch gewählt wurde; sonst false.
-   * True wird auch geliefert, wenn Arbeitsangebot gewählt wurde.
-   * Die Fehlermeldung wird im Model gespeichert.
+   * Liefert true, wenn der Empfänger ein aktives Mitglied ist; sonst false.
    */
-  private function validateArtRichtung($art, $richtung) {
-    if ($art == 2 && $richtung != 1 && $richtung != 2) {
-      $this->setError('Bitte treffe eine Auswahl beim Feld "Suche / Biete"');
+  private function validateEmpfaenger($empfaengerId) {
+    if (!isset($empfaengerId)) {
+      $this->setError('Bitte Empfänger auswählen');
       return false;
     }
+    
+    $query = "SELECT userid, vorname, nachname 
+              FROM #__mgh_aktiv_mitglied 
+              WHERE userid = ".mysql_real_escape_string($empfaengerId)."
+                AND typ != 5  
+                AND userid != ".$this->user->id;
+    $this->db->setQuery($query);
+    $count = $this->db->loadResult();
+    
+    if ($count == 0) {
+      $this->setError('Der Empfänger ist nicht zulässig');
+      return false;
+    }
+    
     return true;
   }
   
   /**
-   * Liefert true, wenn 'Stundentausch' gewählt wurde. Wurde 'Arbeitsangebot' gewählt, so muss der 
-   * User ein Ämtli-Administrator in der gewählten Kategorie sein. Ausserdem muss eine Arbeitsgattung gewählt worden sein.
+   * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
    */
-  private function validateKategorie($art, $arbeitId) {
-    if ($art == 1 && $arbeitId <= 0) {
-      $this->setError('Bitte wähle eine Arbeitsgattung aus');
+  private function validateMinuten($minuten) {
+    if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
+      $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest');
       return false;
     }
-    else if ($art == 1) {
-      $query = sprintf(
-          "SELECT count(*)
-           FROM #__mgh_zb_x_kat_arbeitadmin ka
-             JOIN #__mgh_zb_arbeit a ON ka.kat_id = a.kategorie_id
-           WHERE a.id = %s AND ka.user_id = %s", mysql_real_escape_string($arbeitId), $this->user->id);
-      $this->db->setQuery($query);
-      $count = $this->db->loadResult();
-      if ($count == 0) {
-        $this->setError('Du bist kein Ämtli-Administrator für die gewählte Arbeitskategorie.');
-        return false;
-      }
+    if (!is_numeric($minuten)) {
+      $this->setError('Im Feld Minuten sind nur Zahlen zulässig');
+      return false;
     }
+    $minutenInt = intval($minuten);
+    
+    $query = "SELECT COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_laufend
+                               WHERE gutschrift_userid = ".$this->user->id."), 0) - 
+                     COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_laufend
+                               WHERE belastung_userid = ".$this->user->id."), 0)";
+    $this->db->setQuery($query);
+    $saldo = $this->db->loadResult();
+    $saldoInt = intval($saldo);
+    
+    if ($minutenInt > $saldoInt) {
+      $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldoInt.' Minuten)');
+      return false;
+    }
+    
     return true;
   }
   
   /**
-   * Wenn ein 'Arbeitsangebot' bearbeitet oder angelegt wird, müssen verschiedene Felder zwingend angefüllt werden.
+   * Speichert den Kommentar, sofern ein Kommentar erfasst ist.
    */
-  private function validateRequiredFields($art, $aufwand, $zeit, $anforderung, $beschreibung) {
-    if ($art != 1) {
-      return true;
+  private function saveComment($data) {
+    if (ZeitbankFrontendHelper::isBlank($data['kommentar'])) {
+      return;
     }
-    if (ZeitbankFrontendHelper::isBlank($beschreibung)) {
-      $this->setError('Bitte beschreibe die Arbeit.');
-      return false;
-    }
-    if (ZeitbankFrontendHelper::isBlank($anforderung)) {
-      $this->setError('Bitte erfasse die Anforderungen für die Arbeit.');
-      return false;
-    }
-    if (ZeitbankFrontendHelper::isBlank($zeit)) {
-      $this->setError('Bitte gebe an, bis wann die Arbeit ausgeführt werden soll.');
-      return false;
-    }
-    if (ZeitbankFrontendHelper::isBlank($aufwand)) {
-      $this->setError('Bitte gebe an, wie viel Aufwand für die Arbeit verbucht werden kann.');
-      return false;
-    }
-    return true;
+    
+    $query = "SELECT id
+              FROM #__mgh_zb_journal
+              WHERE cf_uid = '".$data['cf_uid']."'";
+    $this->db->setQuery($query);
+    $id = $this->db->loadResult();
+    
+    $query = "INSERT INTO #__mgh_zb_antr_kommentar (journal_id, text) VALUES (".$id.",'".$data['kommentar']."')";
+    $this->db->setQuery($query);
+    $this->db->query();
   }
 }
