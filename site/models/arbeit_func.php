@@ -115,32 +115,19 @@ function get_arbeitsliste_enduser() {
 
 
 // Ermittelt die Summe der Stunden eines bestimmten Ämtlis während des laufenden Kalenderjahres
-function arbeit_summe($id,$pauschale) {
+// TODO zweiten Parameter $pauschale entfernen -> wurde nie richtig verwendet
+function arbeit_summe($id, $pauschale) {
 	$db =& JFactory::getDBO();
 	$laufendes_jahr = date('Y');
 	
-	$query = "SELECT minuten FROM #__mgh_zb_journal 
+	$query = "SELECT COALESCE(sum(minuten),0) minuten FROM #__mgh_zb_journal 
 	          WHERE datum_quittung > '0000-00-00' 
 	            AND datum_antrag >= '".$laufendes_jahr."-01-01' 
 	            AND admin_del='0' AND arbeit_id='".$id."'";
 	
 	$db->setQuery($query);
-    $rows = $db->loadObjectList();
-    $summe = 0;
-    
-    if(mysql_affected_rows() > 0):
-    	foreach ($rows as $row):
-    		if($row->pauschale == 0):
-    			$summe += $row->minuten;
-    		else:
-    			$summe += $pauschale;
-    		endif;
-    	endforeach;
-    	return($summe);
-    else:
-    	return(0);
-    endif;
-} // amt_summe()
+  return $db->loadResult();
+}
 
 // Ermittelt die Anzahl noch zu quittierenden Anträge für einen Admin
 function get_anzahl_offen() {
