@@ -95,3 +95,36 @@ table.market_form td.value
 .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
 
 input.autocomplete { font-size: 28px; padding: 10px; border: 1px solid #CCC; display: block; margin: 20px 0; }
+
+/**
+ * Boxen
+ */
+.info-box {
+  font-size:12pt;
+  color:#333333;
+  line-height:20px;
+  background-color:#D9EDF7;
+  margin-top:10px;
+  margin-right:0px;
+  margin-bottom:15px;
+  margin-left:0px;
+  padding-top:15px;
+  padding-right:15px;
+  padding-bottom:15px;
+  padding-left:15px;
+} 
+.primary-box {
+  font-size:12pt;
+  color:#FFFFFF;
+  line-height:20px;
+  background-color:#428BCA;
+  margin-top:10px;
+  margin-right:0px;
+  margin-bottom:15px;
+  margin-left:0px;
+  padding-top:15px;
+  padding-right:15px;
+  padding-bottom:15px;
+  padding-left:15px;
+} 
+

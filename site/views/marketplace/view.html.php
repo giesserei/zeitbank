@@ -135,8 +135,9 @@ class ZeitbankViewMarketPlace extends JView {
     if (!empty($this->overview->angeboteArbeiten)) {
       echo "<h1 style='margin-top:25px'>Arbeitsangebote
          (".count($this->overview->angeboteArbeiten)."/".$this->overview->angeboteArbeitenTotal.")</h1>";
-      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du aktuelle Arbeitsangebote unserer Bereiche.</div>";
-    
+      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du aktuelle Arbeitsangebote unserer Bereiche.<br/> 
+               Ein Klick auf den Titel öffnet die Beschreibung mit allen Details zu einem Angebot.</div>";
+      
       echo '<table class="market_overview" >';
       echo '<tr class="head">
 				  <th>Titel</th>
@@ -178,7 +179,8 @@ class ZeitbankViewMarketPlace extends JView {
     if (!empty($this->overview->angeboteTauschen)) {
       echo "<h1 style='margin-top:25px'>Marktplatz zum Tauschen von Giessereistunden
         (".count($this->overview->angeboteTauschen)."/".$this->overview->angeboteTauschenTotal.")</h1>";
-      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Angebote für einen privaten Stundentausch.</div>";
+      echo "<div style='width:700px;margin-bottom:10px'>Hier findest du Angebote für einen privaten Stundentausch.<br/> 
+               Ein Klick auf den Titel öffnet die Beschreibung mit allen Details zu einem Angebot.</div>";
     
       echo '<table class="market_overview" >';
       echo '<tr class="head">

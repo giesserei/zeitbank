@@ -87,9 +87,13 @@ if(check_user()):
     echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Reports erstellen</a></li></ul><br />';
   }
 	
-	/* Liste der persönlichen Zeitbankauszüge ausgeben */
-	echo "<h1>Zeitbank: Ämtli-Liste</h1>";
-	echo "<ul><li><a href=\"/index.php?option=com_zeitbank&Itemid=".MENUITEM."&view=arbeitsliste\">Liste mit allen Ämtli und Zuständigkeiten</a></li></ul><br /><br />";
+  /* Allgemeine Funktionen*/
+	echo "<h1>Zeitbank: Allgemeine Funktionen</h1>";
+	echo '<ul>
+		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a> <span style="color:red">NEU</span></li>
+		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
+		    </ul>
+		    <br /><br />';
 	
 	/* Liste der persönlichen Zeitbankauszüge ausgeben */
 	/*
@@ -156,7 +160,7 @@ if(check_user()):
 		echo '<br />
           <fieldset>
             <input type="button" value="Neuer Antrag" onclick="window.location.href=\'/index.php?option=com_chronoforms&chronoform=Zeitbank_Buchung&Itemid='.MENUITEM.'\'" />
-		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" />
+		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" /><span style="color:red"> NEU</span>
 		      </fieldset>';
 
 		
