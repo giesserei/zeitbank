@@ -46,10 +46,12 @@ class ZeitbankModelReport extends JModel {
   public function getSummeArbeitStunden() {
     $db = $this->getDBO();
     
-    $query = "
-      SELECT ROUND((sum(j.minuten) / 60), 0) stunden_verbucht
-      FROM #__mgh_zb_journal_quittiert_laufend j
-      WHERE arbeit_id != 1";
+    $query = sprintf("
+        SELECT ROUND((sum(j.minuten) / 60), 0) stunden_verbucht
+        FROM #__mgh_zb_journal_quittiert_laufend j
+        WHERE arbeit_id NOT IN (%s, %s)", 
+        ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK, 
+        ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
     $db->setQuery($query);
     return $db->loadResult();
   }
@@ -60,13 +62,15 @@ class ZeitbankModelReport extends JModel {
   public function getSummeNichtQuittierteStunden() {
     $db = $this->getDBO();
   
-    $query = "
+    $query = sprintf("
       SELECT ROUND((sum(j.minuten) / 60), 0) stunden_unquittiert
       FROM joomghjos_mgh_zb_journal j
-      WHERE arbeit_id != 1
+      WHERE arbeit_id NOT IN (%s, %s)
         AND datum_quittung = '0000-00-00'
         AND admin_del = 0
-        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')";
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')", 
+      ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK, 
+      ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
     $db->setQuery($query);
     return $db->loadResult();
   }
@@ -94,10 +98,12 @@ class ZeitbankModelReport extends JModel {
   public function getQuittungDauer() {
     $db = $this->getDBO();
     
-    $query = "
+    $query = sprintf("
       SELECT MAX(DATEDIFF(datum_quittung, datum_antrag)) max_dauer, ROUND(AVG(DATEDIFF(datum_quittung, datum_antrag)), 0) avg_dauer
       FROM #__mgh_zb_journal_quittiert_laufend j
-      WHERE arbeit_id != 1";
+      WHERE arbeit_id NOT IN (%s, %s)", 
+      ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK, 
+      ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
     $db->setQuery($query);
     return $db->loadObject();
   }
@@ -108,13 +114,15 @@ class ZeitbankModelReport extends JModel {
   public function getWartezeitUnquittierteBuchungen() {
     $db = $this->getDBO();
   
-    $query = "
+    $query = sprintf("
       SELECT ROUND(AVG(DATEDIFF(NOW(), datum_antrag)), 0) 
       FROM joomghjos_mgh_zb_journal j
-      WHERE arbeit_id != 1
+      WHERE arbeit_id NOT IN (%s, %s)
         AND datum_quittung = '0000-00-00'
         AND admin_del = 0
-        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')";
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')",
+      ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK, 
+      ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
     $db->setQuery($query);
     return $db->loadResult();
   }

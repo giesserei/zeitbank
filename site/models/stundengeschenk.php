@@ -3,6 +3,7 @@ defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 
 jimport('joomla.application.component.modeladmin');
 jimport('joomla.log.log');
@@ -193,13 +194,7 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
     }
     $minutenInt = intval($minuten);
     
-    $query = "SELECT COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_laufend
-                               WHERE gutschrift_userid = ".$this->user->id."), 0) - 
-                     COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_laufend
-                               WHERE belastung_userid = ".$this->user->id."), 0)";
-    $this->db->setQuery($query);
-    $saldo = $this->db->loadResult();
-    $saldoInt = intval($saldo);
+    $saldo = ZeitbankCalc::getSaldo($this->user->id);
     
     if ($minutenInt > $saldoInt) {
       $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldoInt.' Minuten)');
@@ -227,4 +222,5 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
     $this->db->setQuery($query);
     $this->db->query();
   }
+  
 }

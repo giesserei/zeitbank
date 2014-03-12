@@ -84,7 +84,7 @@ class ZeitbankFrontendHelper {
     } 
     else {
       // Zugriff für Steffen
-      if (!ZeitbankFrontendHelper::hasReportPermission()) {
+      if (!self::hasReportPermission()) {
         JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt.');
         return false;
       }
@@ -120,7 +120,7 @@ class ZeitbankFrontendHelper {
    * Fügt das Stylesheet dieser Komponente zum Dokument hinzu.
    */
   public static function addComponentStylesheet() {
-    ZeitbankFrontendHelper::addStylesheet('giesserei_default.css');
+    self::addStylesheet('giesserei_default.css');
   }
   
   /**
@@ -189,6 +189,30 @@ class ZeitbankFrontendHelper {
     }
     $trimedValue = trim($value);
     return empty($trimedValue);
+  }
+  
+  /**
+   * Liefert eine Zeitangabe in der Form Stunden:Minuten.
+   */
+  public static function formatTime($time_in_minutes) {
+    $time_in_minutes = round($time_in_minutes);
+  
+    // Negative Werte gesondert behandeln
+    if($time_in_minutes >= 0) {
+      $hours = floor($time_in_minutes/60);
+      $minutes = $time_in_minutes - $hours*60;
+    } 
+    else {
+      $hours = ceil($time_in_minutes/60);
+      $minutes = $time_in_minutes - $hours*60;
+    }
+  
+    // Minuszeichen bei den Minuten wegschneiden
+    $minutes = ltrim($minutes,'-');
+    if(strlen($minutes) <= 1) {
+      $minutes = "0".$minutes;
+    }
+    return($hours.":".$minutes);
   }
   
   // -------------------------------------------------------------------------

@@ -50,10 +50,7 @@ function getBuchungsLink($isGeschenk, $jn, $user) {
   }
 }
 
-?>
-
-<div class="component">
-<?php
+echo '<div class="component">';
 
 if(check_user()):
 
@@ -101,9 +98,7 @@ if(check_user()):
 			<img src=\"/images/M_images/printButton.png\" style=\"float: right;\"></a>Zeitbank: Dein Konto</h1>";
 	*/
 
-?>
-
-<?php 		
+		
 		echo "<h4>Offene Quittierungen (von anderen an dich geleistete Stunden)</h4>";
 
 		// Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
@@ -166,7 +161,7 @@ if(check_user()):
 		
 		// Alle verbuchten Posten aus dem Journal
 		// TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
-		echo "<br /><br /><br /><h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4>";
+		echo "<br /><br /><h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4>";
 		
 		if(count($this->journal) > 0 ):		
 		
@@ -179,8 +174,11 @@ if(check_user()):
 				endif;
 			endforeach;
 			
-			echo "<p>Dein Jahressaldo ".date('Y').": <strong>".$model->showTime($saldo)."h</strong>"; 
-			echo "</p>";
+			echo '<div style="margin-bottom:10px">
+			        Dein Jahressaldo '.date('Y').': <strong>'.$model->showTime($saldo).'h</strong><br/>
+			        Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($this->getStundenSoll() * 60).'h</strong>
+			      </div>';
+			
 			echo "<table class=\"zeitbank\" >";
 			echo '<tr style="background-color: #7BB72B; color:white;">
 				      <th>Datum</th>
@@ -251,6 +249,7 @@ if(check_user()):
 else:
  echo ZB_BITTE_ANMELDEN;
 endif;	// Userprüfung
-?>
 
-</div>
+echo '<div style="color:#888888;margin-top:10px;text-align:right">Release: '.ZeitbankConst::RELEASE.'</div>';
+
+echo "</div>";

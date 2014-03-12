@@ -8,6 +8,8 @@ defined('_JEXEC') or die;
  */
 class ZeitbankConst {
 
+  const RELEASE = '1.3 - 2014-03-22';
+  
   /**
    * Unter diesem Key werden die Formulardaten des Marktplatzes gespeichert werden, wenn eine Validierung fehlschlägt.
    */
@@ -27,6 +29,11 @@ class ZeitbankConst {
    * Unter diesem Key werden die Formulardaten der Zeitbank gespeichert werden, wenn eine Validierung fehlschlägt.
    */
   const SESSION_KEY_ZEITBANK_DATA = 'com_zeitbank.data';
+  
+  /**
+   * ID der Arbeit "Stundengeschenk".
+   */
+  const ARBEIT_ID_STUNDENTAUSCH = 3;
   
   /**
    * ID der Arbeit "Stundengeschenk".
