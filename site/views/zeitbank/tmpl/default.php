@@ -168,9 +168,11 @@ if(check_user()):
 			$saldo = $this->getSaldo();
 			
 			echo '<div style="margin-bottom:10px">
-			        Dein Jahressaldo '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong><br/>
-			        Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($this->getSoll()).'h</strong>
-			      </div>';
+			        Dein Jahressaldo '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong><br/>';
+			if (!$this->isGewerbe()) {
+			  echo 'Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($this->getSoll()).'h</strong>';
+			}            
+			echo '</div>';
 			
 			echo "<table class=\"zeitbank\" >";
 			echo '<tr style="background-color: #7BB72B; color:white;">

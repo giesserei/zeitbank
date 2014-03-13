@@ -31,7 +31,7 @@ class ZeitbankViewZeitbank extends JView {
    * Liefert das Soll für den Bewohner.
    */
   protected function getSoll() {
-    $user =& JFactory::getUser();
+    $user = JFactory::getUser();
     return ZeitbankCalc::getSollBewohner($user->id);
   }
   
@@ -39,8 +39,17 @@ class ZeitbankViewZeitbank extends JView {
    * Liefert das Saldo für den Bewohner.
    */
   protected function getSaldo() {
-    $user =& JFactory::getUser();
+    $user = JFactory::getUser();
     return ZeitbankCalc::getSaldo($user->id);
+  }
+  
+  /**
+   * Liefert true, wenn das angemeldete Mitglied ein Gewerbe ist.
+   */
+  protected function isGewerbe() {
+    $user = JFactory::getUser();
+    $model = $this->getModel();
+    return $model->isGewerbe($user->id);
   }
 }
 ?> 
