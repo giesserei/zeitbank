@@ -175,6 +175,7 @@ if(check_user()):
 			}            
 			echo '</div>';
 			
+			
 			echo "<table class=\"zeitbank\" >";
 			echo '<tr style="background-color: #7BB72B; color:white;">
 				      <th>Datum</th>
