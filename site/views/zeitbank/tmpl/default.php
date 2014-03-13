@@ -165,18 +165,11 @@ if(check_user()):
 		
 		if(count($this->journal) > 0 ):		
 		
-			$saldo = 0;
-			foreach($this->journal as $jn):
-				if($jn->belastung_userid == $user->id):
-					$saldo -= $jn->minuten;
-				else:
-					$saldo += $jn->minuten;
-				endif;
-			endforeach;
+			$saldo = $this->getSaldo();
 			
 			echo '<div style="margin-bottom:10px">
-			        Dein Jahressaldo '.date('Y').': <strong>'.$model->showTime($saldo).'h</strong><br/>
-			        Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($this->getStundenSoll() * 60).'h</strong>
+			        Dein Jahressaldo '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong><br/>
+			        Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($this->getSoll()).'h</strong>
 			      </div>';
 			
 			echo "<table class=\"zeitbank\" >";
@@ -224,7 +217,7 @@ if(check_user()):
 		              <td>'.$empf_name.'</td>
 		              <td>'.$jn->kurztext.'</td>
 			            <td style="text-align:right">'.$op_sign.$jn->minuten.'</td>
-						      <td style="text-align:right;'.($saldo < 0 ? 'color:red;"' : '"').'>'.$model->showTime($saldo).'</td>
+						      <td style="text-align:right;'.($saldo < 0 ? 'color:red;"' : '"').'>'.ZeitbankFrontendHelper::formatTime($saldo).'</td>
 			            <td style="text-align:right">'.$jn->id.'</td>
 				        </tr>';
 					$k = 1 - $k; 
@@ -243,7 +236,7 @@ if(check_user()):
 			echo "<p>Noch keine Buchungen vorhanden</p>"; 
 		endif;
 		
-		echo "<br /><br />Saldo des Vorjahres (".date('Y',time() - (365 * 24 * 60 * 60))."): <strong>".$model->showTime($this->saldo_vorjahr)."h</strong>";
+		echo "<br /><br />Saldo des Vorjahres (".date('Y',time() - (365 * 24 * 60 * 60))."): <strong>".ZeitbankFrontendHelper::formatTime($this->saldo_vorjahr)."h</strong>";
 		
 		echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/>";
 else:

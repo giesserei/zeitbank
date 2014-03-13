@@ -17,16 +17,6 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
   <h1 style="font-weight:bold;color: #7BA428; margin-bottom:10px;padding-bottom:0px;">
     <?php echo "Stunden verschenken"; ?>
   </h1>
- 
-  <div style="margin-bottom:15px">
-    <strong>Hinweise:</strong>
-    <ul>
-      <li>Stunden können nur verschenkt werden, wenn ein Guthaben vorhanden ist.</li>
-      <li>Der Empfänger kann nicht sehen, wer die Stunden verschenkt hat.</li>
-      <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
-      <li>Diese Funktion ist neu - Probleme bitte melden an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a></li>
-    </ul>
-  </div>
   
 	<form action="<?php echo JRoute::_("index.php?option=com_zeitbank&task=stundengeschenk.save&Itemid=".$this->menuId); ?>" 
 			  id="geschenkForm" name="geschenkForm" method="post" class="form-validate">
@@ -72,4 +62,16 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			<input type="hidden" value="0" name="jform[id]" />
 		</fieldset>	
   </form>
+  
+  <div style="margin-top:15px">
+    <strong>Hinweise:</strong>
+    <ul>
+      <li>Stunden können nur verschenkt werden, wenn ein Guthaben vorhanden ist.</li>
+      <li>Der/die EmpfängerIn kann Stunden nur bis zur Erreichung des Stundensolls empfangen.</li>
+      <li>Der/die EmpfängerIn kann nicht sehen, wer die Stunden verschenkt hat.</li>
+      <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
+      <li>Stunden können bisher noch nicht an das Gewerbe verschenkt werden.</li>
+      <li>Diese Funktion ist neu - Probleme bitte melden an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a></li>
+    </ul>
+  </div>
 </div>

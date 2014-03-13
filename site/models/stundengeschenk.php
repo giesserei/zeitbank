@@ -68,7 +68,10 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
     
     $valid = 1;
     $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
-    $valid &= $this->validateMinuten($validateResult['minuten']);
+    
+    if ((bool) $valid) {
+      $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id']);
+    }
     
     if (!(bool) $valid) {
       return false;
@@ -156,7 +159,7 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
   // -------------------------------------------------------------------------
   
   /**
-   * Liefert true, wenn der Empfänger ein aktives Mitglied ist; sonst false.
+   * Liefert true, wenn der Empfänger ein aktiver Bewohner ist; sonst false.
    */
   private function validateEmpfaenger($empfaengerId) {
     if (!isset($empfaengerId)) {
@@ -167,13 +170,13 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
     $query = "SELECT userid, vorname, nachname 
               FROM #__mgh_aktiv_mitglied 
               WHERE userid = ".mysql_real_escape_string($empfaengerId)."
-                AND typ != 5  
+                AND typ = 1  
                 AND userid != ".$this->user->id;
     $this->db->setQuery($query);
     $count = $this->db->loadResult();
     
     if ($count == 0) {
-      $this->setError('Der Empfänger ist nicht zulässig');
+      $this->setError('Der Empfänger ist nicht zulässig.');
       return false;
     }
     
@@ -182,22 +185,35 @@ class ZeitbankModelStundenGeschenk extends JModelAdmin {
   
   /**
    * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
+   * Es kann Zeit maximal bis zur Erreichung des Stundensolls des Empfängers verschenkt werden.
    */
-  private function validateMinuten($minuten) {
+  private function validateMinuten($minuten, $empfaengerId) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
-      $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest');
+      $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest.');
       return false;
     }
     if (!is_numeric($minuten)) {
-      $this->setError('Im Feld Minuten sind nur Zahlen zulässig');
+      $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
       return false;
     }
     $minutenInt = intval($minuten);
     
     $saldo = ZeitbankCalc::getSaldo($this->user->id);
     
-    if ($minutenInt > $saldoInt) {
-      $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldoInt.' Minuten)');
+    if ($minutenInt > $saldo) {
+      $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldo.' Minuten).');
+      return false;
+    }
+    
+    $saldoEmpfaenger = ZeitbankCalc::getSaldo($empfaengerId);
+    $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId);
+    
+    if ($saldoEmpfaenger >= $sollEmpfaenger) {
+      $this->setError('Der Empfänger benötigt keine Stunden mehr.');
+      return false;
+    }
+    else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
+      $this->setError('Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger).' Minuten zur Erreichung des Stundensolls.');
       return false;
     }
     

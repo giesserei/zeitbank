@@ -15,7 +15,7 @@ class ZeitbankCalc {
   private static $rules;
   
   /**
-   * Liefert den Saldo des laufenden Jahres für das übergebene Mitglied.
+   * Liefert den Saldo (Minuten) des laufenden Jahres für das übergebene Mitglied.
    */
   public static function getSaldo($userId) {
     $db = JFactory::getDBO();
@@ -26,16 +26,17 @@ class ZeitbankCalc {
     $db->setQuery($query);
     $saldo = $db->loadResult();
     $saldoInt = intval($saldo);
+    return $saldoInt;
   }
   
   /**
-   * Berechnet das persönliche Stundensoll für das übergebene Mitglied.
+   * Berechnet das persönliche Soll an Eigenleistungen (Minuten) für das übergebene Mitglied.
    * 
    * Vorbedingungen:
    * - Mitglied ist ein Bewohner
    * - Einzugsdatum ist in der DB erfasst
    */
-  public static function getStundenSollBewohner($userId) {
+  public static function getSollBewohner($userId) {
     $db = JFactory::getDBO();
     $query = "SELECT einzug, dispension_grad, zb_freistellung, typ
               FROM #__mgh_mitglied 
@@ -63,7 +64,7 @@ class ZeitbankCalc {
       $stundenSoll = max($stundenSollMin, $stundenSollReduziert);
     }
     
-    return $stundenSoll;
+    return $stundenSoll * 60;
   }
   
   // -------------------------------------------------------------------------

@@ -28,11 +28,19 @@ class ZeitbankViewZeitbank extends JView {
   }
   
   /**
-   * Liefert das Stundensoll für den Bewohner.
+   * Liefert das Soll für den Bewohner.
    */
-  protected function getStundenSoll() {
+  protected function getSoll() {
     $user =& JFactory::getUser();
-    return ZeitbankCalc::getStundenSollBewohner($user->id);
+    return ZeitbankCalc::getSollBewohner($user->id);
+  }
+  
+  /**
+   * Liefert das Saldo für den Bewohner.
+   */
+  protected function getSaldo() {
+    $user =& JFactory::getUser();
+    return ZeitbankCalc::getSaldo($user->id);
   }
 }
 ?> 
