@@ -161,16 +161,19 @@ if(check_user()):
 		
 		// Alle verbuchten Posten aus dem Journal
 		// TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
-		echo "<br /><br /><h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4>";
+		echo "<br /><br /><h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4><br />";
 		
 		if(count($this->journal) > 0 ):		
 		
 			$saldo = $this->getSaldo();
+		  $soll = $this->getSoll();
 			
 			echo '<div style="margin-bottom:10px">
-			        Dein Jahressaldo '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong><br/>
-			        Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($this->getSoll()).'h</strong>
-			      </div>';
+			        Dein Jahressaldo '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong><br/>';
+			if (!$this->isGewerbe()) {
+			  echo 'Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($soll).'h</strong>';
+			}            
+			echo '</div>';
 			
 			echo "<table class=\"zeitbank\" >";
 			echo '<tr style="background-color: #7BB72B; color:white;">

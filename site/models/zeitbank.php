@@ -122,6 +122,19 @@ class ZeitbankModelZeitbank extends JModel {
     endif;
   } // getBelastungsKommentar
   
+  /**
+   * Liefert true, wenn das übergebene Mitglied ein Gewerbe ist.
+   */
+  public function isGewerbe($userId) {
+    $db = JFactory::getDBO();
+    $query = "SELECT count(*)
+              FROM #__mgh_mitglied
+              WHERE userid = ".$userId."
+                AND typ = 2";
+    $db->setQuery($query);
+    $count = $db->loadResult();
+    return $count == 1;
+  }
   
-} // class ZeitbankModelZeitbank
+}
 ?>
