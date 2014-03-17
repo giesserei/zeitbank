@@ -20,7 +20,7 @@ if ($this->hasEntries()) {
 }
 
 if (ZeitbankFrontendHelper::isAemtliAdmin()) {
-  echo '  <li><a href="index.php?option=com_zeitbank&task=updangebot.edit&id=0&art=1&Itemid='.$this->menuId.'">Ein neues Arbeitangebot erstellen</a></li>';  
+  echo '  <li><a href="index.php?option=com_zeitbank&task=updangebot.edit&id=0&art=1&Itemid='.$this->menuId.'">Ein neues Arbeitsangebot erstellen</a></li>';  
 }  
 
 echo '    <li><a href="index.php?option=com_zeitbank&task=updangebot.edit&id=0&art=2&Itemid='.$this->menuId.'">Einen neuen Eintrag für den Stundentausch erstellen</a></li>';
