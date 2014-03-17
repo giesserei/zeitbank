@@ -33,7 +33,7 @@ class ZeitbankConst {
   /**
    * ID der Arbeit "Stundengeschenk".
    */
-  const ARBEIT_ID_STUNDENTAUSCH = 3;
+  const ARBEIT_ID_STUNDENTAUSCH = 1;
   
   /**
    * ID der Arbeit "Stundengeschenk".

@@ -3,6 +3,7 @@ defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 jimport('joomla.application.component.controllerform');
 
@@ -19,7 +20,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
   public function edit() {
     $app = JFactory::getApplication();
     
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+    if (!ZeitbankAuth::checkAuthMarket()) {
       return false;
     }
     
@@ -45,7 +46,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    * Speichert die Formulardaten in der Datenbank.
    */
   public function save() {
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+    if (!ZeitbankAuth::checkAuthMarket()) {
       return false;
     }
     
@@ -85,7 +86,7 @@ abstract class ZeitbankControllerUpdAngebotBase extends JControllerForm {
    * Löscht einen Eintrag.
    */
   public function delete() {
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+    if (!ZeitbankAuth::checkAuthMarket()) {
       return false;
     }
     

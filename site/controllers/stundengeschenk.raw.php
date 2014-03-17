@@ -3,6 +3,7 @@ defined('_JEXEC') or die();
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 jimport('joomla.application.component.controller');
 
@@ -17,7 +18,7 @@ class ZeitbankControllerStundenGeschenk extends JController {
    * Liefert die Mitglieder als JSON-Struktur.
    */
   public function users() {
-    if (!ZeitbankFrontendHelper::checkAuthZeitbank()) {
+    if (!ZeitbankAuth::checkAuthZeitbank()) {
       return false;
     }
     

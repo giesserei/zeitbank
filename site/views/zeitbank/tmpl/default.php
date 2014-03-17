@@ -15,6 +15,7 @@ require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'kateg
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 // Lokales CSS laden
 $doc = JFactory::getDocument();
@@ -77,11 +78,11 @@ if(check_user()):
 		echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=".MENUITEM."\">Quittierte Buchungen anzeigen</a></li></ul><br />";
 	endif;
 	
-	// Berechtigung für Reports?
-	if (ZeitbankFrontendHelper::hasReportPermission()) {
+	// Reports
+	if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_KEY_DATA)) {
     echo "<h1>Zeitbank: Du hast Zugriff auf die Zeitbank-Reports</h1>";
     echo "Du kannst:";
-    echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Reports erstellen</a></li></ul><br />';
+    echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Kennzahlen ansehen und ggf. Reports erstellen</a></li></ul><br />';
   }
 	
   /* Allgemeine Funktionen*/

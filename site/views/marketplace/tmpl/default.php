@@ -6,6 +6,7 @@ JHTML::_('behavior.mootools');
 JHTML::_('behavior.modal');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 echo $this->getLinkZeitbank();
 
@@ -19,7 +20,7 @@ if ($this->hasEntries()) {
   echo '    <li><a href="index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid='.$this->menuId.'">Deine Einträge verwalten</a></li>';
 }
 
-if (ZeitbankFrontendHelper::isAemtliAdmin()) {
+if (ZeitbankAuth::isAemtliAdmin()) {
   echo '  <li><a href="index.php?option=com_zeitbank&task=updangebot.edit&id=0&art=1&Itemid='.$this->menuId.'">Ein neues Arbeitsangebot erstellen</a></li>';  
 }  
 

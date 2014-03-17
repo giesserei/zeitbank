@@ -6,17 +6,22 @@ JHTML::_('behavior.mootools');
 JHTML::_('behavior.modal');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.$this->menuId.'">Zurück zur Zeitbank</a><p/>';
 
-echo '<h1>Zeitbank: Reports</h1><p/>';
+echo '<h1>Zeitbank: Kennzahlen und Reports</h1><p/>';
 
+// Reports
 echo '<div style="margin-top:10px">';
 echo '  <ul>';
-echo '    <li><a href="index.php?option=com_zeitbank&task=report.kontosaldo&format=raw">Download: Aktuelle Saldos aller Mitglieder</a></li>';
+if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_DOWNLOAD_SALDO)) {
+  echo '    <li><a href="index.php?option=com_zeitbank&task=report.kontosaldo&format=raw">Download: Aktuelle Saldos aller Mitglieder</a></li>';
+}
 echo '  </ul>';
 echo '</div>';
 
+// Kennzahlen
 echo '<h3 style="margin-bottom:10px">Kennzahlen</h3>';
 
 echo '<table class="zeitbank" style="width:700px">';

@@ -3,6 +3,7 @@ defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 jimport('joomla.application.component.view');
 
@@ -20,7 +21,7 @@ class ZeitbankViewMarketPlace extends JView {
   protected $menuId;
   
   function display($tpl = null) {
-    if (!ZeitbankFrontendHelper::checkAuthMarket()) {
+    if (!ZeitbankAuth::checkAuthMarket()) {
       return false;
     }
     

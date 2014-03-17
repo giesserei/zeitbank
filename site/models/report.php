@@ -4,9 +4,9 @@ defined('_JEXEC') or die();
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 
-jimport( 'joomla.filesystem.file' );
-jimport( 'joomla.filesystem.archive' );
-jimport( 'joomla.environment.response' );
+jimport('joomla.filesystem.file' );
+jimport('joomla.filesystem.archive' );
+jimport('joomla.environment.response' );
 jimport('joomla.application.component.model');
 
 /**

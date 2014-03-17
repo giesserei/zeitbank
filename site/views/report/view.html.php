@@ -3,6 +3,7 @@ defined('_JEXEC') or die();
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 jimport('joomla.application.component.view');
 
@@ -18,7 +19,7 @@ class ZeitbankViewReport extends JView {
   protected $menuId;
   
   function display($tpl = null) {
-    if (!ZeitbankFrontendHelper::checkAuthReports()) {
+    if (!ZeitbankAuth::checkAuthZeitbank() || !ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_KEY_DATA)) {
       return false;
     }
   
