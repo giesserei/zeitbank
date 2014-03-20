@@ -8,7 +8,7 @@ defined('_JEXEC') or die;
  */
 class ZeitbankConst {
 
-  const RELEASE = '1.3 - 2014-03-22';
+  const RELEASE = '1.3.0 - 2014-03-22';
   
   /**
    * Unter diesem Key werden die Formulardaten des Marktplatzes gespeichert werden, wenn eine Validierung fehlschlägt.
@@ -39,5 +39,10 @@ class ZeitbankConst {
    * ID der Arbeit "Stundengeschenk".
    */
   const ARBEIT_ID_STUNDENGESCHENK = 3;
+  
+  /**
+   * ID der Kategorie Freiwilligenarbeit.
+   */
+  const KATEGORIE_ID_FREIWILLIG = -1;
 
 }

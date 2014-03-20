@@ -17,12 +17,10 @@ class ZeitbankViewZeitbank extends JView {
     $quittierungen = $model->getOffeneQuittierungen();
     $antraege = $model->getOffeneAntraege();
     $journal = $model->getUserJournal();
-    $saldo_vorjahr = $model->getSaldoVorjahr();
 
     $this->assignRef('quittierungen',$quittierungen);
     $this->assignRef('antraege',$antraege);
     $this->assignRef('journal',$journal);
-    $this->assignRef('saldo_vorjahr',$saldo_vorjahr);
     
     parent::display($tpl);
   }
@@ -36,11 +34,27 @@ class ZeitbankViewZeitbank extends JView {
   }
   
   /**
-   * Liefert das Saldo für den Bewohner.
+   * Liefert das Saldo für den Bewohner/das Gewerbe.
    */
   protected function getSaldo() {
     $user = JFactory::getUser();
     return ZeitbankCalc::getSaldo($user->id);
+  }
+  
+  /**
+   * Liefert das Saldo der Freiwilligenarbeit für den Bewohner/das Gewerbe.
+   */
+  protected function getSaldoFreiwilligenarbeit() {
+    $user = JFactory::getUser();
+    return ZeitbankCalc::getSaldoFreiwilligenarbeit($user->id);
+  }
+  
+  /**
+   * Liefert das Saldo des Vorjahres für den Bewohner/das Gewerbe.
+   */
+  protected function getSaldoVorjahr() {
+    $user = JFactory::getUser();
+    return ZeitbankCalc::getSaldoVorjahr($user->id);
   }
   
   /**

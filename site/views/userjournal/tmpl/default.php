@@ -4,7 +4,7 @@ defined('_JEXEC') or die('Restricted access');
 JHTML::_('behavior.mootools');
 JHTML::_('behavior.modal');
 
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check_user.php');
+require_once(JPATH_BASE.'/components/com_zeitbank/models/check_user.php');
 
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 
@@ -13,8 +13,8 @@ $doc = JFactory::getDocument();
 $base = JURI::base(true);
 $doc->addStyleSheet($base.'/components/com_zeitbank/template/giesserei_default.css');
 
-$user =& JFactory::getUser();
-$model =& $this->getModel();
+$user = JFactory::getUser();
+$model = $this->getModel();
 
 ?>
 
@@ -35,8 +35,10 @@ function getBuchungsLink($isGeschenk, $jn, $user) {
   }
 }
 
-if(check_user()):
-		echo "<h1>Zeitbank: Alle bestätigten Buchungen </h1>";
+echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.MENUITEM.'">Zurück zur Übersicht</a>';
+
+if(check_user()) {
+		echo "<h1>Zeitbank: Alle bestätigten Buchungen</h1>";
 		
 		echo '<table class="zeitbank" >';
 		echo '<tr style="background-color: #7BB72B; color:white;">
@@ -54,8 +56,10 @@ if(check_user()):
 		foreach($this->journal as $jn) {
 			// Der Schenker bleibt anonym & die Buchungsdetails können nicht betrachtet werden
 		  $isGeschenk = $jn->arbeit_id == ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK;  
+		  $isFreiwillig = $jn->art === 'freiwillig';
 		
 		  $op_sign = ($jn->belastung_userid == $user->id ? "-" : "+");
+		  $op_sign = ($isFreiwillig ? "" : $op_sign); // kein Vorzeichen bei Freiwilligenarbeit
       $geber_name = "";
       $empf_name = "";
       
@@ -74,27 +78,22 @@ if(check_user()):
       }
 
 			$style = $k ? "e9e2c8" : "EEE"; // Zebramuster				
+			$styleMinuten = $isFreiwillig ? "color:#888888" : "";
 			echo '<tr style="vertical-align:top; background-color: #'.$style.'">
 				      <td>'.getBuchungsLink($isGeschenk, $jn, $user).'</td>
               <td>'.$geber_name.'</td>
               <td>'.$empf_name.'</td>
               <td>'.$jn->kurztext.'</td>
-	            <td style="text-align:right">'.$op_sign.$jn->minuten.'</td>
+	            <td style="text-align:right;'.$styleMinuten.'">'.($isFreiwillig ? "(" : "").$op_sign.$jn->minuten.($isFreiwillig ? ")" : "").'</td>
 	            <td style="text-align:right">'.$jn->id.'</td>
 		        </tr>';
 			$k = 1 - $k; 
 		}
 		echo "</table>";
-		echo "<form>";
-		$itemid = JRequest::getVar('Itemid');
-		echo '<input type="hidden" name="option" value="com_zeitbank" />';
-		echo '<input type="hidden" name="Itemid" value="'.$itemid.'" />';
-		echo '<input type="hidden" name="view" value="userJournal" /><br />
-		      <input type="button" name="back" value="Zurück zur Übersicht" onclick="window.location.href=\'/intern/zeitbank\'" />
-		      </form>';
-else:
+}
+else {
   echo ZB_BITTE_ANMELDEN;
-endif;
+};
 ?>
 
 </div>

@@ -55,7 +55,7 @@ class ZeitbankViewMarketPlace extends JView {
    * Liefert einen Link, um zur Zeitbank zu springen.
    */
   protected function getLinkZeitbank() {
-    return '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.$this->menuId.'">Zurück zur Zeitbank</a>';
+    return '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.$this->menuId.'">Zurück zur Übersicht</a>';
   }
   
   /**

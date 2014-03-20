@@ -41,7 +41,7 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
-   * Liefert die Summe der verbuchten Arbeitstunden ohne den Stundentausch. 
+   * Liefert die Summe der verbuchten Arbeitstunden (ohne freiwilligenarbeit) ohne den Stundentausch und die Geschenke. 
    */
   public function getSummeArbeitStunden() {
     $db = $this->getDBO();
@@ -57,7 +57,7 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
-   * Liefert die Summe der nicht quittierten Arbeitstunden ohne den Stundentausch.
+   * Liefert die Summe der nicht quittierten Arbeitstunden (ohne Freiwilligenarbeit) ohne den Stundentausch und die Geschenke.
    */
   public function getSummeNichtQuittierteStunden() {
     $db = $this->getDBO();
@@ -76,14 +76,15 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
-   * Liefert die Summen der verbuchten Stunden je Arbeitskategorie.
+   * Liefert die Summen der verbuchten und quittierten Stunden je Arbeitskategorie 
+   * (inkl. Geschenke, Stundentausch und Freiwilligenarbeit).
    */
   public function getSummeStundenNachKategorie() {
     $db = $this->getDBO();
   
     $query = "
       SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.bezeichnung
-      FROM #__mgh_zb_journal_quittiert_laufend j 
+      FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw j 
         JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
         JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
       GROUP BY k.bezeichnung
@@ -93,7 +94,8 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
-   * Liefert die maximale und die durchschnittliche Dauer zwischen einer Buchung und der Quittierung.
+   * Liefert die maximale und die durchschnittliche Dauer zwischen einer Buchung und der Quittierung
+   * (ohne Freiwilligenarbeit).
    */
   public function getQuittungDauer() {
     $db = $this->getDBO();
@@ -109,7 +111,7 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
-   * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen.
+   * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen des laufenden Jahres (ohne Freiwilligenarbeit).
    */
   public function getWartezeitUnquittierteBuchungen() {
     $db = $this->getDBO();
@@ -120,9 +122,11 @@ class ZeitbankModelReport extends JModel {
       WHERE arbeit_id NOT IN (%s, %s)
         AND datum_quittung = '0000-00-00'
         AND admin_del = 0
-        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')",
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')
+        AND arbeit_id NOT IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = %s)",
       ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK, 
-      ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
+      ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH,
+      ZeitbankConst::KATEGORIE_ID_FREIWILLIG);
     $db->setQuery($query);
     return $db->loadResult();
   }

@@ -8,7 +8,7 @@ class ZeitbankViewUserjournal extends JView {
   protected $journal;
   
   function display($tpl = null) {
-    $model =& $this->getModel();
+    $model = $this->getModel();
     $this->journal = $model->getUserJournal();
     
     parent::display($tpl);

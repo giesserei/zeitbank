@@ -1,17 +1,13 @@
 <?php
 
-/* Zeitbank Hauptseite 
- * 24.7.2012 jal
- * 
- * */
-
 defined('_JEXEC') or die('Restricted access');
 
 JHTML::_('behavior.mootools');
 JHTML::_('behavior.modal');
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check_user.php');
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'arbeit_func.php');
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'kategorie_func.php');
+
+require_once(JPATH_BASE .'/components/com_zeitbank/models/check_user.php');
+require_once(JPATH_BASE .'/components/com_zeitbank/models/arbeit_func.php');
+require_once(JPATH_BASE .'/components/com_zeitbank/models/kategorie_func.php');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
@@ -22,12 +18,10 @@ $doc = JFactory::getDocument();
 $base = JURI::base(true);
 $doc->addStyleSheet($base.'/components/com_zeitbank/template/giesserei_default.css');
 
-
 $max_journal_buchungen = 10000;
 
 $user =& JFactory::getUser();
 $model =& $this->getModel();
-
 
 function shortenComment($ktext) {
 	// Kommentar kürzen. falls nötig
@@ -167,12 +161,19 @@ if(check_user()):
 		if(count($this->journal) > 0 ):		
 		
 			$saldo = $this->getSaldo();
+		  $SaldoFreiwilligenarbeit = $this->getSaldoFreiwilligenarbeit();
 		  $soll = $this->getSoll();
 			
 			echo '<div style="margin-bottom:10px">
-			        Dein Jahressaldo '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong><br/>';
+			        <ul>
+			          <li><span style="width:350px;float:left">Dein Jahressaldo der Giessereistunden für '.date('Y').':</span><strong>'.ZeitbankFrontendHelper::formatTime($saldo).'h</strong></li>
+			          <li><span style="width:350px;float:left">Dein Jahressaldo der Freiwilligenstunden für '.date('Y').':</span><strong>'.ZeitbankFrontendHelper::formatTime($SaldoFreiwilligenarbeit).'h</strong></li>';
 			if (!$this->isGewerbe()) {
-			  echo 'Dein Stundensoll '.date('Y').': <strong>'.ZeitbankFrontendHelper::formatTime($soll).'h</strong>';
+			  echo '<li><span style="width:350px;float:left">Dein Stundensoll für '.date('Y').':</span><strong>'.ZeitbankFrontendHelper::formatTime($soll).'h</strong>
+			        &nbsp;
+			        <a class="modal"
+                 href="index.php?option=com_zeitbank&tmpl=component&view=zeitbank&layout=hinweise_soll"
+                 rel="{handler: \'iframe\', size: {x: 700, y: 480}}"><strong>Hinweise zur Berechnung</strong></a></li>';
 			}            
 			echo '</div>';
 			
@@ -195,8 +196,10 @@ if(check_user()):
 					$zaehler++;
 				  // Der Schenker bleibt anonym & die Buchungsdetails können nicht betrachtet werden
 				  $isGeschenk = $jn->arbeit_id == ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK;  
+				  $isFreiwillig = $jn->art === 'freiwillig';
 				
 				  $op_sign = ($jn->belastung_userid == $user->id ? "-" : "+");
+				  $op_sign = ($isFreiwillig ? "" : $op_sign); // kein Vorzeichen bei Freiwilligenarbeit
           $geber_name = "";
           $empf_name = "";
           
@@ -214,33 +217,40 @@ if(check_user()):
   					}
           }
 	
-					$style = $k ? "e9e2c8" : "EEE"; // Zebramuster				
+					$style = $k ? "e9e2c8" : "EEE"; // Zebramuster	
+					$styleMinuten = $isFreiwillig ? "color:#888888" : "";		
+					$styleSaldo = $saldo < 0 ? 'color:red;' : '';	
 					echo '<tr style="vertical-align:top; background-color: #'.$style.'">
 						      <td>'.getBuchungsLink($isGeschenk, $jn, $user).'</td>
 		              <td>'.$geber_name.'</td>
 		              <td>'.$empf_name.'</td>
 		              <td>'.$jn->kurztext.'</td>
-			            <td style="text-align:right">'.$op_sign.$jn->minuten.'</td>
-						      <td style="text-align:right;'.($saldo < 0 ? 'color:red;"' : '"').'>'.ZeitbankFrontendHelper::formatTime($saldo).'</td>
-			            <td style="text-align:right">'.$jn->id.'</td>
+			            <td style="text-align:right;'.$styleMinuten.'">'.($isFreiwillig ? "(" : "").$op_sign.$jn->minuten.($isFreiwillig ? ")" : "").'</td>
+						      <td style="text-align:right;'.$styleSaldo.'">'.ZeitbankFrontendHelper::formatTime($saldo).'</td>
+			            <td style="text-align:right;">'.$jn->id.'</td>
 				        </tr>';
 					$k = 1 - $k; 
-					if($jn->belastung_userid != $user->id) {
-						$saldo -= $jn->minuten; 
-					}
-					else {
-						$saldo += $jn->minuten;
+					
+					// Saldo ändert sich nicht bei Freiwilligenarbeit
+					if (! $isFreiwillig) {
+  					if($jn->belastung_userid != $user->id) {
+  						$saldo -= $jn->minuten; 
+  					}
+  					else {
+  						$saldo += $jn->minuten;
+  					}
 					}
 				endif;
 			}
 			echo "</table>";
 		else:
-			// Noch keine Buchungen diese Jahr: Darum Saldo = 0
+			// Noch keine Buchungen dieses Jahr: Darum Saldo = 0
 			echo "<p>Dein Jahressaldo ".date('Y').": <strong>0 h</strong></p>";
 			echo "<p>Noch keine Buchungen vorhanden</p>"; 
 		endif;
 		
-		echo "<br /><br />Saldo des Vorjahres (".date('Y',time() - (365 * 24 * 60 * 60))."): <strong>".ZeitbankFrontendHelper::formatTime($this->saldo_vorjahr)."h</strong>";
+		$saldoVorjahr = $this->getSaldoVorjahr();
+		echo "<br /><br />Saldo des Vorjahres (".date('Y',time() - (365 * 24 * 60 * 60))."): <strong>".ZeitbankFrontendHelper::formatTime($saldoVorjahr)."h</strong>";
 		
 		echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/>";
 else:
