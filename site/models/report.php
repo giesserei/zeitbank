@@ -83,7 +83,8 @@ class ZeitbankModelReport extends JModel {
     $db = $this->getDBO();
   
     $query = "
-      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.bezeichnung
+      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.bezeichnung, k.gesamtbudget, 
+        ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01'))))) budget_pro_rata
       FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw j 
         JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
         JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id

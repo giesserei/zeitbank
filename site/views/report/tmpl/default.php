@@ -51,10 +51,12 @@ echo '<p/>';
 
 echo '<h3 style="margin-bottom:10px">Verbuchte Stunden je Kategorie</h3>';
 
-echo '<table class="zeitbank" style="width:400px">';
+echo '<table class="zeitbank" style="width:600px">';
 echo '<tr class="head">
 				<th>Kategorie</th>
-        <th>Stunden</th>    
+        <th>Jahresbudget</th>  
+        <th>Budget pro rata temporis</th>  
+        <th>Stunden verbucht</th>    
       </tr>';
 
 $i = 0;
@@ -64,6 +66,8 @@ foreach($stundenJeKategorie as $kat) {
   $style = $i % 2 == 0 ? "even" : "odd";
   echo '<tr class="'.$style.'">
           <td>'.$kat->bezeichnung.'</td>
+          <td>'.$kat->gesamtbudget.'</td>
+          <td>'.$kat->budget_pro_rata.'</td>
           <td>'.$kat->saldo.'</td>
 				</tr>';
   $i ++;
