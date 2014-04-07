@@ -3,12 +3,21 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
+/**
+ * Model für die Liste der quittierten Buchungen.
+ * 
+ * @author JAL
+ * @author Steffen Förster
+ */
 class ZeitbankModelQuittungsliste_Amt extends JModel {
 	
-  var $_total = null;
-  var $_pagination = null;
+  var $total = null;
+  var $pagination = null;
 
-  function __construct() {
+  /**
+   * Konstruktor.
+   */
+  public function __construct() {
  	  parent::__construct();
  
 	  $mainframe = JFactory::getApplication();
@@ -23,87 +32,54 @@ class ZeitbankModelQuittungsliste_Amt extends JModel {
 	  $this->setState('limit', $limit);
 	  $this->setState('limitstart', $limitstart);
   }
-
-	// Liefert String mit menschenlesbarer Zeitangabe
-	function showTime($time_in_minutes) {
-		$hours = floor($time_in_minutes/60);
-		$minutes = $time_in_minutes - $hours*60;
-		return($hours.":".$minutes);
-	}
-
-	function _buildQuery() {
-    $user =& JFactory::getUser();
-   	
-		 $query = "SELECT SQL_CALC_FOUND_ROWS journal.id as id,journal.cf_uid,minuten,belastung_userid,gutschrift_userid,datum_antrag,arbeit.kurztext
-   		        FROM #__mgh_zb_journal AS journal, #__mgh_zb_arbeit as arbeit
-   		        WHERE datum_quittung != '0000-00-00' 
-		            AND admin_del='0' 
-		            AND arbeit_id = arbeit.id 
-		            AND arbeit.admin_id = '".$user->id."'	
-   		        ORDER BY datum_antrag DESC,journal.id DESC";
-		 return($query);
-  }
   
-  function getUserJournal() {
-    $db =& JFactory::getDBO();
-    $query = $this->_buildQuery();
-    $this->_data = $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));	
-	  return $this->_data;
+  /**
+   * Liefert die Liste mit allen vom Benutzer quittierten Buchungen.
+   */
+  public function getQuittungsliste() {
+    $db = JFactory::getDBO();
+    $query = $this->buildQuery();
+    return $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));	
   }
 
-  function getTotal() {
- 	  // Load the content if it doesn't already exist
- 	  if (empty($this->_total)) {
- 	    $query = $this->_buildQuery();
- 	    $this->_total = $this->_getListCount($query);	
- 	  }
- 	  return $this->_total;
-  } 
-
-  function getPagination() {
- 	  // Load the content if it doesn't already exist
- 	  if (empty($this->_pagination)) {
+  /**
+   * Liefert eine Instanz der Klasse JPagination. 
+   */
+  public function getPagination() {
+ 	  if (empty($this->pagination)) {
  	    jimport('joomla.html.pagination');
- 	    $this->_pagination = new JPagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit') );
+ 	    $this->pagination = new JPagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit') );
  	  }
- 	  return $this->_pagination;
-  }
-	
-  function getUserName($uid) {
-    $db =& JFactory::getDBO();
-    $query = "SELECT name FROM #__users WHERE id='".$uid."'";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-    if($db->getAffectedRows() > 0):
-    	return($rows[0]->name);
-    else:
-    	return(NULL);
-    endif;
-  }
-
-  function getBelastungsKommentar($jid) {
-    $db =& JFactory::getDBO();
-    $query = "SELECT text FROM #__mgh_zb_antr_kommentar WHERE journal_id='".$jid."'";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-    if($db->getAffectedRows() > 0):
-    	return($rows[0]->text);
-    else:
-    	return(NULL);
-    endif;
-  }
-
-  function getQuittierungsKommentar($jid) {
-    $db =& JFactory::getDBO();
-    $query = "SELECT text FROM #__mgh_zb_quit_kommentar WHERE journal_id='".$jid."'";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-    if($db->getAffectedRows() > 0):
-    	return($rows[0]->text);
-    else:
-    	return(NULL);
-    endif;
+ 	  return $this->pagination;
   }
   
+  // -------------------------------------------------------------------------
+  // private section
+  // -------------------------------------------------------------------------
+  
+  private function buildQuery() {
+    $user = JFactory::getUser();
+    $query =
+    "SELECT SQL_CALC_FOUND_ROWS j.id, j.minuten, j.datum_antrag, a.kurztext,
+         (SELECT u.name FROM #__users u WHERE u.id = j.gutschrift_userid) konto_gutschrift
+    	 FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
+       WHERE j.datum_quittung != '0000-00-00'
+         AND j.admin_del = '0'
+         AND a.admin_id = ".$user->id."
+       ORDER BY j.datum_antrag DESC, j.id DESC";
+  
+    return($query);
+  }
+  
+  /**
+   * Liefert die Gesamtanzahl der quittierten Buchungen.
+   */
+  private function getTotal() {
+    if (empty($this->total)) {
+      $query = $this->buildQuery();
+      $this->total = $this->_getListCount($query);
+    }
+    return $this->total;
+  }
 } 
 ?>

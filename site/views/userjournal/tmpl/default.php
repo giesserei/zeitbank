@@ -6,12 +6,8 @@ JHTML::_('behavior.modal');
 
 require_once(JPATH_BASE.'/components/com_zeitbank/models/check_user.php');
 
+JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
-
-// Lokales CSS laden
-$doc = JFactory::getDocument();
-$base = JURI::base(true);
-$doc->addStyleSheet($base.'/components/com_zeitbank/template/giesserei_default.css');
 
 $user = JFactory::getUser();
 $model = $this->getModel();
@@ -20,20 +16,6 @@ $model = $this->getModel();
 
 <div class="component">
 <?php
-
-/**
- * Buchungslink bei einem Geschenk nur anzeigen, wenn es die eigene Buchung ist.
- */
-function getBuchungsLink($isGeschenk, $jn, $user) {
-  $belastung = $jn->belastung_userid == $user->id;
-
-  if ($isGeschenk && !$belastung) {
-    return JHTML::date($jn->datum_antrag,'d.m.Y');
-  }
-  else {
-    return '<a href="index.php?option=com_zeitbank&view=buchung&Itemid='.MENUITEM.'&token='.$jn->cf_uid.'">'.JHTML::date($jn->datum_antrag,'d.m.Y').'</a>';
-  }
-}
 
 echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.MENUITEM.'">Zurück zur Übersicht</a>';
 
@@ -80,7 +62,7 @@ if(check_user()) {
 			$style = $k ? "e9e2c8" : "EEE"; // Zebramuster				
 			$styleMinuten = $isFreiwillig ? "color:#888888" : "";
 			echo '<tr style="vertical-align:top; background-color: #'.$style.'">
-				      <td>'.getBuchungsLink($isGeschenk, $jn, $user).'</td>
+				      <td>'.ZeitbankFrontendHelper::getLinkBuchung($jn->id, JHTML::date($jn->datum_antrag,'d.m.Y')).'</td>
               <td>'.$geber_name.'</td>
               <td>'.$empf_name.'</td>
               <td>'.$jn->kurztext.'</td>

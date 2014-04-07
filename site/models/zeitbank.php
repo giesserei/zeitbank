@@ -1,11 +1,18 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
+JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+
 jimport('joomla.application.component.model');
 
+/**
+ * Model für die Übersichtsseite der Zeitbank.
+ */
 class ZeitbankModelZeitbank extends JModel {
 	
-	// Liefert String mit menschenlesbarer Zeitangabe
+	/**
+	 * Liefert String mit menschenlesbarer Zeitangabe
+	 */
 	function showTime($time_in_minutes) {
 		$time_in_minutes = round($time_in_minutes);
 		
@@ -22,34 +29,60 @@ class ZeitbankModelZeitbank extends JModel {
 		$minutes = ltrim($minutes,'-');
 		if(strlen($minutes) <= 1) $minutes = "0".$minutes;
 		return($hours.":".$minutes);
-	} // showTime
+	}
 	
+	/**
+	 * Liefert die Liste mit den Anträgen "Privater Stundentausch", welche zur Belastung des eigenen Zeitkontos führen.
+	 * 
+	 * In der ursprünlichen Version gab es keine Einschränkung auf den privaten Stundentausch. Hätte man sich mit einem 
+	 * Zeitkonto-Login angemeldet, hätte man somit auch quittieren können.
+	 * 
+	 * Besser ist jedoch eine Funktion im Backend, von wo man Quittierungen durchführen kann.
+	 */
 	function getOffeneQuittierungen() {
-    $db =& JFactory::getDBO();
-    $user =& JFactory::getUser();
-    $query = "SELECT journal.id,journal.cf_uid,minuten,users.name as name,datum_antrag,arbeit.kurztext,kommentar.text as text
-    		FROM #__users as users,#__mgh_zb_arbeit as arbeit, #__mgh_zb_antr_kommentar as kommentar 
-    		RIGHT JOIN #__mgh_zb_journal AS journal ON kommentar.journal_id = journal.id
-    		WHERE datum_quittung='0000-00-00' AND admin_del='0' AND arbeit_id = arbeit.id
-    		AND users.id = gutschrift_userid AND belastung_userid ='".$user->id."' ORDER BY datum_antrag ASC,journal.id ASC";
+    $db = JFactory::getDBO();
+    $user = JFactory::getUser();
+    $query = "SELECT journal.id,journal.cf_uid,minuten,users.name as name,datum_antrag,kurztext,arbeit.kurztext,journal.kommentar_antrag as text
+    		      FROM #__users as users, #__mgh_zb_arbeit as arbeit, #__mgh_zb_journal AS journal
+    		      WHERE datum_quittung='0000-00-00' 
+                AND admin_del='0' 
+                AND arbeit_id = arbeit.id
+    		        AND users.id = gutschrift_userid
+    		        AND belastung_userid =".$user->id."
+    		        AND arbeit.id = ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH." 
+              ORDER BY datum_antrag ASC, journal.id ASC";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     return($rows);
-  }  // getOffeneQuittierungen
+  }
 
+  /**
+   * Liefert die Liste der eigenen Anträge, welche noch nicht quittiert sind.
+   */
   function getOffeneAntraege() {
-    $db =& JFactory::getDBO();
-    $user =& JFactory::getUser();
-    $query = "SELECT journal.id,journal.cf_uid,minuten,users.name as name,datum_antrag,kurztext,arbeit.kurztext,kommentar.text as text
-    		FROM #__users as users,#__mgh_zb_arbeit as arbeit, #__mgh_zb_antr_kommentar as kommentar
-    		RIGHT JOIN #__mgh_zb_journal AS journal ON kommentar.journal_id = journal.id
-    		WHERE datum_quittung='0000-00-00' AND admin_del='0' AND arbeit_id = arbeit.id
-    		AND users.id = belastung_userid AND gutschrift_userid ='".$user->id."' ORDER BY datum_antrag ASC,journal.id ASC";
+    $db = JFactory::getDBO();
+    $user = JFactory::getUser();
+    $query = "SELECT journal.id,journal.cf_uid,minuten,users.name as name,datum_antrag,kurztext,arbeit.kurztext,journal.kommentar_antrag as text,
+                CASE 
+                  WHEN arbeit.id = ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH." THEN 'stundentausch.edit'
+                  WHEN arbeit.kategorie_id = ".ZeitbankConst::KATEGORIE_ID_FREIWILLIG." THEN 'freiwilligenarbeit.edit'   
+                  ELSE 'eigenleistungen.edit'
+                END AS task 
+    		      FROM #__users as users, #__mgh_zb_arbeit as arbeit, #__mgh_zb_journal AS journal
+    		      WHERE datum_quittung='0000-00-00' 
+                AND admin_del='0' 
+                AND arbeit_id = arbeit.id
+    		        AND users.id = belastung_userid 
+                AND gutschrift_userid ='".$user->id."' 
+              ORDER BY datum_antrag ASC, journal.id ASC";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     return($rows);
-  } // getOffeneAntraege
+  }
 
+  /**
+   * Liefert alle Buchungen des angemeldeten Benutzers für das laufende Jahr.
+   */
   function getUserJournal() {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
@@ -68,31 +101,6 @@ class ZeitbankModelZeitbank extends JModel {
     $rows = $db->loadObjectList();
     return $rows;
   }
-  
-  /*
-  function getSaldoVorjahr() {
-    $db =& JFactory::getDBO();
-    $user =& JFactory::getUser();
-    $vorjahr = date('Y',time() - (365 * 24 * 60 * 60));
-    $query = "SELECT journal.id as id,journal.cf_uid,minuten,belastung_userid,gutschrift_userid,datum_antrag,arbeit.kurztext
-    		FROM #__mgh_zb_journal AS journal,#__mgh_zb_arbeit as arbeit
-    		WHERE datum_quittung != '0000-00-00' AND admin_del='0' AND arbeit_id = arbeit.id AND datum_antrag >= '".$vorjahr."-01-01' AND datum_antrag <= '".$vorjahr."-12-31' 	
-    		AND (gutschrift_userid ='".$user->id."' OR belastung_userid ='".$user->id."') ORDER BY datum_antrag DESC,journal.id DESC";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-    
-	$saldo = 0;
-	if($db->getAffectedRows() > 0) foreach($rows as $jn):
-		if($jn->belastung_userid == $user->id):
-			$saldo -= $jn->minuten;
-		else:
-			$saldo += $jn->minuten;
-		endif;
-	endforeach;
-    
-    return($saldo);
-  }
-  */
   
   function getUserName($uid) {
     $db =& JFactory::getDBO();

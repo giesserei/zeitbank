@@ -11,17 +11,21 @@ JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank
  */
 class ZeitbankViewZeitbank extends JView {
   
+  protected $quittierungen;
+  
+  protected $antraege;
+  
+  protected $journal;
+  
   function display($tpl = null) {
-    $model =& $this->getModel();
+    $model = $this->getModel();
 
-    $quittierungen = $model->getOffeneQuittierungen();
-    $antraege = $model->getOffeneAntraege();
-    $journal = $model->getUserJournal();
-
-    $this->assignRef('quittierungen',$quittierungen);
-    $this->assignRef('antraege',$antraege);
-    $this->assignRef('journal',$journal);
+    $this->quittierungen = $model->getOffeneQuittierungen();
+    $this->antraege = $model->getOffeneAntraege();
+    $this->journal = $model->getUserJournal();
     
+    ZeitbankFrontendHelper::addComponentStylesheet();
+
     parent::display($tpl);
   }
   

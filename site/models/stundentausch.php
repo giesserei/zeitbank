@@ -10,21 +10,29 @@ JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_
 jimport('joomla.log.log');
 
 /**
- * Model für die Ausführung eines Stundengeschenks.
+ * Model zum Erstellen und Bearbeiten eines Antrags für einen Stundentausch.
  * 
  * @author Steffen Förster
  */
-class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
+class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
   
   public function __construct() {
     parent::__construct();
   }
   
+  public function getEmpfaengerName($userId) {
+    $query = "SELECT CONCAT(vorname, ' ', nachname) name
+              FROM #__mgh_aktiv_mitglied
+              WHERE userid = ".$userId;
+    $this->db->setQuery($query);
+    return $this->db->loadResult();
+  }
+
   /**
    * @see JModelForm::getForm()
    */
   public function getForm($data = array(), $loadData = true) {
-    $form = $this->loadForm('com_zeitbank.stundengeschenk', 'stundengeschenk', array (
+    $form = $this->loadForm('com_zeitbank.stundentausch', 'stundentausch', array (
         'control' => 'jform',
         'load_data' => $loadData 
     ));
@@ -64,18 +72,29 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     return $validateResult;
   }
   
+  
+  
   // -------------------------------------------------------------------------
   // protected section
   // -------------------------------------------------------------------------
 
   /**
-   * Es werden keine Buchungen bearbeitet, damit muss auch nichts aus der DB geladen werden.
    * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
    * 
    * @see JModelForm::loadFormData()
    */
   protected function loadFormData() {
     $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array ());
+    
+    if (empty($data)) {
+      $data = $this->getItem();
+      $data->empfaenger_id = $data->belastung_userid;
+    }
+    else {
+      // ID im State setzen, damit diese von der View ausgelesen werden kann
+      $this->state->set($this->getName().'.id', $data['id']);
+    }
+    
     return $data;
   }
   
@@ -83,40 +102,15 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
   // private section
   // -------------------------------------------------------------------------
   
-  /**
-   * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
-   * Es kann Zeit maximal bis zur Erreichung des Stundensolls des Empfängers verschenkt werden.
-   */
   private function validateMinuten($minuten, $empfaengerId) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
-      $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest.');
+      $this->setError('Bitte die Minuten eingeben.');
       return false;
     }
     if (!is_numeric($minuten)) {
       $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
       return false;
-    }
-    $minutenInt = intval($minuten);
-    
-    $saldo = ZeitbankCalc::getSaldo($this->user->id);
-    
-    if ($minutenInt > $saldo) {
-      $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldo.' Minuten).');
-      return false;
-    }
-    
-    $saldoEmpfaenger = ZeitbankCalc::getSaldo($empfaengerId);
-    $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId);
-    
-    if ($saldoEmpfaenger >= $sollEmpfaenger) {
-      $this->setError('Der Empfänger benötigt keine Stunden mehr.');
-      return false;
-    }
-    else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
-      $this->setError('Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger).' Minuten zur Erreichung des Stundensolls.');
-      return false;
-    }
-    
+    }    
     return true;
   }
   

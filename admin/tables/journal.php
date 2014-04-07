@@ -15,7 +15,8 @@ class TableJournal extends JTable {
 	var $datum_quittung = null;
 	var $admin_del = null;
 	var $arbeit_id = null;
-	
+	var $kommentar_antrag = null;
+	var $kommentar_quittung = null;
 	
 	function TableJournal( &$db ) {
 		parent::__construct('#__mgh_zb_journal','id',$db);

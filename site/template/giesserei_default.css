@@ -6,9 +6,14 @@
  * CSS für Spezialitäten in der Komponente com_zeitbank
 */
 
+h1.zeitbank {
+	font-weight:bold;
+	color: #7BA428;
+	margin-bottom:10px;
+	padding-bottom:0px;
+}
 
 /* ##########################  table  ########################### */
-
 
 table.zeitbank { 
 	width: 850px;
@@ -61,6 +66,31 @@ table.market_details td.value
   border: none;
 }
 
+table.zb_form
+{
+  border: none;
+}
+
+table.zb_form td.lb
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  vertical-align: top;
+  border: none;
+  font-weight:bold;
+}
+
+table.zb_form td.value
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  vertical-align: top;
+  border: none;
+  width: 500px;
+}
+
 table.market_form
 {
   border: none;
@@ -86,9 +116,8 @@ table.market_form td.value
   width: 500px;
 }
 
-/**
- * Autocompleter
- */
+/* ##########################  Autocompleter  ########################### */
+
 .autocomplete-suggestions { text-align:left; border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
 .autocomplete-suggestion { text-align:left; padding: 2px 5px; white-space: nowrap; overflow: hidden; }
 .autocomplete-selected { background: #F0F0F0; }
@@ -96,9 +125,8 @@ table.market_form td.value
 
 input.autocomplete { font-size: 28px; padding: 10px; border: 1px solid #CCC; display: block; margin: 20px 0; }
 
-/**
- * Boxen
- */
+/* ##########################  Boxen  ########################### */
+
 .info-box {
   font-size:12pt;
   color:#333333;
@@ -127,4 +155,15 @@ input.autocomplete { font-size: 28px; padding: 10px; border: 1px solid #CCC; dis
   padding-bottom:15px;
   padding-left:15px;
 } 
+
+/* ##########################  pagination  ########################### */
+
+.pagination ul li, .list-footer ul li {
+  display: inline;
+  padding: 0px 10px 0px 10px;
+}
+
+.pagination ul, .list-footer ul {
+  list-style-type: none; 
+}
 

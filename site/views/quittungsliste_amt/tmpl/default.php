@@ -4,58 +4,50 @@ defined('_JEXEC') or die('Restricted access');
 JHTML::_('behavior.mootools');
 JHTML::_('behavior.modal');
 
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check_user.php');
-
-$user =& JFactory::getUser();
-$model =& $this->getModel();
+require_once(JPATH_BASE.'/components/com_zeitbank/models/check_user.php');
 
 ?>
 
 <div class="component">
+
 <?php
 
-if(check_user()):
+echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.MENUITEM.'">Zurück zur Übersicht</a><p/>';
+
+if (check_user()) {
 		echo "<h1>Zeitbank: Liste aller bestätigten Ämtli-Buchungen</h1>";
-		echo "<form>".$this->pagination->getListFooter();
-		$itemid = JRequest::getVar('Itemid');
-		echo '<input type="hidden" name="option" value="com_zeitbank" />';
-		echo '<input type="hidden" name="Itemid" value="'.$itemid.'" />';
-		echo '<input type="hidden" name="view" value="quittungsliste_amt" /></form>';
 		
-		echo "<table class=\"zeitbank\" >";
-		echo "<tr style=\"background-color: #7BB72B; color:white;\">
-				<th style=\"text-align:right\">Datum</th><th>übergeben an</th><th>Arbeitsgattung</th><th>Zeit<br />[min]</th><th>B-Nr.</th></tr>";
+		echo '<table class="zeitbank">';
+		echo '<tr class="head">
+				    <th>Datum</th>
+		        <th>übergeben an</th>
+		        <th>Arbeitsgattung</th>
+		        <th style="text-align:right">Zeit<br />[min]</th>
+		        <th style="text-align:right">B-Nr.</th>
+		      </tr>';
 		
-		$k = 0;	// Zebra start
-		$zaehler = 0;	
-		
-		foreach($this->journal as $jn):
-			$empf_name = $model->getUserName($jn->gutschrift_userid);
-			$op_sign = "";
-
-
-			$style = $k ? "e9e2c8" : "EEE"; // Zebramuster				
-			echo "<tr style=\"vertical-align:top; background-color: #".$style."\">
-				<td><a href=\"index.php?option=com_zeitbank&view=buchung&Itemid=".MENUITEM."&token=".$jn->cf_uid."\">".JHTML::date($jn->datum_antrag,'d.m.Y')."</a></td><td>".$empf_name."</td><td>".
-				$jn->kurztext."</td><td style=\"text-align:right\">".$op_sign.$jn->minuten."</td>";
-
-			echo "<td style=\"text-align:right\">".$jn->id."</td></tr>";
-
+		$k = 0;
+		foreach($this->quittungsliste as $jn) {
+			$style = $k ? "even" : "odd";	
+			echo '<tr class="'.$style.'">
+				      <td>'.ZeitbankFrontendHelper::getLinkBuchung($jn->id, JHTML::date($jn->datum_antrag,'d.m.Y')).'</td>
+		          <td>'.$jn->konto_gutschrift.'</td>
+		          <td>'.$jn->kurztext.'</td>
+		          <td style="text-align:right">'.$jn->minuten.'</td>
+ 			        <td style="text-align:right">'.$jn->id.'</td>
+		        </tr>';
 			$k = 1 - $k; 
-
-		endforeach;
-		echo "</table>";
+		}
+		echo "</table><br/>";
 		echo "<form>".$this->pagination->getListFooter();
 		$itemid = JRequest::getVar('Itemid');
 		echo '<input type="hidden" name="option" value="com_zeitbank" />';
 		echo '<input type="hidden" name="Itemid" value="'.$itemid.'" />';
-		echo '<input type="hidden" name="view" value="userJournal" /><br />
-		<input type="button" name="back" value="Zurück zur Übersicht" onclick="window.location.href=\'/intern/zeitbank\'" />
-		</form>';
-else:
+		echo '<input type="hidden" name="view" value="userJournal" /></form>';
+}
+else {
   echo ZB_BITTE_ANMELDEN;
-
-endif;	// Userprüfung
+}
 ?>
 
 </div>

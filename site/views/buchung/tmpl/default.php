@@ -8,33 +8,41 @@ require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check
 
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 
-$user =& JFactory::getUser();
-$model =& $this->getModel();
-
 ?>
 
-<div class="component">
+<div class="component" style="margin-left:25px">
 <?php
-
-if(check_user()):
-		echo "<h1>Zeitbank: Buchungsdetail</h1>";
-		echo "<ul><li>Beleg-Nummer: <strong>".$this->Buchung->id."</strong> vom <strong>".JHTML::date($this->Buchung->datum_antrag,'d.m.Y')."</strong></li>";
-		if ($this->Buchung->arbeit_id != ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK) {
-		  echo "<li>Antrag von: <strong>".$this->Buchung->gut_name."</strong></li>";
-		  echo "<li>Quittiert von: <strong>".$this->Buchung->bel_name."</strong> am <strong>".JHTML::date($this->Buchung->datum_quittung,'d.m.Y')."</strong></li>";
-		}
-		echo "<li>Arbeitsgattung: <strong>".$this->Buchung->kurztext."</strong></li>";
-		echo "<li>Zeitbetrag: <strong>".$this->Buchung->minuten." Minuten</strong></li>";
-		$akom = $model->getBelastungskommentar( $this->Buchung->id );
-		if(strlen($akom) > 0) echo "<li>Antragskommentar:<br><strong>".nl2br($akom)."</strong></li>";
-		$qkom = $model->getQuittierungskommentar( $this->Buchung->id );
-		if(strlen($qkom) > 0) echo "<li>Quittierungskommentar:<br><strong>".nl2br($qkom)."</strong></li>";
-		echo "</ul><br />";
-		echo "<input type='button' name='back' value='Zurück zur Übersicht' onclick='history.back()' />";
-else:
-  echo ZB_BITTE_ANMELDEN;
-
-endif;	// Userprüfung
+  echo '<h1 style="color: #7BA428">Zeitbank: Buchungsdetails</h1>';
+  
+  if ($this->isGeschenkEmpfaenger($this->buchung->arbeit_id, $this->buchung->gutschrift_userid)) {
+    echo 'Dir wurden <strong>'.$this->buchung->minuten.' Minuten</strong> geschenkt.';
+  }
+  else {
+    echo '<ul>
+            <li>Beleg-Nummer: <strong>'.$this->buchung->id.'</strong> vom <strong>'.JHTML::date($this->buchung->datum_antrag,'d.m.Y').'</strong></li>';
+    
+    // Bei Stundengeschenken gibt es keinen Antrag
+    if ($this->isGeschenk($this->buchung->arbeit_id)) {
+      echo "<li>EmpfängerIn: <strong>".$this->buchung->konto_gutschrift."</strong></li>";
+    }
+    else {
+      echo "<li>Antrag von: <strong>".$this->buchung->konto_gutschrift."</strong></li>";
+      echo "<li>Quittiert von: <strong>".$this->buchung->konto_belastung."</strong> am <strong>".JHTML::date($this->buchung->datum_quittung,'d.m.Y')."</strong></li>";
+    }
+    
+    echo "<li>Arbeitsgattung: <strong>".$this->buchung->kurztext."</strong></li>";
+    echo "<li>Zeitbetrag: <strong>".$this->buchung->minuten." Minuten</strong></li>";
+    
+    if (!empty($this->buchung->kommentar_antrag)) {
+      echo "<li>Antragskommentar:<br><strong>".nl2br($this->buchung->kommentar_antrag)."</strong></li>";
+    }
+    
+    // Bei Stundengeschenken gibt es keinen Quittierungskommentar
+    if(!$this->isGeschenk($this->buchung->arbeit_id) && !empty($this->buchung->kommentar_quittung)) {
+      echo "<li>Quittierungskommentar:<br><strong>".nl2br($this->buchung->kommentar_quittung)."</strong></li>";
+    }
+    echo "</ul>";
+  }
 ?>
 
 </div>

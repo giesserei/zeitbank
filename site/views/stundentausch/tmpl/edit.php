@@ -12,17 +12,17 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 <div class="component">
  
   <h1 class="zeitbank">
-    <?php echo "Zeitbank: Stunden verschenken"; ?>
+    <?php echo ($this->isNew() ? "Zeitbank: Neuen Antrag für Stundentausch erstellen" : "Zeitbank: Antrag für Stundentausch bearbeiten"); ?>
   </h1>
   
-	<form action="<?php echo JRoute::_("index.php?option=com_zeitbank&task=stundengeschenk.save&Itemid=".$this->menuId); ?>" 
-			  id="geschenkForm" name="geschenkForm" method="post" class="form-validate">
+	<form action="<?php echo JRoute::_("index.php?option=com_zeitbank&task=stundentausch.save&Itemid=".$this->menuId); ?>" 
+			  id="tauschForm" name="tauschForm" method="post">
 	  
 		<table class="zb_form">
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('empfaenger'); ?><span class="star">* </span></td>
 			  <td class="value">
-			    <input type="text" name="jform[empfaenger]" id="autocomplete" size="60"/>
+			    <input type="text" name="jform[empfaenger]" id="autocomplete" size="60" value="<?php echo $this->getEmpfaengerName(); ?>" />
 			    <script type="text/javascript">
   			    window.addEventListener("DOMContentLoaded", function() {
   			    	$('#autocomplete').autocomplete({
@@ -42,8 +42,8 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			  <td class="value"><?php echo $this->form->getInput('minuten'); ?></td>
 			</tr>	
 			<tr>
-			  <td class="lb"><?php echo $this->form->getLabel('kommentar'); ?></td>
-			  <td class="value"><?php echo $this->form->getInput('kommentar'); ?></td>
+			  <td class="lb"><?php echo $this->form->getLabel('kommentar_antrag'); ?></td>
+			  <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?></td>
 			</tr>
 			<tr>
         <td class="lb" colspan="2" style="font-weight:normal"><span class="star">* </span> Eingabe ist obligatorisch</td>
@@ -55,20 +55,17 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			<input type="button" value="Abbrechen" 
 			       onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=zeitbank&Itemid='.$this->menuId)?>'" />
 			<?php echo JHtml::_('form.token'); ?>
-			<input type="hidden" value="" name="jform[empfaenger_id]" id="empfaenger_id"/>
-			<input type="hidden" value="0" name="jform[id]" />
+			<input type="hidden" value="<?php echo $this->form->getValue('empfaenger_id'); ?>" name="jform[empfaenger_id]" id="empfaenger_id"/>
+			<input type="hidden" value="<?php echo $this->getId(); ?>" name="jform[id]" />
+			<?php echo $this->form->getInput('cf_uid'); ?>
 		</fieldset>	
   </form>
   
   <div style="margin-top:15px">
     <strong>Hinweise:</strong>
     <ul>
-      <li>Stunden können nur verschenkt werden, wenn ein Guthaben vorhanden ist.</li>
-      <li>Der/die EmpfängerIn kann Stunden nur bis zur Erreichung des Stundensolls empfangen.</li>
-      <li>Der/die EmpfängerIn kann nicht sehen, wer die Stunden verschenkt hat.</li>
-      <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
-      <li>Stunden können bisher noch nicht an das Gewerbe verschenkt werden.</li>
-      <li>Diese Funktion ist neu - Probleme bitte melden an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a></li>
+      <li>Der Stundentausch ist erst wirksam, wenn der/die TauschparterIn deinen Antrag quittiert hat.</li>
+      <li>Der/die TauschparterIn kann maximal das vorhandene Guthaben tauschen.</li>
     </ul>
   </div>
 </div>

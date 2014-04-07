@@ -159,7 +159,7 @@ class ZeitbankModelReport extends JModel {
             GROUP BY j2.gutschrift_userid
           ) h
         ) s
-      ) r RIGHT OUTER JOIN #__mgh_mitglied m ON r.userid = m.userid
+      ) r RIGHT OUTER JOIN #__mgh_aktiv_mitglied m ON r.userid = m.userid
       WHERE m.typ IN (1,2)
       ORDER BY m.nachname     
     ";

@@ -33,6 +33,11 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID, $menuId);
     
     $id = $this->getId();
+    
+    if (!$this->isEditAllowed($id)) {
+      return false;
+    }
+    
     $this->redirectEditView($id);
     
     return true;
@@ -53,6 +58,10 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     
     $formData = $this->getFormData();
     $id = $formData['id'];
+    
+    if (!$this->isEditAllowed($id)) {
+      return false;
+    }
 
     // Validierung -> Validierungsmeldungen werden direkt ausgegeben
     $validateResult = $this->validateData($formData, $id);
@@ -65,7 +74,7 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
       // Daten in der Session löschen
       $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, null);
       
-      $this->redirectSuccessView();
+      $this->redirectSuccessView($id);
       return true;
     }
     
@@ -94,9 +103,24 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
   abstract protected function getViewName();
   
   /**
-   * Führt einen Redirect auf die Seite durch, die nach dem Speichern angezeigt werden soll.
+   * Schneidet den Kommentar auf die zulässige Länge ab.
    */
-  abstract protected function redirectSuccessView();
+  protected function cropKommentar($kommentar) {
+    return ZeitbankFrontendHelper::cropText($kommentar, 1000);
+  }
+  
+  /**
+   * Führt einen Redirect auf die Seite durch, die nach dem Speichern angezeigt werden soll.
+   * In abgeleiteten Controllern, kann die anzuzeigende Seite abhängig vom bearbeiteten Journaleintrag sein.
+   * Daher kann die ID des Eintrags übergeben werden.
+   */
+  protected function redirectSuccessView($id) {
+    $app = JFactory::getApplication();
+    $menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
+    $this->setRedirect(
+        JRoute::_('index.php?option=com_zeitbank&view=zeitbank&Itemid='.$menuId, false)
+    );
+  }
   
   /**
    * Auf die Edit-View weiterleiten.
@@ -150,6 +174,31 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     }
   
     return true;
+  }
+  
+  /**
+   * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
+   */
+  protected function isEditAllowed($id) {
+    if ($id == 0) {
+      return true;
+    }
+  
+    $model = $this->getModel();
+    if(!$model->isEditAllowed($id)) {
+      JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.','warning');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Liefert die ID der Buchung, welche bearbeitet werden soll.
+   */
+  protected function getId() {
+    $app = JFactory::getApplication();
+    $input = $app->input;
+    return $input->get("id", 0, "INT");
   }
   
   // -------------------------------------------------------------------------
@@ -209,15 +258,6 @@ abstract class ZeitbankControllerUpdJournalBase extends JControllerForm {
     }
     
     return $validateResult;
-  }
-  
-  /**
-   * Liefert die ID des Angebots, welche bearbeitet werden soll.
-   */
-  private function getId() {
-    $app = JFactory::getApplication();
-    $input = $app->input;
-    return $input->get("id", 0, "INT");
   }
   
 }

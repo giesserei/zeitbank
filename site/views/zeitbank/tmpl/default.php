@@ -13,37 +13,10 @@ JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
-// Lokales CSS laden
-$doc = JFactory::getDocument();
-$base = JURI::base(true);
-$doc->addStyleSheet($base.'/components/com_zeitbank/template/giesserei_default.css');
-
 $max_journal_buchungen = 10000;
 
-$user =& JFactory::getUser();
-$model =& $this->getModel();
-
-function shortenComment($ktext) {
-	// Kommentar kürzen. falls nötig
-	if(strlen($ktext) > 35):
-		$ktext = substr($ktext,0,35)."...";
-	endif;
-	return($ktext);
-} // shortenComment
-
-/**
- * Buchungslink bei einem Geschenk nur anzeigen, wenn es die eigene Buchung ist.
- */
-function getBuchungsLink($isGeschenk, $jn, $user) {
-  $belastung = $jn->belastung_userid == $user->id;
-  
-  if ($isGeschenk && !$belastung) {
-    return JHTML::date($jn->datum_antrag,'d.m.Y');
-  }
-  else {
-    return '<a href="index.php?option=com_zeitbank&view=buchung&Itemid='.MENUITEM.'&token='.$jn->cf_uid.'">'.JHTML::date($jn->datum_antrag,'d.m.Y').'</a>';
-  }
-}
+$user = JFactory::getUser();
+$model = $this->getModel();
 
 echo '<div class="component">';
 
@@ -94,65 +67,90 @@ if(check_user()):
 	*/
 
 		
-		echo "<h4>Offene Quittierungen (von anderen an dich geleistete Stunden)</h4>";
+		echo "<h4>Offene Quittierungen (privater Stundentausch)</h4>";
 
 		// Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
-		if(count($this->quittierungen) > 0 ):		
-			echo "<table class=\"zeitbank\" >";
-			echo "<tr class=\"head\">
-				<th>Datum</th><th>Antrag von</th><th>Arbeitsgattung</th><th>Zeit<br />[min]</th><th>Kommentar</th><th style=\"text-align:right\">B-Nr.</th><th>&nbsp;</th></tr>";
+		if (count($this->quittierungen) > 0 ) {		
+			echo '<table class="zeitbank" >';
+			echo '<tr class="head">
+				      <th>Datum</th>
+			        <th>Antrag von</th>
+			        <th>Arbeitsgattung</th>
+			        <th>Zeit<br />[min]</th>
+			        <th>Kommentar</th>
+			        <th style="text-align:right">B-Nr.</th>
+			        <th>&nbsp;</th>
+			      </tr>';
 
-			$k = 0;	// Zebra start
-			
-			foreach($this->quittierungen as $qt):
-				// $style = $k ? "e9e2c8" : "EEE"; // Zebramuster
-				$style = $k ? "even" : "odd"; // Zebramuster				
-				$ktext = shortenComment($qt->text);
-				echo "<tr class=\"".$style."\">
-					<td>".JHTML::date($qt->datum_antrag,'d.m.Y')."</td><td>".$qt->name."</td><td>".
-					$qt->kurztext."</td><td style=\"text-align:right;\">".$qt->minuten."</td><td>".$ktext."</td><td style=\"text-align:right\">".$qt->id."</td>
-					<td><input type=\"button\" value=\"bestätigen\" onclick=\"window.location.href='/index.php?option=com_chronoforms&chronoform=Zeitbank_quittieren&token=".$qt->cf_uid."&Itemid=".MENUITEM."'\"></td></tr>";
+			$k = 0;
+			foreach($this->quittierungen as $qt) {
+				$style = $k ? "even" : "odd";
+				$ktext = ZeitbankFrontendHelper::cropText($qt->text, 35);
+				echo '<tr class="'.$style.'">
+					      <td>'.JHTML::date($qt->datum_antrag,'d.m.Y').'</td>
+					      <td>'.$qt->name.'</td>
+					      <td>'.$qt->kurztext.'</td>
+					      <td style="text-align:right;">'.$qt->minuten.'</td>
+					      <td>'.$ktext.'</td>
+					      <td style="text-align:right">'.$qt->id.'</td>
+					      <td>
+					        <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id='.$qt->id.'&Itemid='.MENUITEM.'\'">
+					      </td>
+					    </tr>';
 				$k = 1 - $k; 
-			endforeach; 
-			echo "</table>";
-		else:
+			} 
+			echo '</table>';
+		}
+		else {
 			echo "Keine offenen Quittierungen";
-		endif;
+		}
 
 		echo "<br /><br /><h4>Offene Anträge (von dir geleistete, unquittierte Stunden)</h4>";
 		
-		// Offene Anfragen (Einträge auflisten, für welche der aktuelle User Stunden geleistet hat, aber noch nicht bestätigt wurden
-		if(count($this->antraege) > 0 ):		
+		// Offene Anfragen => Einträge auflisten, für welche der aktuelle User Stunden geleistet hat, aber noch nicht bestätigt wurden
+		if (count($this->antraege) > 0 ) {	
 			echo "<table class=\"zeitbank\" >";
 			echo "<tr class=\"head\">
-				<th>Datum</th><th>Antrag an</th><th>Arbeitsgattung</th><th>Zeit<br />[min]</th><th>Kommentar</th><th>B-Nr.</th><th>&nbsp;</th></tr>";
+				      <th>Datum</th>
+			        <th>Antrag an</th>
+			        <th>Arbeitsgattung</th>
+			        <th>Zeit<br />[min]</th>
+			        <th>Kommentar</th>
+			        <th>B-Nr.</th>
+			        <th>&nbsp;</th>
+			      </tr>";
 
-			$k = 0;	// Zebra start
-			
-			foreach($this->antraege as $at):
-				// $style = $k ? "e9e2c8" : "EEE"; // Zebramuster				
-				$style = $k ? "even" : "odd"; // Zebramuster				
-				$ktext = shortenComment($at->text);
-				// echo "<tr style=\"vertical-align:top; background-color: #".$style."\">
-				echo "<tr class=\"".$style."\">
-				<td>".JHTML::date($at->datum_antrag,'d.m.Y')."</td><td>".$at->name."</td><td>".
-					$at->kurztext."</td><td style=\"text-align:right;\">".$at->minuten."</td><td>".$ktext."</td><td style=\"text-align:right\">".$at->id."</td>
-					<td><input type=\"button\" value=\"ändern\" onclick=\"window.location.href='/index.php?option=com_chronoforms&chronoform=Zeitbank_Buchung&token=".$at->cf_uid."&Itemid=".MENUITEM."'\"/>
-					<input type=\"button\" value=\"löschen\" onclick=\"window.location.href='/index.php?option=com_chronoforms&chronoform=Zeitbank_sicher_loeschen&token=".$at->cf_uid."&Itemid=".MENUITEM."'\"/></td></tr>";
+			$k = 0;	
+			foreach($this->antraege as $at) {		
+				$style = $k ? "even" : "odd";	
+				$ktext = ZeitbankFrontendHelper::cropText($at->text, 35);
+				echo '<tr class="'.$style.'">
+				        <td>'.JHTML::date($at->datum_antrag,'d.m.Y').'</td>
+				        <td>'.$at->name.'</td>
+				        <td>'.$at->kurztext.'</td>
+				        <td style="text-align:right;">'.$at->minuten.'</td>
+				        <td>'.$ktext.'</td>
+				        <td style="text-align:right">'.$at->id.'</td>
+					      <td>
+				          <input type="button" value="ändern" onclick="window.location.href=\'/index.php?option=com_zeitbank&task='.$at->task.'&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>    
+				          <input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>
+				        </td>
+					    </tr>';
 				$k = 1 - $k;   
-			endforeach; 
+			} 
 			echo "</table>";
-		else:
+		}
+		else {
 			echo "Keine offenen Anträge";
-		endif;
-		
+		};
 		
 		echo '<br />
           <fieldset>
-            <input type="button" value="Neuer Antrag" onclick="window.location.href=\'/index.php?option=com_chronoforms&chronoform=Zeitbank_Buchung&Itemid='.MENUITEM.'\'" />
+            <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
+            <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
+            <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
 		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" /><span style="color:red"> NEU</span>
 		      </fieldset>';
-
 		
 		// Alle verbuchten Posten aus dem Journal
 		// TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
@@ -220,7 +218,7 @@ if(check_user()):
 					$styleMinuten = $isFreiwillig ? "color:#888888" : "";		
 					$styleSaldo = $saldo < 0 ? 'color:red;' : '';	
 					echo '<tr style="vertical-align:top; background-color: #'.$style.'">
-						      <td>'.getBuchungsLink($isGeschenk, $jn, $user).'</td>
+						      <td>'.ZeitbankFrontendHelper::getLinkBuchung($jn->id, JHTML::date($jn->datum_antrag,'d.m.Y')).'</td>
 		              <td>'.$geber_name.'</td>
 		              <td>'.$empf_name.'</td>
 		              <td>'.$jn->kurztext.'</td>

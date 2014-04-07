@@ -1,18 +1,30 @@
 <?php 
 defined('_JEXEC') or die('Restricted access');
 
+JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+
 jimport('joomla.application.component.view');
 
+/**
+ * View zeigt alle Buchungen an, die der Benutzer quittiert hat. 
+ * 
+ * @author JAL
+ * @author Steffen Förster
+ */
 class ZeitbankViewQuittungsliste_Amt extends JView {
-  function display($tpl = null) {
-    $model =& $this->getModel();
-    $journal = $model->getUserJournal();
-
- 	$pagination =& $this->get('Pagination');
+  
+  protected $pagination;
+  
+  protected $quittungsliste;
+  
+  public function display($tpl = null) {
+    $model = $this->getModel();
+    $this->quittungsliste = $model->getQuittungsliste();
+ 	  $this->pagination = $model->getPagination();
  
-	$this->assignRef('pagination', $pagination); 
-    $this->assignRef('journal',$journal);
-    
+ 	  ZeitbankFrontendHelper::addComponentStylesheet();
+ 	  
     parent::display($tpl);
   }
 }

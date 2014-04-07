@@ -22,7 +22,7 @@ class ZeitbankFrontendHelper {
    */
   public static function cropText($text, $maxLength, $addDots = true) {
     $result = $text;
-    if(strlen($text) > $maxLength) {
+    if(!empty($text) && strlen($text) > $maxLength) {
       $result = substr($text, 0, $maxLength).($addDots ? "..." : "");
     }
     return $result;
@@ -107,6 +107,16 @@ class ZeitbankFrontendHelper {
       $minutes = "0".$minutes;
     }
     return($hours.":".$minutes);
+  }
+  
+  /**
+   * Liefert einen Link zur Anzeige der Details einer Buchung in einem JS-Window.
+   * Der Parameter tmpl=component sorgt dafür, dass nur die View ohne Template angezeigt wird.
+   */
+  public static function getLinkBuchung($id, $text) {
+    return '<a class="modal"
+             href="index.php?option=com_zeitbank&tmpl=component&view=buchung&id='.$id.'"
+             rel="{handler: \'iframe\', size: {x: 550, y: 450}}"><strong>'.$text.'</strong></a>';
   }
   
   // -------------------------------------------------------------------------
