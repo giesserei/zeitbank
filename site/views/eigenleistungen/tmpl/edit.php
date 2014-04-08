@@ -40,7 +40,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			</tr>	
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('kommentar_antrag'); ?></td>
-			  <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?></td>
+			  <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?><br/>(max. 1000 Zeichen)</td>
 			</tr>
 			<tr>
         <td class="lb" colspan="2" style="font-weight:normal"><span class="star">* </span> Eingabe ist obligatorisch</td>
@@ -63,7 +63,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
       <li>Auf dieser Seite kannst du einen Antrag auf Gutschrift von Giessereistunden stellen.</li>
       <li>Wenn du die Arbeitsgattung nicht kennst, kontaktiere bitte den Ressortverantwortlichen, welcher dir den Arbeitsauftrag gegeben hat.</li>
       <li>Die beantragten Minuten werden deinem Konto gutgeschrieben, sobald der Ämtli-Verantwortliche deinen Antrag quittiert hat.</li>
-      <li>Für die Arbeitskategorien mit einer Pauschale kannst du das Feld Minuten frei lassen.</li>
+      <li>Für die Arbeitskategorien mit einer Pauschale kannst du das Feld Minuten frei lassen. Es wird automatisch die Pauschle gutgeschrieben.</li>
     </ul>
   </div>
 </div>

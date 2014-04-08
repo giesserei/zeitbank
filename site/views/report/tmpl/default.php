@@ -29,19 +29,19 @@ echo '<tr class="head">
 				<th>Kennzahl</th>
         <th>Wert</th>
       </tr>';
-echo '<tr class="odd">
+echo '<tr class="zb_odd">
         <td>Summe der verbuchten Arbeitsstunden (ohne privaten Stundentausch)</td>
         <td>'.$this->getSummeArbeitStunden().' Stunden</td>
 		  </tr>';
-echo '<tr class="even">
+echo '<tr class="zb_even">
         <td>Summe der nicht quittierten Arbeitsstunden (ohne privaten Stundentausch)</td>
         <td>'.$this->getSummeNichtQuittierteStunden().' Stunden</td>
 		  </tr>';
-echo '<tr class="odd">
+echo '<tr class="zb_odd">
         <td>Durchschnittliche Dauer bis zur Quittierung</td>
         <td>'.$this->getQuittungDauer()->avg_dauer.' Tage</td>
 		  </tr>';
-echo '<tr class="even">
+echo '<tr class="zb_even">
         <td>Durchschnittliche Wartezeit der bis heute nicht quittierten Buchungen</td>
         <td>'.$this->getWartezeitUnquittierteBuchungen().' Tage</td>
 		  </tr>';
@@ -63,7 +63,7 @@ $i = 0;
 
 $stundenJeKategorie = $this->getSummeStundenNachKategorie();
 foreach($stundenJeKategorie as $kat) {
-  $style = $i % 2 == 0 ? "even" : "odd";
+  $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
   echo '<tr class="'.$style.'">
           <td>'.$kat->bezeichnung.'</td>
           <td>'.$kat->gesamtbudget.'</td>

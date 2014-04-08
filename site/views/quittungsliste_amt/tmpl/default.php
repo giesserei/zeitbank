@@ -28,7 +28,7 @@ if (check_user()) {
 		
 		$k = 0;
 		foreach($this->quittungsliste as $jn) {
-			$style = $k ? "even" : "odd";	
+			$style = $k ? "zb_even" : "zb_odd";	
 			echo '<tr class="'.$style.'">
 				      <td>'.ZeitbankFrontendHelper::getLinkBuchung($jn->id, JHTML::date($jn->datum_antrag,'d.m.Y')).'</td>
 		          <td>'.$jn->konto_gutschrift.'</td>

@@ -29,22 +29,38 @@ if(check_user()) {
 
 			$k = 0;
 			foreach($this->quittierungen as $qt) {
-				$style = $k ? "even" : "odd";	
+				$style = $k ? "zb_even" : "zb_odd";	
 				
 				echo '<tr class="'.$style.'">
 					      <td>'.JHTML::date($qt->datum_antrag,'d.m.Y').'</td>
-                <td>'.$qt->konto_gutschrift.'</td>
+                <td>'.ZeitbankFrontendHelper::getEmailLink($qt->vorname, $qt->nachname, $qt->email, 
+                    'Zeitbank / Dein Antrag / '.ZeitbankFrontendHelper::cropText($qt->kurztext, 75)).'</td>
                 <td>'.$qt->kurztext.'</td>
                 <td style="text-align:right;">'.$qt->minuten.'</td>
 			          <td>'.ZeitbankFrontendHelper::cropText($qt->text, 30, true).'</td>
 				        <td style="text-align:right">'.$qt->id.'</td>
 					      <td>
 				          <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id='.$qt->id.'&Itemid='.MENUITEM.'\'">
-                </td>
+                  <input type="button" value="ablehnen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=ablehnung.edit&id='.$qt->id.'&Itemid='.MENUITEM.'\'">
+			          </td>
               </tr>';
+				if ($qt->abgelehnt == 1) {
+				  echo '<tr class="'.$style.'">
+				          <td colspan="7" style="color:red">Du hast den Antrag abgelehnt: '.$qt->kommentar_ablehnung.'</td>
+				        </tr>';
+				}
 				$k = 1 - $k; 
 			} 
 			echo '</table>';
+			
+			echo '
+			<div style="margin-top:35px">
+			  <strong>Hinweis:</strong>
+			  <ul>
+			    <li>Ist die Buchung aus deiner Sicht fehlerhaft, so kannst du den Antrag ablehnen oder den/die AntragstellerIn persönlich informieren. 
+              <br/>Ein Klick auf den Namen öffnet dein E-Mail Programm (sofern eine E-Mail Adresse bekannt ist).</li>
+			  </ul>
+			</div>';
 		}
 		else {
 			echo "Keine offenen Quittierungen";

@@ -56,6 +56,7 @@ class ZeitbankControllerEigenleistungen extends ZeitbankControllerUpdJournalBase
     $buchung['arbeit_id'] = $data['arbeit_id'];
     $buchung['cf_uid'] = empty($data['cf_uid']) ? md5(uniqid(rand(), true)) : $data['cf_uid'];
     $buchung['kommentar_antrag'] = $data['kommentar_antrag'];
+    $buchung['abgelehnt'] = 0;
     return $buchung;
   }
   

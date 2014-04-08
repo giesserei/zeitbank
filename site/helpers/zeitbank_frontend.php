@@ -60,12 +60,12 @@ class ZeitbankFrontendHelper {
    * Erstellt mit den übergebenen Parametern einen Mailto-Link. Wenn die Mail-Adresse mit "kein.mail" beginnt,
    * wird einfach nur der Name (ohne Link) zurückgeliefert,
    */
-  public static function getEmailLink($vorname, $nachname, $email) {
+  public static function getEmailLink($vorname, $nachname, $email, $subject) {
       $name = $vorname . " " . $nachname;
       $link = $name;
     
       if (substr($email, 0, 11) != "kein.email.") {
-        $link = '<a href="mailto:'.$email.'?subject=Marktplatz&body=Liebe/Lieber '.$vorname.'">'.$name.'</a>';
+        $link = '<a href="mailto:'.$email.'?subject='.$subject.'&body=Liebe/Lieber '.$vorname.'">'.$name.'</a>';
       }
       
       return $link;

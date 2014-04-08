@@ -10,11 +10,11 @@ JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_
 jimport('joomla.log.log');
 
 /**
- * Model zum Quittieren von Anträgen.
+ * Model zum Ablehnen von Anträgen.
  * 
  * @author Steffen Förster
  */
-class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
+class ZeitbankModelAblehnung extends ZeitbankModelUpdJournalBase {
   
   public function __construct() {
     parent::__construct();
@@ -24,7 +24,7 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
    * @see JModelForm::getForm()
    */
   public function getForm($data = array(), $loadData = true) {
-    $form = $this->loadForm('com_zeitbank.quittung', 'quittung', array (
+    $form = $this->loadForm('com_zeitbank.ablehnung', 'ablehnung', array (
         'control' => 'jform',
         'load_data' => $loadData 
     ));
@@ -52,7 +52,7 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
     }
     
     $valid = 1;
-    $valid &= $this->validateMinuten($validateResult['id']);
+    $valid &= $this->validateKommentar($validateResult['kommentar_ablehnung']);
     
     if (!(bool) $valid) {
       return false;
@@ -88,19 +88,12 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
   // -------------------------------------------------------------------------
   
   /**
-   * Beim privaten Stundentausch muss ein entsprechendes Guthaben vorhanden sein.
-   * Sonst gibt es keine weitere Validierung.
+   * Es muss eine Begründung eingegeben werden.
    */
-  private function validateMinuten($journalId) {
-    $buchung = $this->getItem($journalId);
-    
-    if ($buchung->arbeit_id == ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH) {
-      $saldo = ZeitbankCalc::getSaldo($this->user->id);
-      
-      if ($buchung->minuten > $saldo) {
-        $this->setError('Der Stundentausch übersteigt dein aktuelles Guthaben ('.$saldo.' Minuten).');
-        return false;
-      }
+  private function validateKommentar($kommentar) {
+    if (ZeitbankFrontendHelper::isBlank($kommentar)) {
+      $this->setError('Bitte begründe die Ablehnung des Antrags.');
+      return false;
     }
     
     return true;

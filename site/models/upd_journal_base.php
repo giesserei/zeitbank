@@ -60,6 +60,20 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   }
   
   /**
+   * Liefert true, wenn der Journaleintrag zu einem Ämtli gehört und damit nicht zum privaten Stundentausch.
+   */
+  public function isJournalAemtli($id) {
+    $query = sprintf(
+        "SELECT count(*) AS aemtli
+         FROM #__mgh_zb_journal j
+         WHERE j.id = %s AND j.arbeit_id != %s",
+        mysql_real_escape_string($id), ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
+    $this->db->setQuery($query);
+    $result = $this->db->loadObject();
+    return $result->aemtli == 1;
+  }
+  
+  /**
    * Liefert den Antrag.
    */
   public function getAntrag($id) {

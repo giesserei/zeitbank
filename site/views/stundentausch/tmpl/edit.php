@@ -43,7 +43,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			</tr>	
 			<tr>
 			  <td class="lb"><?php echo $this->form->getLabel('kommentar_antrag'); ?></td>
-			  <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?></td>
+			  <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?><br/>(max. 1000 Zeichen)</td>
 			</tr>
 			<tr>
         <td class="lb" colspan="2" style="font-weight:normal"><span class="star">* </span> Eingabe ist obligatorisch</td>

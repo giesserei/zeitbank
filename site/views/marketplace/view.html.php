@@ -96,7 +96,7 @@ class ZeitbankViewMarketPlace extends JView {
       $i = 0;
     
       foreach($this->overview->meineAngebote as $angebot) {
-        $style = $i % 2 == 0 ? "even" : "odd";
+        $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
         $now = new DateTime('now');
         $ablauf = new DateTime($angebot->ablauf);
         $styleAblauf = ($now < $ablauf ? '' : 'style="color:red"');
@@ -150,11 +150,12 @@ class ZeitbankViewMarketPlace extends JView {
       $i = 0;
     
       foreach($this->overview->angeboteArbeiten as $angebot) {
-        $style = $i % 2 == 0 ? "even" : "odd";
+        $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
             <td>'.ZeitbankFrontendHelper::cropText($angebot->konto, 50).'</td>
-            <td>'.ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email).'</td>
+            <td>'.ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email, 
+                'Marktplatz / '.ZeitbankFrontendHelper::cropText($angebot->titel, 75)).'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
         $i ++;
@@ -194,11 +195,12 @@ class ZeitbankViewMarketPlace extends JView {
       $i = 0;
     
       foreach($this->overview->angeboteTauschen as $angebot) {
-        $style = $i % 2 == 0 ? "even" : "odd";
+        $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
         echo '<tr class="'.$style.'">
             <td>'.$this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)).'</td>
             <td>'.($angebot->richtung == 1 ? 'Suche Stunden' : 'Biete Stunden').'</td>
-            <td>'.ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email).'</td>
+            <td>'.ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email, 
+                'Marktplatz / '.ZeitbankFrontendHelper::cropText($angebot->titel, 75)).'</td>
 				    <td>'.JHTML::date($angebot->erstellt,"d.m.Y").'</td>
 				  </tr>';
         $i ++;

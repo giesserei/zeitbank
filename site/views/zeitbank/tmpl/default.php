@@ -22,9 +22,9 @@ echo '<div class="component">';
 
 if(check_user()):
 
-  //echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
-  //echo "Die Zeitbank ist für das Jahr 2014 vorbereitet. Alle ab jetzt vorgenommenen Buchungen gelten für das Jahr 2014.";
-  //echo '</div>';
+  echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
+  echo 'Die Zeitbank wurde überarbeitet. Bitte sende allfällige Fehler an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a>';
+  echo '</div>';
 
 	// Kategorien-Administrator?
 	if($kategorie=check_kat_admin(0)):
@@ -67,9 +67,9 @@ if(check_user()):
 	*/
 
 		
+	  // Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
 		echo "<h4>Offene Quittierungen (privater Stundentausch)</h4>";
-
-		// Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
+		
 		if (count($this->quittierungen) > 0 ) {		
 			echo '<table class="zeitbank" >';
 			echo '<tr class="head">
@@ -84,11 +84,11 @@ if(check_user()):
 
 			$k = 0;
 			foreach($this->quittierungen as $qt) {
-				$style = $k ? "even" : "odd";
+				$style = $k ? "zb_even" : "zb_odd";
 				$ktext = ZeitbankFrontendHelper::cropText($qt->text, 35);
 				echo '<tr class="'.$style.'">
 					      <td>'.JHTML::date($qt->datum_antrag,'d.m.Y').'</td>
-					      <td>'.$qt->name.'</td>
+					      <td>'.ZeitbankFrontendHelper::getEmailLink($qt->vorname, $qt->nachname, $qt->email, "Antrag privater Stundentausch").'</td>
 					      <td>'.$qt->kurztext.'</td>
 					      <td style="text-align:right;">'.$qt->minuten.'</td>
 					      <td>'.$ktext.'</td>
@@ -105,15 +105,15 @@ if(check_user()):
 			echo "Keine offenen Quittierungen";
 		}
 
-		echo "<br /><br /><h4>Offene Anträge (von dir geleistete, unquittierte Stunden)</h4>";
-		
 		// Offene Anfragen => Einträge auflisten, für welche der aktuelle User Stunden geleistet hat, aber noch nicht bestätigt wurden
+		echo "<br /><br /><h4>Offene Anträge (von dir geleistete, unquittierte Stunden)</h4>";
+
 		if (count($this->antraege) > 0 ) {	
 			echo "<table class=\"zeitbank\" >";
 			echo "<tr class=\"head\">
 				      <th>Datum</th>
 			        <th>Antrag an</th>
-			        <th>Arbeitsgattung</th>
+			        <th>Arbeitsgattung<br/>Ämtli-VerantwortlicheR</th>
 			        <th>Zeit<br />[min]</th>
 			        <th>Kommentar</th>
 			        <th>B-Nr.</th>
@@ -121,13 +121,21 @@ if(check_user()):
 			      </tr>";
 
 			$k = 0;	
+			$countAbgelehnt = 0;
 			foreach($this->antraege as $at) {		
-				$style = $k ? "even" : "odd";	
+				$style = $k ? "zb_even" : "zb_odd";	
 				$ktext = ZeitbankFrontendHelper::cropText($at->text, 35);
 				echo '<tr class="'.$style.'">
 				        <td>'.JHTML::date($at->datum_antrag,'d.m.Y').'</td>
 				        <td>'.$at->name.'</td>
-				        <td>'.$at->kurztext.'</td>
+				        <td>'.$at->kurztext;
+				// Ämtli-Verantwortlichen anzeigen, wenn kein privater Stundentausch
+				if ($at->arbeit_id != ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH) {
+				  echo '<br/>'.ZeitbankFrontendHelper::getEmailLink($at->vorname, $at->nachname, $at->email, 
+				      'Zeitbank / Mein Antrag vom '.JHTML::date($at->datum_antrag,'d.m.Y'));
+				}
+				
+				echo   '</td>
 				        <td style="text-align:right;">'.$at->minuten.'</td>
 				        <td>'.$ktext.'</td>
 				        <td style="text-align:right">'.$at->id.'</td>
@@ -136,9 +144,19 @@ if(check_user()):
 				          <input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>
 				        </td>
 					    </tr>';
+				if ($at->abgelehnt == 1) {
+				  echo '<tr class="'.$style.'">
+				          <td colspan="7" style="color:red">Antrag abgelehnt: '.$at->kommentar_ablehnung.'</td>
+				        </tr>';   
+				  $countAbgelehnt ++;
+				}
 				$k = 1 - $k;   
 			} 
 			echo "</table>";
+			if ($countAbgelehnt > 0) {
+			  echo '<br/><strong>Achtung:</strong> Es '.($countAbgelehnt == 1 ? 'wurde ein Antrag' : 'wurden '.$countAbgelehnt.' Anträge').' abgelehnt.
+			        Bitte ändere '.($countAbgelehnt == 1 ? 'den betroffenen Antrag' : 'die betroffenen Anträge').'.';
+			}
 		}
 		else {
 			echo "Keine offenen Anträge";
@@ -149,7 +167,7 @@ if(check_user()):
             <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
             <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
             <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
-		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" /><span style="color:red"> NEU</span>
+		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" />
 		      </fieldset>';
 		
 		// Alle verbuchten Posten aus dem Journal

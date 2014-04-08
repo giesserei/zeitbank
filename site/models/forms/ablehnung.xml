@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="ablehnung">
+
+		<field name="kommentar_ablehnung" type="textarea" label="Begründung: " class="inputbox" rows="4" cols="45" />
+		
+		<field name="cf_uid" type="hidden" default="" />
+
+	</fieldset>
+</form>

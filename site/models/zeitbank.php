@@ -42,15 +42,16 @@ class ZeitbankModelZeitbank extends JModel {
 	function getOffeneQuittierungen() {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
-    $query = "SELECT journal.id,journal.cf_uid,minuten,users.name as name,datum_antrag,kurztext,arbeit.kurztext,journal.kommentar_antrag as text
-    		      FROM #__users as users, #__mgh_zb_arbeit as arbeit, #__mgh_zb_journal AS journal
-    		      WHERE datum_quittung='0000-00-00' 
-                AND admin_del='0' 
-                AND arbeit_id = arbeit.id
-    		        AND users.id = gutschrift_userid
-    		        AND belastung_userid =".$user->id."
-    		        AND arbeit.id = ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH." 
-              ORDER BY datum_antrag ASC, journal.id ASC";
+    $query = "SELECT j.id, j.minuten, j.datum_antrag, a.kurztext, j.kommentar_antrag text, u.email, m.vorname, m.nachname
+    		      FROM #__users u, #__mgh_zb_arbeit a, #__mgh_zb_journal j, #__mgh_mitglied m
+    		      WHERE j.datum_quittung='0000-00-00' 
+                AND j.admin_del='0' 
+                AND j.arbeit_id = a.id
+    		        AND u.id = j.gutschrift_userid
+                AND m.userid = j.gutschrift_userid
+    		        AND j.belastung_userid = ".$user->id."
+    		        AND a.id = ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH." 
+              ORDER BY j.datum_antrag ASC, j.id ASC";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     return($rows);
@@ -62,19 +63,26 @@ class ZeitbankModelZeitbank extends JModel {
   function getOffeneAntraege() {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
-    $query = "SELECT journal.id,journal.cf_uid,minuten,users.name as name,datum_antrag,kurztext,arbeit.kurztext,journal.kommentar_antrag as text,
+    $query = "SELECT j.id, j.minuten, u.name, j.datum_antrag, a.kurztext, j.kommentar_antrag as text, 
+                j.abgelehnt, j.kommentar_ablehnung, j.arbeit_id,
+                IF (a.id != ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH.",
+                    (SELECT vorname FROM #__mgh_mitglied m WHERE m.userid = a.admin_id),'') vorname,
+                IF (a.id != ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH.",
+                    (SELECT nachname FROM #__mgh_mitglied m WHERE m.userid = a.admin_id),'') nachname,  
+                IF (a.id != ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH.",
+                    (SELECT email FROM #__users admin WHERE admin.id = a.admin_id),'') email,    
                 CASE 
-                  WHEN arbeit.id = ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH." THEN 'stundentausch.edit'
-                  WHEN arbeit.kategorie_id = ".ZeitbankConst::KATEGORIE_ID_FREIWILLIG." THEN 'freiwilligenarbeit.edit'   
+                  WHEN a.id = ".ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH." THEN 'stundentausch.edit'
+                  WHEN a.kategorie_id = ".ZeitbankConst::KATEGORIE_ID_FREIWILLIG." THEN 'freiwilligenarbeit.edit'   
                   ELSE 'eigenleistungen.edit'
                 END AS task 
-    		      FROM #__users as users, #__mgh_zb_arbeit as arbeit, #__mgh_zb_journal AS journal
-    		      WHERE datum_quittung='0000-00-00' 
-                AND admin_del='0' 
-                AND arbeit_id = arbeit.id
-    		        AND users.id = belastung_userid 
-                AND gutschrift_userid ='".$user->id."' 
-              ORDER BY datum_antrag ASC, journal.id ASC";
+    		      FROM #__users u, #__mgh_zb_arbeit a, #__mgh_zb_journal j
+    		      WHERE j.datum_quittung = '0000-00-00' 
+                AND j.admin_del = '0' 
+                AND j.arbeit_id = a.id
+    		        AND u.id = j.belastung_userid      
+                AND j.gutschrift_userid ='".$user->id."' 
+              ORDER BY j.datum_antrag ASC, j.id ASC";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     return($rows);

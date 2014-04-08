@@ -22,7 +22,7 @@ echo "<table class='market_details'>";
 
 echo "<tr>
         <td class='lb'>Ansprechpartner:</td>
-        <td class='value'>".getAnsprechpartner($this->details->ansprechpartner)."</td>
+        <td class='value'>".getAnsprechpartner($this->details->ansprechpartner, $this->details->item->titel)."</td>
       </tr>";
 
 if ($this->details->item->art == 1) {
@@ -46,15 +46,16 @@ echo "<tr>
 echo "</table>";
 
 
-function getAnsprechpartner($person) {
-  $linkName = ZeitbankFrontendHelper::getEmailLink($person->vorname, $person->nachname, $person->email);
+function getAnsprechpartner($person, $titel) {
+  $linkName = ZeitbankFrontendHelper::getEmailLink($person->vorname, $person->nachname, $person->email, 
+      'Marktplatz / '.ZeitbankFrontendHelper::cropText($titel, 75));
   
   $telefon = "";
   if (!empty($person->telefon) && $person->telefon_frei) {
     $telefon = " (Telefon: ".$person->telefon.")";
   }
   else if (!empty($person->handy) && $person->handy_frei) {
-    $telefon = " (Telefon: ".$person->telefon.")";
+    $telefon = " (Telefon: ".$person->handy.")";
   }
   
   return $linkName . $telefon;

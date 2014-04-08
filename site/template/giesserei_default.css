@@ -24,8 +24,11 @@ table.zeitbank tr td { padding: 3px 5px 3px 5px; }
 table.zeitbank tr th { padding: 3px 5px 3px 5px; }
 
 table.zeitbank tr.head { background-color: #7BB72B; color:white; }
-table.zeitbank tr.odd { vertical-align: middle; background-color: #e9e2c8; }
-table.zeitbank tr.even { vertical-align: middle; background-color: #eeeeee; }
+table.zeitbank tr.odd { vertical-align: top; background-color: #e9e2c8; }
+table.zeitbank tr.even { vertical-align: top; background-color: #eeeeee; }
+
+table.zeitbank tr.zb_odd { vertical-align: top; background-color: #eeeeee; }
+table.zeitbank tr.zb_even { vertical-align: top; background-color: #e9e2c8; }
 
 /**
  * Marktplatz
