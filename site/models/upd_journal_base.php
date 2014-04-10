@@ -136,33 +136,4 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
     return true;
   }
   
-  // -------------------------------------------------------------------------
-  // protected section
-  // -------------------------------------------------------------------------
-  
-  /**
-   * Liefert true, wenn der Empfänger ein aktiver Bewohner ist; sonst false.
-   */
-  protected function validateEmpfaenger($empfaengerId) {
-    if (!isset($empfaengerId)) {
-      $this->setError('Bitte Empfänger auswählen');
-      return false;
-    }
-  
-    $query = "SELECT userid, vorname, nachname
-              FROM #__mgh_aktiv_mitglied
-              WHERE userid = ".mysql_real_escape_string($empfaengerId)."
-                AND typ = 1
-                AND userid != ".$this->user->id;
-    $this->db->setQuery($query);
-    $count = $this->db->loadResult();
-  
-    if ($count == 0) {
-      $this->setError('Der Empfänger ist nicht zulässig.');
-      return false;
-    }
-  
-    return true;
-  }
-  
 }

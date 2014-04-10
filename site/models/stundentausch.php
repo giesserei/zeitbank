@@ -72,8 +72,6 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
     return $validateResult;
   }
   
-  
-  
   // -------------------------------------------------------------------------
   // protected section
   // -------------------------------------------------------------------------
@@ -111,6 +109,33 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
       $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
       return false;
     }    
+    return true;
+  }
+  
+  /**
+   * Liefert true, wenn der Empfänger ein aktiver Bewohner oder Gewerbe ist; sonst false.
+   * Auch darf dies nicht der angemeldete Benutzer sein.
+   */
+  private function validateEmpfaenger($empfaengerId, $inklStundenfonds = false) {
+    if (!isset($empfaengerId)) {
+      $this->setError('Bitte Empfänger auswählen');
+      return false;
+    }
+    
+    $query = "SELECT userid, vorname, nachname
+              FROM #__mgh_mitglied m
+              WHERE m.typ IN (1,2) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
+                AND userid = ".mysql_real_escape_string($empfaengerId)."
+                AND userid != ".$this->user->id;
+  
+    $this->db->setQuery($query);
+    $count = $this->db->loadResult();
+  
+    if ($count == 0) {
+      $this->setError('Der Empfänger ist nicht zulässig.');
+      return false;
+    }
+  
     return true;
   }
   

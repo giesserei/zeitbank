@@ -18,13 +18,26 @@ class BuchungHelper {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
     $searchMySql = mysql_real_escape_string($search);
-    $query = "SELECT userid, vorname, nachname
-              FROM #__mgh_aktiv_mitglied
-              WHERE (vorname LIKE '%".$searchMySql."%' OR nachname LIKE '%".$searchMySql."%')
-                AND typ != 5
-                AND userid != ".$user->id;
+    $query = "SELECT m.userid, m.vorname, m.nachname
+              FROM #__mgh_mitglied m
+              WHERE m.typ IN (1,2,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
+                AND (m.vorname LIKE '%".$searchMySql."%' OR m.nachname LIKE '%".$searchMySql."%')
+                AND m.userid != ".$user->id;
     $db->setQuery($query);
     return $db->loadObjectList();
+  }
+  
+  /**
+   * Liefert true, wenn der übergebene User das Zeitkonto Stundenfonds ist.
+   */
+  public static function isStundenfonds($userid) {
+    $db = JFactory::getDBO();
+    $query = "SELECT typ
+              FROM #__mgh_mitglied
+              WHERE userid = ".$userid;
+    $db->setQuery($query);
+    $props = $db->loadObject();
+    return $props->typ == 7;
   }
   
 }

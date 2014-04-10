@@ -4,6 +4,7 @@ defined('_JEXEC') or die('Restricted access');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
+JLoader::register('BuchungHelper', JPATH_COMPONENT . '/helpers/buchung.php');
 
 JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_journal_base.php');
 
@@ -105,18 +106,48 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
       return false;
     }
     
-    $saldoEmpfaenger = ZeitbankCalc::getSaldo($empfaengerId);
-    $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId);
+    // Prüfung des Empfängersolls nicht bei Stundenfonds nötig.
+    if (!BuchungHelper::isStundenfonds($empfaengerId)) {
+      $saldoEmpfaenger = ZeitbankCalc::getSaldo($empfaengerId);
+      $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId);
+      
+      if ($saldoEmpfaenger >= $sollEmpfaenger) {
+        $this->setError('Der Empfänger benötigt keine Stunden mehr.');
+        return false;
+      }
+      else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
+        $this->setError('Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger).' Minuten zur Erreichung des Stundensolls.');
+        return false;
+      }
+    }
     
-    if ($saldoEmpfaenger >= $sollEmpfaenger) {
-      $this->setError('Der Empfänger benötigt keine Stunden mehr.');
+    return true;
+  }
+  
+  /**
+   * Liefert true, wenn der Empfänger ein aktiver Bewohner oder der Stundenfonds ist; sonst false.
+   * Auch darf dies nicht der angemeldete Benutzer sein.
+   */
+  private function validateEmpfaenger($empfaengerId) {
+    if (!isset($empfaengerId)) {
+      $this->setError('Bitte Empfänger auswählen');
       return false;
     }
-    else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
-      $this->setError('Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger).' Minuten zur Erreichung des Stundensolls.');
+  
+    $query = "SELECT userid, vorname, nachname
+              FROM #__mgh_mitglied m
+              WHERE m.typ IN (1,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
+                AND userid = ".mysql_real_escape_string($empfaengerId)."
+                AND userid != ".$this->user->id;
+  
+    $this->db->setQuery($query);
+    $count = $this->db->loadResult();
+  
+    if ($count == 0) {
+      $this->setError('Der Empfänger ist nicht zulässig.');
       return false;
     }
-    
+  
     return true;
   }
   
