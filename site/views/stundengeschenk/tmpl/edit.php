@@ -68,7 +68,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
       <li>Der/die EmpfängerIn kann nicht sehen, wer die Stunden verschenkt hat.</li>
       <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
       <li>Stunden können bisher noch nicht an das Gewerbe verschenkt werden.</li>
-      <li>Diese Funktion ist neu - Probleme bitte melden an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a></li>
+      <li>Hier könnt ihr auch Stunden an den <strong>Giessereistundenfonds</strong> verschenken.</li>
     </ul>
   </div>
 </div>
