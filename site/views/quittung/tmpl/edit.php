@@ -21,7 +21,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
     <?php } ?>
     <li>AntragstellerIn: <strong><?php echo $this->antrag->konto_gutschrift; ?></strong></li> 
     <li>Arbeitsgattung: <strong><?php echo $this->antrag->kurztext ?></strong></li>
-    <?php if (empty($this->antrag->text)) { ?>
+    <?php if (!empty($this->antrag->text)) { ?>
     <li>Antragskommentar:<br/><?php echo $this->antrag->text ?></li>
     <?php } ?>
   </ul>
