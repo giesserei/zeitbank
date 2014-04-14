@@ -179,17 +179,31 @@ if(check_user()):
 		$soll = $this->getSoll();
 		
 		echo '<div style="margin-bottom:10px">
-			        <ul>
-			          <li><span style="width:350px;float:left">Dein Jahressaldo der Giessereistunden für '.date('Y').':</span><strong>'.ZeitbankFrontendHelper::formatTime($saldo).' h</strong></li>
-			          <li><span style="width:350px;float:left">Dein Jahressaldo der Freiwilligenstunden für '.date('Y').':</span><strong>'.ZeitbankFrontendHelper::formatTime($SaldoFreiwilligenarbeit).' h</strong></li>';
+	        <table class="stunden">
+		        <tr>
+		          <td class="description">Dein Jahressaldo der Giessereistunden für '.date('Y').':</td>
+		          <td class="time"><strong>'.ZeitbankFrontendHelper::formatTime($saldo).' h</strong></td>
+		          <td></td>
+		        </tr>
+		        <tr>
+		          <td class="description">Dein Jahressaldo der Freiwilligenstunden für '.date('Y').':</td>
+		          <td class="time"><strong>'.ZeitbankFrontendHelper::formatTime($SaldoFreiwilligenarbeit).' h</strong></td>     
+		          <td></td> 
+		        </tr>';	
 		if (!$this->isGewerbe()) {
-		  echo '<li><span style="width:350px;float:left">Dein Stundensoll für '.date('Y').':</span><strong>'.ZeitbankFrontendHelper::formatTime($soll).' h</strong>
-			        &nbsp;
-			        <a class="modal"
-                 href="index.php?option=com_zeitbank&tmpl=component&view=zeitbank&layout=hinweise_soll"
-                 rel="{handler: \'iframe\', size: {x: 700, y: 480}}"><strong>Hinweise zur Berechnung</strong></a></li>';
+		   echo '<tr>    
+		          <td class="description">Dein Stundensoll für '.date('Y').':</td>
+		          <td class="time">
+		            <strong>'.ZeitbankFrontendHelper::formatTime($soll).' h</strong>
+		          </td>
+		          <td class="description">
+		            <a class="modal"
+                  href="index.php?option=com_zeitbank&tmpl=component&view=zeitbank&layout=hinweise_soll"
+                  rel="{handler: \'iframe\', size: {x: 700, y: 480}}"><strong>Hinweise zur Berechnung</strong></a>
+		          </td>
+		        </tr>';
 		}
-		echo '</div>';
+		echo '</table></div>';
 		
 		if(count($this->journal) > 0 ) {
 			echo "<table class=\"zeitbank\" >";

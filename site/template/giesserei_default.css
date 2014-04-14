@@ -170,3 +170,12 @@ input.autocomplete { font-size: 28px; padding: 10px; border: 1px solid #CCC; dis
   list-style-type: none; 
 }
 
+/* ##########################  table Stunden  ########################### */
+
+table.stunden { 
+  width: 650px;
+  border: none;
+}
+
+table.stunden tr td.description { padding: 3px 5px 3px 5px; }
+table.stunden tr td.time { padding: 3px 5px 3px 5px; text-align:right }
