@@ -22,9 +22,9 @@ echo '<div class="component">';
 
 if(check_user()):
 
-  echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
-  echo 'Die Zeitbank wurde überarbeitet. Bitte sende allfällige Fehler an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a>';
-  echo '</div>';
+  #echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
+  #echo 'Die Zeitbank wurde überarbeitet. Bitte sende allfällige Fehler an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a>';
+  #echo '</div>';
 
 	// Kategorien-Administrator?
 	if($kategorie=check_kat_admin(0)):
@@ -55,7 +55,7 @@ if(check_user()):
   /* Allgemeine Funktionen*/
 	echo "<h1>Zeitbank: Allgemeine Funktionen</h1>";
 	echo '<ul>
-		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a> <span style="color:red">NEU</span></li>
+		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a></li>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
 		    </ul>
 		    <br /><br />';
