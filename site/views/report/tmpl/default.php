@@ -7,6 +7,8 @@ JHTML::_('behavior.modal');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
+JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+
 
 echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.$this->menuId.'">Zurück zur Zeitbank</a><p/>';
 
@@ -62,6 +64,10 @@ echo '<tr class="head">
 $i = 0;
 
 $stundenJeKategorie = $this->getSummeStundenNachKategorie();
+$totalBudget = 0;
+$totalProRate = 0;
+$totalSaldo = 0;
+
 foreach($stundenJeKategorie as $kat) {
   $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
   echo '<tr class="'.$style.'">
@@ -71,5 +77,22 @@ foreach($stundenJeKategorie as $kat) {
           <td>'.$kat->saldo.'</td>
 				</tr>';
   $i ++;
+  
+  if ($kat->id != ZeitbankConst::KATEGORIE_ID_FREIWILLIG && 
+      $kat->id != ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK && 
+      $kat->id != ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH)  {
+    $totalBudget += $kat->gesamtbudget;
+    $totalProRate += $kat->budget_pro_rata;
+    $totalSaldo += $kat->saldo;
+  }
 }
+
+$style = $i % 2 == 0 ? "zb_even" : "zb_odd";
+echo '<tr class="'.$style.'">
+        <td><strong>Total</strong></td>
+        <td><strong>'.$totalBudget.'</strong></td>
+        <td><strong>'.$totalProRate.'</strong></td>
+        <td><strong>'.$totalSaldo.'</strong></td>
+      </tr>';
+
 echo "</table>";

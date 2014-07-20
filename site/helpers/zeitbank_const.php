@@ -44,5 +44,15 @@ class ZeitbankConst {
    * ID der Kategorie Freiwilligenarbeit.
    */
   const KATEGORIE_ID_FREIWILLIG = -1;
+  
+  /**
+   * ID der Kategorie Privater Stundentausch.
+   */
+  const KATEGORIE_ID_STUNDENTAUSCH = 1;
+  
+  /**
+   * ID der Kategorie Privater Stundentausch.
+   */
+  const KATEGORIE_ID_STUNDENGESCHENK = 10;
 
 }

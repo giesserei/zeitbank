@@ -41,6 +41,26 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
+   * Liefert eine CSV-Datei mit quittierten Buchungen für alle Ämtli, die vom angemeldeten Benutzer verwaltet werden.
+   */
+  public function exportAemtliBuchungenToCSV() {
+    $filename = 'buchungen.csv';
+    $random = rand(1, 99999);
+    $filepath = JPATH_SITE.'/tmp/'.date('Y-m-d').'_'.strval($random).'_'.$filename;
+  
+    if ($this->createAemtliBuchungenCSVFile($filepath)) {
+      // deliver file
+      $this->deliverFile($filepath, 'buchungen');
+  
+      // clean up
+      JFile::delete($filepath);
+    }
+    else {
+      return false;
+    }
+  }
+  
+  /**
    * Liefert die Summe der verbuchten Arbeitstunden (ohne freiwilligenarbeit) ohne den Stundentausch und die Geschenke. 
    */
   public function getSummeArbeitStunden() {
@@ -83,7 +103,7 @@ class ZeitbankModelReport extends JModel {
     $db = $this->getDBO();
   
     $query = "
-      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.bezeichnung, k.gesamtbudget, 
+      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget, 
         ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01'))))) budget_pro_rata
       FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw j 
         JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
@@ -141,11 +161,14 @@ class ZeitbankModelReport extends JModel {
    */
   private function createKontosaldoCSVFile($filepath) {
     $db = $this->getDBO();
-    $csv_output = 'Nachname;Vorname;Einzug;Austritt;Dispensionsgrad;Saldo;User-ID';
+    $csv_output = 'Nachname;Vorname;Einzug;Austritt;Dispensionsgrad;Saldo;User-ID;WOHNUNG';
     $csv_output .= "\n";
   
     $query = "
-      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid  
+      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid,
+         (SELECT GROUP_CONCAT(DISTINCT objektid ORDER BY objektid DESC SEPARATOR ',')
+          FROM #__mgh_x_mitglied_mietobjekt o
+          WHERE o.userid = m.userid) wohnung 
       FROM (
         SELECT haben-soll saldo, userid
         FROM (
@@ -174,6 +197,45 @@ class ZeitbankModelReport extends JModel {
       $csv_output .= "\n";
     }
 
+    if (!JFile::write($filepath, $csv_output)) {
+      JFactory::getApplication()->enqueueMessage('Datei konnte nicht erstellt werden.');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Erstellt eine CSV-Datei mit quittierten Buchungen für alle Ämtli, die vom angemeldeten Benutzer verwaltet werden.
+   */
+  private function createAemtliBuchungenCSVFile($filepath) {
+    $db = $this->getDBO();
+    $user = JFactory::getUser();
+    $csv_output = 'Buchung-Nr;Minuten;Datum;Arbeitsgattung;Empfänger;Kommentar Antrag;Kommentar Quittierung';
+    $csv_output .= "\n";
+  
+    $query = "
+       SELECT j.id, j.minuten, j.datum_antrag, a.kurztext,
+         (SELECT u.name FROM #__users u WHERE u.id = j.gutschrift_userid) konto_gutschrift, 
+         CONCAT('\"', j.kommentar_antrag, '\"') kommentar_antrag,
+         CONCAT('\"', j.kommentar_quittung, '\"') kommentar_quittung
+    	 FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
+       WHERE j.datum_quittung != '0000-00-00'
+         AND j.admin_del = 0
+         AND j.datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')
+         AND a.admin_id = ".$user->id."
+       ORDER BY a.kurztext, j.datum_antrag DESC, j.id DESC
+    ";
+  
+    $db->setQuery($query);
+    $rows = $db->loadObjectList();
+  
+    foreach($rows as $row) {
+      foreach($row as $col_name => $value) {
+        $csv_output .= $value.'; ';
+      }
+      $csv_output .= "\n";
+    }
+  
     if (!JFile::write($filepath, $csv_output)) {
       JFactory::getApplication()->enqueueMessage('Datei konnte nicht erstellt werden.');
       return false;

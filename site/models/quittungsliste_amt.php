@@ -4,7 +4,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.model');
 
 /**
- * Model für die Liste der quittierten Buchungen.
+ * Model für die Liste der quittierten Buchungen für alle Ämtli, die vom angemeldeten Benutzer verwaltet werden.
  * 
  * @author JAL
  * @author Steffen Förster
@@ -81,5 +81,6 @@ class ZeitbankModelQuittungsliste_Amt extends JModel {
     }
     return $this->total;
   }
+  
 } 
 ?>
