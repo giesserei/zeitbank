@@ -97,17 +97,38 @@ class ZeitbankModelReport extends JModel {
   
   /**
    * Liefert die Summen der verbuchten und quittierten Stunden je Arbeitskategorie 
-   * (inkl. Geschenke, Stundentausch und Freiwilligenarbeit).
+   * (ohne Geschenke, Stundentausch und Freiwilligenarbeit).
    */
-  public function getSummeStundenNachKategorie() {
+  public function getSummeGiessereiStundenNachKategorie() {
     $db = $this->getDBO();
   
     $query = "
       SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget, 
         ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01'))))) budget_pro_rata
-      FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw j 
+      FROM #__mgh_zb_journal_quittiert_laufend j 
         JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
         JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
+      WHERE k.id NOT IN (".ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK.",".ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH.")
+      GROUP BY k.bezeichnung
+      ORDER BY k.bezeichnung";
+    $db->setQuery($query);
+    return $db->loadObjectList();
+  }
+  
+  /**
+   * Liefert die Summen der verbuchten und quittierten Stunden je Arbeitskategorie
+   * Geschenke, Stundentausch und Freiwilligenarbeit.
+   */
+  public function getSummeSonstigeStundenNachKategorie() {
+    $db = $this->getDBO();
+  
+    $query = "
+      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget,
+        ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01'))))) budget_pro_rata
+      FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw j
+        JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
+        JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
+      WHERE k.id IN (".ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK.",".ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH.",".ZeitbankConst::KATEGORIE_ID_FREIWILLIG.")
       GROUP BY k.bezeichnung
       ORDER BY k.bezeichnung";
     $db->setQuery($query);

@@ -53,11 +53,19 @@ class ZeitbankViewReport extends JView {
   }
   
   /**
-   * Liefert die Summen der verbuchten Stunden je Arbeitskategorie.
+   * Liefert die Summen der verbuchten Giesserei-Stunden je Arbeitskategorie.
    */
-  protected function getSummeStundenNachKategorie() {
+  protected function getSummeGiessereiStundenNachKategorie() {
     $model = $this->getModel();
-    return $model->getSummeStundenNachKategorie();
+    return $model->getSummeGiessereiStundenNachKategorie();
+  }
+  
+  /**
+   * Liefert die Summen der verbuchten Sonstigen-Stunden (freiwillig, privater Stundentausch, Geschenke) je Arbeitskategorie.
+   */
+  protected function getSummeSonstigeStundenNachKategorie() {
+    $model = $this->getModel();
+    return $model->getSummeSonstigeStundenNachKategorie();
   }
   
   /**

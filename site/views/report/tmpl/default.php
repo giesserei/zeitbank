@@ -53,7 +53,7 @@ echo '<p/>';
 
 echo '<h3 style="margin-bottom:10px">Verbuchte Stunden je Kategorie</h3>';
 
-echo '<table class="zeitbank" style="width:600px">';
+echo '<table class="zeitbank" style="width:700px">';
 echo '<tr class="head">
 				<th>Kategorie</th>
         <th>Jahresbudget</th>  
@@ -63,12 +63,17 @@ echo '<tr class="head">
 
 $i = 0;
 
-$stundenJeKategorie = $this->getSummeStundenNachKategorie();
-$totalBudget = 0;
-$totalProRate = 0;
-$totalSaldo = 0;
+$giessereiStundenJeKategorie = $this->getSummeGiessereiStundenNachKategorie();
+$totalBudget_G = 0;
+$totalProRata_G = 0;
+$totalSaldo_G = 0;
 
-foreach($stundenJeKategorie as $kat) {
+$sonstigeStundenJeKategorie = $this->getSummeSonstigeStundenNachKategorie();
+$totalBudget_S = 0;
+$totalProRata_S = 0;
+$totalSaldo_S = 0;
+
+foreach($giessereiStundenJeKategorie as $kat) {
   $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
   echo '<tr class="'.$style.'">
           <td>'.$kat->bezeichnung.'</td>
@@ -78,21 +83,50 @@ foreach($stundenJeKategorie as $kat) {
 				</tr>';
   $i ++;
   
-  if ($kat->id != ZeitbankConst::KATEGORIE_ID_FREIWILLIG && 
-      $kat->id != ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK && 
-      $kat->id != ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH)  {
-    $totalBudget += $kat->gesamtbudget;
-    $totalProRate += $kat->budget_pro_rata;
-    $totalSaldo += $kat->saldo;
-  }
+  $totalBudget_G += $kat->gesamtbudget;
+  $totalProRata_G += $kat->budget_pro_rata;
+  $totalSaldo_G += $kat->saldo;
 }
 
 $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
 echo '<tr class="'.$style.'">
+        <td><strong>Zwischensumme Giessereistunden</strong></td>
+        <td><strong>'.$totalBudget_G.'</strong></td>
+        <td><strong>'.$totalProRata_G.'</strong></td>
+        <td><strong>'.$totalSaldo_G.'</strong></td>
+      </tr>';
+$i ++;
+
+foreach($sonstigeStundenJeKategorie as $kat) {
+  $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
+  echo '<tr class="'.$style.'">
+          <td>'.$kat->bezeichnung.'</td>
+          <td>'.$kat->gesamtbudget.'</td>
+          <td>'.$kat->budget_pro_rata.'</td>
+          <td>'.$kat->saldo.'</td>
+				</tr>';
+  $i ++;
+
+  $totalBudget_S += $kat->gesamtbudget;
+  $totalProRata_S += $kat->budget_pro_rata;
+  $totalSaldo_S += $kat->saldo;
+}
+
+$style = $i % 2 == 0 ? "zb_even" : "zb_odd";
+echo '<tr class="'.$style.'">
+        <td><strong>Zwischensumme sonstige Stunden</strong></td>
+        <td><strong>'.$totalBudget_S.'</strong></td>
+        <td><strong>'.$totalProRata_S.'</strong></td>
+        <td><strong>'.$totalSaldo_S.'</strong></td>
+      </tr>';
+$i ++;
+
+$style = $i % 2 == 0 ? "zb_even" : "zb_odd";
+echo '<tr class="'.$style.'">
         <td><strong>Total</strong></td>
-        <td><strong>'.$totalBudget.'</strong></td>
-        <td><strong>'.$totalProRate.'</strong></td>
-        <td><strong>'.$totalSaldo.'</strong></td>
+        <td><strong>'.($totalBudget_G+$totalBudget_S).'</strong></td>
+        <td><strong>'.($totalProRata_G+$totalProRata_S).'</strong></td>
+        <td><strong>'.($totalSaldo_G+$totalSaldo_S).'</strong></td>
       </tr>';
 
 echo "</table>";
