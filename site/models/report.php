@@ -182,11 +182,12 @@ class ZeitbankModelReport extends JModel {
    */
   private function createKontosaldoCSVFile($filepath) {
     $db = $this->getDBO();
-    $csv_output = 'Nachname;Vorname;Einzug;Austritt;Dispensionsgrad;Saldo;User-ID;WOHNUNG';
+    $csv_output = 'Nachname;Vorname;Einzug;Austritt;Dispensionsgrad;Saldo;User-ID;E-Mail;Telefon1;Telefon2;WOHNUNG';
     $csv_output .= "\n";
   
     $query = "
-      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid,
+      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid, 
+             m.email, m.telefon, m.handy,
          (SELECT GROUP_CONCAT(DISTINCT objektid ORDER BY objektid DESC SEPARATOR ',')
           FROM #__mgh_x_mitglied_mietobjekt o
           WHERE o.userid = m.userid) wohnung 
@@ -213,7 +214,7 @@ class ZeitbankModelReport extends JModel {
 
     foreach($rows as $row) {
       foreach($row as $col_name => $value) {
-        $csv_output .= $value.'; ';
+        $csv_output .= $value.';';
       }
       $csv_output .= "\n";
     }
@@ -252,7 +253,8 @@ class ZeitbankModelReport extends JModel {
   
     foreach($rows as $row) {
       foreach($row as $col_name => $value) {
-        $csv_output .= $value.'; ';
+        $value = str_replace(array("\n", "\r"), '', $value);
+        $csv_output .= $value.';';
       }
       $csv_output .= "\n";
     }
