@@ -10,6 +10,8 @@
     <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
 
 		<field name="kommentar_antrag" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45" />
+		
+		<field name="datum_antrag" type="text" label="Jahr: " />
 
 	</fieldset>
 </form>

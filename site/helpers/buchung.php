@@ -40,4 +40,17 @@ class BuchungHelper {
     return $props->typ == 7;
   }
   
+  /**
+   * Liefert die User-Id des Stundenfonds.
+   */
+  public static function getStundenfondsUserId() {
+    $db = JFactory::getDBO();
+    $query = "SELECT userid
+              FROM #__mgh_mitglied
+              WHERE typ = 7";
+    $db->setQuery($query);
+    $props = $db->loadObject();
+    return $props->userid;
+  }
+  
 }

@@ -56,7 +56,12 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
     
     if ((bool) $valid) {
-      $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id']);
+      $valid &= $this->validateDatumAntrag($validateResult['datum_antrag']);
+    }
+    if ((bool) $valid) {
+      $year = substr($validateResult['datum_antrag'], 0, 4);
+      $lastYear = strcmp($year, date('Y')) != 0;
+      $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id'], $lastYear);
     }
     
     if (!(bool) $valid) {
@@ -87,8 +92,11 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
   /**
    * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
    * Es kann Zeit maximal bis zur Erreichung des Stundensolls des Empfängers verschenkt werden.
+   * 
+   * 2014-09-21 Es wird berücksichtigt, dass einige Tage nach dem Jahreswechsel auch noch auf das 
+   * letzte Jahr gebucht werden darf.    
    */
-  private function validateMinuten($minuten, $empfaengerId) {
+  private function validateMinuten($minuten, $empfaengerId, $lastYear) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
       $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest.');
       return false;
@@ -99,7 +107,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     }
     $minutenInt = intval($minuten);
     
-    $saldo = ZeitbankCalc::getSaldo($this->user->id);
+    $saldo = $lastYear ? ZeitbankCalc::getSaldoVorjahr($this->user->id) : ZeitbankCalc::getSaldo($this->user->id);
     
     if ($minutenInt > $saldo) {
       $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldo.' Minuten).');
@@ -108,7 +116,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     
     // Prüfung des Empfängersolls nicht bei Stundenfonds nötig.
     if (!BuchungHelper::isStundenfonds($empfaengerId)) {
-      $saldoEmpfaenger = ZeitbankCalc::getSaldo($empfaengerId);
+      $saldoEmpfaenger = $lastYear ? ZeitbankCalc::getSaldoVorjahr($empfaengerId) : ZeitbankCalc::getSaldo($empfaengerId);
       $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId);
       
       if ($saldoEmpfaenger >= $sollEmpfaenger) {

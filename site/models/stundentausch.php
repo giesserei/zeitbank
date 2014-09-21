@@ -65,6 +65,9 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
     if ((bool) $valid) {
       $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id']);
     }
+    if ((bool) $valid) {
+      $valid &= $this->validateDatumAntrag($validateResult['datum_antrag']);
+    }
     
     if (!(bool) $valid) {
       return false;

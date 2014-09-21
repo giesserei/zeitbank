@@ -39,6 +39,7 @@ class ZeitbankControllerStundenGeschenk extends ZeitbankControllerUpdJournalBase
     $dataAllowed['empfaenger_id'] = $data['empfaenger_id'];
     $dataAllowed['empfaenger'] = $data['empfaenger'];
     $dataAllowed['minuten'] = $data['minuten'];
+    $dataAllowed['datum_antrag'] = $data['datum_antrag'];
     $dataAllowed['kommentar_antrag'] = $this->cropKommentar($data['kommentar_antrag']);
     
     return $dataAllowed;
@@ -52,8 +53,8 @@ class ZeitbankControllerStundenGeschenk extends ZeitbankControllerUpdJournalBase
     $buchung['minuten'] = intval($data['minuten']);
     $buchung['belastung_userid'] = JFactory::getUser()->id;
     $buchung['gutschrift_userid'] = $data['empfaenger_id'];
-    $buchung['datum_antrag'] = date('Y-m-d');
-    $buchung['datum_quittung'] = date('Y-m-d');
+    $buchung['datum_antrag'] = $data['datum_antrag'];
+    $buchung['datum_quittung'] = $data['datum_antrag'];
     $buchung['admin_del'] = 0;
     $buchung['arbeit_id'] = ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK;
     $buchung['cf_uid'] = md5(uniqid(rand(), true));

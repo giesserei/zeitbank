@@ -136,4 +136,22 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
     return true;
   }
   
+  /**
+   * Prüft, ob das Antragsdatum korrekt gesetzt ist.
+   */
+  public function validateDatumAntrag($datumAntrag) {
+    if (strcmp($datumAntrag, date('Y-m-d')) == 0) {
+      return true;
+    }
+    if (ZeitbankCalc::isLastYearAllowed()) {
+      $lastYear = intval(date('Y')) - 1;
+      if (strcmp($datumAntrag, $lastYear.'-12-31') == 0) {
+        return true;
+      }
+    }
+  
+    $this->setError('Das Antragsdatum ist nicht korrekt!');
+    return false;
+  }
+  
 }

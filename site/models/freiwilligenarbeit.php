@@ -113,6 +113,9 @@ class ZeitbankModelFreiwilligenarbeit extends ZeitbankModelUpdJournalBase {
     if ((bool) $valid) {
       $valid &= $this->validateMinuten($validateResult['minuten']);
     }
+    if ((bool) $valid) {
+      $valid &= $this->validateDatumAntrag($validateResult['datum_antrag']);
+    }
     
     if (!(bool) $valid) {
       return false;
@@ -174,15 +177,18 @@ class ZeitbankModelFreiwilligenarbeit extends ZeitbankModelUpdJournalBase {
   
   private function validateMinuten($minuten) {
     $minutenToValidate = $minuten;
+    
+    // leere Eingaben -> 0
     if (!isset($minutenToValidate) || ZeitbankFrontendHelper::isBlank($minutenToValidate)) {
-      $minutenToSave = 0;
+      $minutenToValidate = 0;
     }
+    
+    // Nur Zahlen sind zulässig
     if (!is_numeric($minutenToValidate)) {
       $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
       return false;
     }    
     
-    // Bei einer Arbeitskategorie mit einer Pauschale, die Pauschale holen
     if ($minutenToValidate <= 0) {
       $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
       return false;

@@ -12,6 +12,8 @@
 		<field name="kommentar_antrag" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45" />
 
     <field name="cf_uid" type="hidden" default="" />
+    
+    <field name="datum_antrag" type="text" label="Jahr: " />
 
 	</fieldset>
 </form>

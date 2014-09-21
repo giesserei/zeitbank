@@ -30,6 +30,21 @@ class ZeitbankCalc {
   }
   
   /**
+   * Liefert den Saldo (Minuten) des Vorjahres für das übergebene Mitglied.
+   */
+  public static function getSaldoVorjahr($userId) {
+    $db = JFactory::getDBO();
+    $query = "SELECT COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr
+                               WHERE gutschrift_userid = ".$userId."), 0) -
+                     COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr
+                               WHERE belastung_userid = ".$userId."), 0)";
+    $db->setQuery($query);
+    $saldo = $db->loadResult();
+    $saldoInt = intval($saldo);
+    return $saldoInt;
+  }
+  
+  /**
    * Liefert den Saldo der Freiwilligenarbeit des laufenden Jahres für das übergebene Mitglied.
    */
   public static function getSaldoFreiwilligenarbeit($userId) {
@@ -40,21 +55,6 @@ class ZeitbankCalc {
                      COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw
                                WHERE belastung_userid = ".$userId."
                                  AND arbeit_id IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = -1)), 0)";
-    $db->setQuery($query);
-    $saldo = $db->loadResult();
-    $saldoInt = intval($saldo);
-    return $saldoInt;
-  }
-  
-  /**
-   * Liefert den Saldo (Minuten) des Vorjahres für das übergebene Mitglied.
-   */
-  public static function getSaldoVorjahr($userId) {
-    $db = JFactory::getDBO();
-    $query = "SELECT COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr
-                               WHERE gutschrift_userid = ".$userId."), 0) -
-                     COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr
-                               WHERE belastung_userid = ".$userId."), 0)";
     $db->setQuery($query);
     $saldo = $db->loadResult();
     $saldoInt = intval($saldo);
@@ -97,6 +97,17 @@ class ZeitbankCalc {
     }
     
     return $stundenSoll * 60;
+  }
+  
+  /**
+   * Liefert true, wenn eine Buchung für das vergangene Jahr erlaubt ist.
+   */
+  public static function isLastYearAllowed() {
+    $dateLower = new DateTime(date('Y').'-01-01');
+    $dateUpper = new DateTime(date('Y').'-01-05');
+    $today = new DateTime(date('Y-m-d'));
+    
+    return ($today >= $dateLower && $today <= $dateUpper);
   }
   
   // -------------------------------------------------------------------------

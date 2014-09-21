@@ -18,7 +18,7 @@ class Rules2014 implements Rules {
   }
   
   public function getStundenSollMinBewohner() {
-    return 8;
+    return 0;
   }
   
   public function getErsatzabgabe() {

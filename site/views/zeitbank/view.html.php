@@ -5,6 +5,7 @@ jimport('joomla.application.component.view');
 
 JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+JLoader::register('BuchungHelper', JPATH_COMPONENT . '/helpers/buchung.php');
 
 /**
  * View der Einstiegsseite zur Zeitbank.
@@ -38,7 +39,7 @@ class ZeitbankViewZeitbank extends JView {
   }
   
   /**
-   * Liefert das Saldo für den Bewohner/das Gewerbe.
+   * Liefert den Saldo für den Bewohner/das Gewerbe.
    */
   protected function getSaldo() {
     $user = JFactory::getUser();
@@ -46,7 +47,7 @@ class ZeitbankViewZeitbank extends JView {
   }
   
   /**
-   * Liefert das Saldo der Freiwilligenarbeit für den Bewohner/das Gewerbe.
+   * Liefert den Saldo der Freiwilligenarbeit für den Bewohner/das Gewerbe.
    */
   protected function getSaldoFreiwilligenarbeit() {
     $user = JFactory::getUser();
@@ -54,11 +55,19 @@ class ZeitbankViewZeitbank extends JView {
   }
   
   /**
-   * Liefert das Saldo des Vorjahres für den Bewohner/das Gewerbe.
+   * Liefert den Saldo des Vorjahres für den Bewohner/das Gewerbe.
    */
   protected function getSaldoVorjahr() {
     $user = JFactory::getUser();
     return ZeitbankCalc::getSaldoVorjahr($user->id);
+  }
+  
+  /**
+   * Liefert den Saldo des Stundenfonds.
+   */
+  protected function getSaldoStundenfonds() {
+    $userId = BuchungHelper::getStundenfondsUserId();
+    return ZeitbankCalc::getSaldo($userId);
   }
   
   /**

@@ -5,6 +5,7 @@ defined('_JEXEC') or die('Restricted access');
 // Autocompletion: https://github.com/devbridge/jQuery-Autocomplete
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
+JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 
 ?>
@@ -46,6 +47,30 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			  <td class="value"><?php echo $this->form->getInput('kommentar'); ?></td>
 			</tr>
 			<tr>
+			  <td class="lb"><?php echo $this->form->getLabel('datum_antrag'); ?></td>
+			  <td class="value">
+          <?php
+          $datumAntrag = array(date('Y-m-d') => date('Y'));
+          
+          if (ZeitbankCalc::isLastYearAllowed()) {
+            $lastYear = intval(date('Y')) - 1;
+            $datumAntrag[$lastYear.'-12-31'] = (string) $lastYear;
+          }
+          
+          $options = array();
+    
+          foreach($datumAntrag as $key=>$value) {
+    	      $options[] = JHTML::_('select.option', $key, $value);
+          }
+          
+          $dropdownDatumAntrag = JHTML::_('select.genericlist', $options, 'jform[datum_antrag]', 
+                  array('class'=>'inputbox', 'id'=>'jform_datum_antrag'), 'value', 'text', $this->form->getValue('datum_antrag'));
+    
+          echo $dropdownDatumAntrag;
+          ?>			  
+			  </td>
+			</tr>
+			<tr>
         <td class="lb" colspan="2" style="font-weight:normal"><span class="star">* </span> Eingabe ist obligatorisch</td>
       </tr>
     </table>	
@@ -69,6 +94,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
       <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
       <li>Stunden können bisher noch nicht an das Gewerbe verschenkt werden.</li>
       <li>Hier könnt ihr auch Stunden an den <strong>Giessereistundenfonds</strong> verschenken.</li>
+      <li>Nach dem Jahreswechsel kannst du noch bis zum <strong>05.01.</strong> Stunden für das vergangene Jahr verschenken.</li>
     </ul>
   </div>
 </div>
