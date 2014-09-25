@@ -25,6 +25,18 @@ class ZeitbankControllerReport extends JController {
   }
   
   /**
+   * Liefert die aktuellen Kontosaldo aller Bewohner für das Vorjahrjahr.
+   */
+  public function kontosaldoVorjahr() {
+    if (!ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_DOWNLOAD_SALDO)) {
+      return false;
+    }
+  
+    $model = $this->getModel('report');
+    $model->exportKontosaldoVorjahrToCSV();
+  }
+  
+  /**
    * Liefert eine CSV-Datei mit quittierten Buchungen für alle Ämtli, die vom angemeldeten Benutzer verwaltet werden.
    */
   public function aemtliBuchungen() {

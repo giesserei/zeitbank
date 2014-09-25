@@ -28,10 +28,31 @@ class ZeitbankModelReport extends JModel {
     $random = rand(1, 99999);
     $filepath = JPATH_SITE.'/tmp/'.date('Y-m-d').'_'.strval($random).'_'.$filename;
     
-    if ($this->createKontosaldoCSVFile($filepath)) {
+    if ($this->createKontosaldoCSVFile($filepath, false)) {
       // deliver file
       $this->deliverFile($filepath, 'kontosaldo');
     
+      // clean up
+      JFile::delete($filepath);
+    }
+    else {
+      return false;
+    }
+  }
+  
+  /**
+   * Erstellt eine CSV-Datei mit den Kontosaldo der Bewohner und des Gewerbes für das Vorjahr
+   * und schreibt diese in den Response.
+   */
+  public function exportKontosaldoVorjahrToCSV() {
+    $filename = 'kontosaldo.csv';
+    $random = rand(1, 99999);
+    $filepath = JPATH_SITE.'/tmp/'.date('Y-m-d').'_'.strval($random).'_'.$filename;
+  
+    if ($this->createKontosaldoCSVFile($filepath, true)) {
+      // deliver file
+      $this->deliverFile($filepath, 'kontosaldo');
+  
       // clean up
       JFile::delete($filepath);
     }
@@ -178,13 +199,15 @@ class ZeitbankModelReport extends JModel {
   // -------------------------------------------------------------------------
   
   /**
-   * Erstellt die CSV-Datei mit den aktuellen Kontosaldo.
+   * Erstellt die CSV-Datei mit den Kontosaldo.
    */
-  private function createKontosaldoCSVFile($filepath) {
+  private function createKontosaldoCSVFile($filepath, $vorjahr = false) {
     $db = $this->getDBO();
     $csv_output = 'Nachname;Vorname;Einzug;Austritt;Dispensionsgrad;Saldo;User-ID;E-Mail;Telefon1;Telefon2;WOHNUNG';
     $csv_output .= "\n";
   
+    $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
+    
     $query = "
       SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid, 
              m.email, m.telefon, m.handy,
@@ -195,12 +218,12 @@ class ZeitbankModelReport extends JModel {
         SELECT haben-soll saldo, userid
         FROM (
           SELECT ROUND(COALESCE((
-            SELECT SUM(j1.minuten) / 60 FROM #__mgh_zb_journal_quittiert_laufend j1
+            SELECT SUM(j1.minuten) / 60 FROM ".$view." j1
             WHERE j1.belastung_userid = h.gutschrift_userid
           ),0), 2) soll, h.haben, h.gutschrift_userid AS userid
           FROM (
             SELECT ROUND((sum(j2.minuten) / 60), 2) haben, j2.gutschrift_userid
-            FROM #__mgh_zb_journal_quittiert_laufend j2   
+            FROM ".$view." j2   
             GROUP BY j2.gutschrift_userid
           ) h
         ) s

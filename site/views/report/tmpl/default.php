@@ -19,6 +19,7 @@ echo '<div style="margin-top:10px">';
 echo '  <ul>';
 if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_DOWNLOAD_SALDO)) {
   echo '    <li><a href="index.php?option=com_zeitbank&task=report.kontosaldo&format=raw">Download: Aktuelle Saldos aller Mitglieder</a></li>';
+  echo '    <li><a href="index.php?option=com_zeitbank&task=report.kontosaldoVorjahr&format=raw">Download: Saldos aller Mitglieder des Vorjahres</a></li>';
 }
 echo '  </ul>';
 echo '</div>';
