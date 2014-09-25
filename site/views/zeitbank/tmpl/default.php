@@ -54,13 +54,20 @@ if(check_user()):
     echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Kennzahlen ansehen und ggf. Reports erstellen</a></li></ul><br />';
   }
 	
-  /* Allgemeine Funktionen*/
+  // Allgemeine Funktionen
 	echo "<h1>Zeitbank: Allgemeine Funktionen</h1>";
 	echo '<ul>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a></li>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
-		    </ul>
-		    <br /><br />';
+		    </ul><br />';
+	
+	// Giessereifonds
+	echo "<h1>Zeitbank: Giessereistundenfonds</h1>";
+	$saldoStundenfonds = $this->getSaldoStundenfonds();
+	echo "Stunden im Giessereistundenfonds für ".date('Y').":&nbsp;&nbsp;&nbsp;<strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfonds)." h</strong><br /><br />";
+	
+	// Offene Quittierungen und Anträge
+	echo "<h1>Zeitbank: Quittierungen und Anträge</h1>";
 	
 	/* Liste der persönlichen Zeitbankauszüge ausgeben */
 	/*
@@ -70,7 +77,7 @@ if(check_user()):
 
 		
 	  // Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
-		echo "<h4>Offene Quittierungen (privater Stundentausch)</h4>";
+		echo "<h4>Offene Quittierungen (inkl. privater Stundentausch)</h4>";
 		
 		if (count($this->quittierungen) > 0 ) {		
 			echo '<table class="zeitbank" >';
@@ -172,29 +179,31 @@ if(check_user()):
 		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" />
 		      </fieldset>';
 		
-		// Alle verbuchten Posten aus dem Journal
-		// TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
-		echo "<br /><br /><h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4><br />";
+		// Journal
+		echo "<h1>Zeitbank: Dein Journal</h1>";
+		
+		
 		
 		$saldo = $this->getSaldo();
+		$saldoVorjahr = $this->getSaldoVorjahr();
 		$SaldoFreiwilligenarbeit = $this->getSaldoFreiwilligenarbeit();
 		$soll = $this->getSoll();
 		
 		echo '<div style="margin-bottom:10px">
 	        <table class="stunden">
 		        <tr>
-		          <td class="description">Dein Jahressaldo der Giessereistunden für '.date('Y').':</td>
+		          <td class="description">Dein Jahressaldo der Giessereistunden für '.date('Y').'</td>
 		          <td class="time"><strong>'.ZeitbankFrontendHelper::formatTime($saldo).' h</strong></td>
 		          <td></td>
 		        </tr>
 		        <tr>
-		          <td class="description">Dein Jahressaldo der Freiwilligenstunden für '.date('Y').':</td>
+		          <td class="description">Dein Jahressaldo der Freiwilligenstunden für '.date('Y').'</td>
 		          <td class="time"><strong>'.ZeitbankFrontendHelper::formatTime($SaldoFreiwilligenarbeit).' h</strong></td>     
 		          <td></td> 
 		        </tr>';	
 		if (!$this->isGewerbe()) {
 		   echo '<tr>    
-		          <td class="description">Dein Stundensoll für '.date('Y').':</td>
+		          <td class="description">Dein Stundensoll für '.date('Y').'</td>
 		          <td class="time">
 		            <strong>'.ZeitbankFrontendHelper::formatTime($soll).' h</strong>
 		          </td>
@@ -205,7 +214,17 @@ if(check_user()):
 		          </td>
 		        </tr>';
 		}
+		$lastYear = intval(date('Y')) - 1;
+		echo   '<tr>
+		          <td class="description">Dein Jahressaldo des Vorjahres '.$lastYear.'</td>
+		          <td class="time">'.ZeitbankFrontendHelper::formatTime($saldoVorjahr).' h</td>
+		          <td></td>
+		       </tr>';
 		echo '</table></div>';
+		
+		// Alle verbuchten Posten aus dem Journal
+		// TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
+		echo "<h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4><br />";
 		
 		if(count($this->journal) > 0 ) {
 			echo "<table class=\"zeitbank\" >";
@@ -279,12 +298,6 @@ if(check_user()):
 			// Noch keine Buchungen dieses Jahr
 			echo "<p>Noch keine Buchungen vorhanden</p>"; 
 		}
-		
-		$saldoStundenfonds = $this->getSaldoStundenfonds();
-		echo "<br /><br />Stunden im Giessereistundenfonds: <strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfonds)." h</strong>";
-		
-		$saldoVorjahr = $this->getSaldoVorjahr();
-		echo "<br /><br />Saldo des Vorjahres (".date('Y',time() - (365 * 24 * 60 * 60))."): <strong>".ZeitbankFrontendHelper::formatTime($saldoVorjahr)." h</strong>";
 		
 		echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/>";
 else:
