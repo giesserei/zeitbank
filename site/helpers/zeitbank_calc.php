@@ -101,12 +101,36 @@ class ZeitbankCalc {
   
   /**
    * Liefert true, wenn eine Buchung für das vergangene Jahr erlaubt ist.
+   * Aktuelles Datum muss zwischen dem 01.01. und dem 05.01. liegen.
    */
   public static function isLastYearAllowed() {
     $dateLower = new DateTime(date('Y').'-01-01');
     $dateUpper = new DateTime(date('Y').'-01-05');
     $today = new DateTime(date('Y-m-d'));
     
+    return ($today >= $dateLower && $today <= $dateUpper);
+  }
+  
+  /**
+   * Liefert true, wenn eine Buchung für das aktuelle Jahr erlaubt ist.
+   * Aktuelles Datum muss >= dem 09.01. sein.
+   */
+  public static function isCurrentYearAllowed() {
+    $dateLower = new DateTime(date('Y').'-01-09');
+    $today = new DateTime(date('Y-m-d'));
+  
+    return ($today >= $dateLower);
+  }
+  
+  /**
+   * Liefert true, wenn keine Buchungen durchgeführt werden können.
+   * Während der Abschlussarbeiten ist die Zeitbank gesperrt: 06.01. bis 08.01.
+   */
+  public static function isBuchungGesperrt() {
+    $dateLower = new DateTime(date('Y').'-01-06');
+    $dateUpper = new DateTime(date('Y').'-01-08');
+    $today = new DateTime(date('Y-m-d'));
+  
     return ($today >= $dateLower && $today <= $dateUpper);
   }
   

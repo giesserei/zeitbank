@@ -50,7 +50,11 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 			  <td class="lb"><?php echo $this->form->getLabel('datum_antrag'); ?></td>
 			  <td class="value">
           <?php
-          $datumAntrag = array(date('Y-m-d') => date('Y'));
+          $datumAntrag = array();
+          
+          if (ZeitbankCalc::isCurrentYearAllowed()) {
+            $datumAntrag[date('Y-m-d')] = date('Y');
+          }
           
           if (ZeitbankCalc::isLastYearAllowed()) {
             $lastYear = intval(date('Y')) - 1;

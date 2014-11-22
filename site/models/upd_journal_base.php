@@ -140,6 +140,11 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
    * Prüft, ob das Antragsdatum korrekt gesetzt ist.
    */
   public function validateDatumAntrag($datumAntrag) {
+    if (ZeitbankCalc::isBuchungGesperrt()) {
+      $this->setError('Das Antragsdatum ist nicht korrekt!');
+      return false;
+    }
+    
     if (strcmp($datumAntrag, date('Y-m-d')) == 0) {
       return true;
     }

@@ -12,6 +12,7 @@ require_once(JPATH_BASE .'/components/com_zeitbank/models/kategorie_func.php');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
+JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 
 $max_journal_buchungen = 10000;
 
@@ -148,9 +149,13 @@ if(check_user()):
 				        <td style="text-align:right;">'.$at->minuten.'</td>
 				        <td>'.$ktext.'</td>
 				        <td style="text-align:right">'.$at->id.'</td>
-					      <td>
-				          <input type="button" value="ändern" onclick="window.location.href=\'/index.php?option=com_zeitbank&task='.$at->task.'&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>    
-				          <input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>
+					      <td>';
+				
+				if (!ZeitbankCalc::isBuchungGesperrt()) {
+				  echo '<input type="button" value="ändern" onclick="window.location.href=\'/index.php?option=com_zeitbank&task='.$at->task.'&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>';    
+				}
+				
+				echo     '<input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id='.$at->id.'&Itemid='.MENUITEM.'\'"/>
 				        </td>
 					    </tr>';
 				if ($at->abgelehnt == 1) {
@@ -171,15 +176,21 @@ if(check_user()):
 			echo "Keine offenen Anträge";
 		};
 		
-		echo '<br />
-          <fieldset>
-            <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
-            <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
-            <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
-		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" />
-		      </fieldset>';
+		if (ZeitbankCalc::isBuchungGesperrt()) {
+		  echo '<br /><h1 style="color:red">Wegen Wartungsarbeiten können keine Buchungen erfasst werden.</h1>';
+		}
+		else {
+		  echo '<br />
+            <fieldset>
+              <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
+              <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
+              <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid='.MENUITEM.'\'" />&nbsp;&nbsp;
+  		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid='.MENUITEM.'\'" />
+  		      </fieldset>';
+		}
 		
 		// Journal
+		echo "<br />";
 		echo "<h1>Zeitbank: Dein Journal</h1>";
 		
 		
