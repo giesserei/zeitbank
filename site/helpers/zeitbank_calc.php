@@ -124,11 +124,11 @@ class ZeitbankCalc {
   
   /**
    * Liefert true, wenn keine Buchungen durchgeführt werden können.
-   * Während der Abschlussarbeiten ist die Zeitbank gesperrt: 06.01. bis 08.01.
+   * Während der Abschlussarbeiten ist die Zeitbank gesperrt: 06.01. bis 10.01.
    */
   public static function isBuchungGesperrt() {
     $dateLower = new DateTime(date('Y').'-01-06');
-    $dateUpper = new DateTime(date('Y').'-01-08');
+    $dateUpper = new DateTime(date('Y').'-01-10');
     $today = new DateTime(date('Y-m-d'));
   
     return ($today >= $dateLower && $today <= $dateUpper);
