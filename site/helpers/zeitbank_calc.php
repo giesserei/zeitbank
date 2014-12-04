@@ -113,10 +113,10 @@ class ZeitbankCalc {
   
   /**
    * Liefert true, wenn eine Buchung für das aktuelle Jahr erlaubt ist.
-   * Aktuelles Datum muss >= dem 09.01. sein.
+   * Aktuelles Datum muss >= dem 11.01. sein.
    */
   public static function isCurrentYearAllowed() {
-    $dateLower = new DateTime(date('Y').'-01-09');
+    $dateLower = new DateTime(date('Y').'-01-11');
     $today = new DateTime(date('Y-m-d'));
   
     return ($today >= $dateLower);
