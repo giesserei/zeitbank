@@ -117,7 +117,9 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     // Prüfung des Empfängersolls nicht bei Stundenfonds nötig.
     if (!BuchungHelper::isStundenfonds($empfaengerId)) {
       $saldoEmpfaenger = $lastYear ? ZeitbankCalc::getSaldoVorjahr($empfaengerId) : ZeitbankCalc::getSaldo($empfaengerId);
-      $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId);
+      
+      // Dispensation wird nicht berücksichtigt (geschenkte Stunden können so eine Zahlung der Hauswartspauschale verhindern)
+      $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId, false);
       
       if ($saldoEmpfaenger >= $sollEmpfaenger) {
         $this->setError('Der Empfänger benötigt keine Stunden mehr.');

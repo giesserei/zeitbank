@@ -63,12 +63,13 @@ class ZeitbankCalc {
   
   /**
    * Berechnet das persönliche Soll an Eigenleistungen (Minuten) für das übergebene Mitglied.
+   * Mit dem Parameter $inklDispensation kann definiert werden, ob eine Dispensation berücksichtigt werden soll.
    * 
    * Vorbedingungen:
    * - Mitglied ist ein Bewohner
    * - Einzugsdatum ist in der DB erfasst
    */
-  public static function getSollBewohner($userId) {
+  public static function getSollBewohner($userId, $inklDispensation = true) {
     $db = JFactory::getDBO();
     $query = "SELECT einzug, dispension_grad, zb_freistellung, typ
               FROM #__mgh_mitglied 
@@ -88,7 +89,7 @@ class ZeitbankCalc {
     $stundenSoll = $monate * ($rules->getStundenSollBewohner() / 12);
     
     // Dispensionsgrad berücksichtigen
-    if ($props->dispension_grad > 0) {
+    if ($inklDispensation && $props->dispension_grad > 0) {
       $stundenSollMin = $monate * ($rules->getStundenSollMinBewohner() / 12);
       $stundenSollReduziert = ($stundenSoll * (1 - ($props->dispension_grad / 100)));
       
