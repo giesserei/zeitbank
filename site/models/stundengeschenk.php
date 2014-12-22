@@ -106,6 +106,10 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
       return false;
     }
     $minutenInt = intval($minuten);
+    if ($minutenInt <= 0) {
+      $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
+      return false;
+    }
     
     $saldo = $lastYear ? ZeitbankCalc::getSaldoVorjahr($this->user->id) : ZeitbankCalc::getSaldo($this->user->id);
     

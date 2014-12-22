@@ -111,7 +111,13 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
     if (!is_numeric($minuten)) {
       $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
       return false;
-    }    
+    }  
+    $minutenInt = intval($minuten);
+    if ($minutenInt <= 0) {
+      $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
+      return false;
+    }
+    
     return true;
   }
   
