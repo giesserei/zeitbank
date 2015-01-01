@@ -82,6 +82,26 @@ class ZeitbankModelReport extends JModel {
   }
   
   /**
+   * Liefert eine CSV-Datei mit quittierten Buchungen für das Konto des angemeldeten Benutzers - ohne Zeiteinschränkung. 
+   */
+  public function exportKontoauszugToCSV() {
+    $filename = 'kontoauszug.csv';
+    $random = rand(1, 99999);
+    $filepath = JPATH_SITE.'/tmp/'.date('Y-m-d').'_'.strval($random).'_'.$filename;
+  
+    if ($this->createKontoauszugCSVFile($filepath)) {
+      // deliver file
+      $this->deliverFile($filepath, 'kontoauszug');
+  
+      // clean up
+      JFile::delete($filepath);
+    }
+    else {
+      return false;
+    }
+  }
+  
+  /**
    * Liefert die Summe der verbuchten Arbeitstunden (ohne freiwilligenarbeit) ohne den Stundentausch und die Geschenke. 
    */
   public function getSummeArbeitStunden() {
@@ -269,6 +289,59 @@ class ZeitbankModelReport extends JModel {
          AND j.datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')
          AND a.admin_id = ".$user->id."
        ORDER BY a.kurztext, j.datum_antrag DESC, j.id DESC
+    ";
+  
+    $db->setQuery($query);
+    $rows = $db->loadObjectList();
+  
+    foreach($rows as $row) {
+      foreach($row as $col_name => $value) {
+        $value = str_replace(array("\n", "\r"), '', $value);
+        $csv_output .= $value.';';
+      }
+      $csv_output .= "\n";
+    }
+  
+    if (!JFile::write($filepath, $csv_output)) {
+      JFactory::getApplication()->enqueueMessage('Datei konnte nicht erstellt werden.');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Erstellt eine CSV-Datei mit allen quittierten Buchungen für das Konto des angemeldeten Benutzers.
+   */
+  private function createKontoauszugCSVFile($filepath) {
+    $db = $this->getDBO();
+    $user = JFactory::getUser();
+    $csv_output = 'Buchung-Nr;Minuten;Minuten für Saldoberechnung;Datum Antrag;Datum Quittierung;Arbeitsgattung;bekommen von;übergeben an;Kommentar Antrag;Kommentar Quittierung';
+    $csv_output .= "\n";
+  
+    $query = "
+       SELECT j.id buchnungs_nr, j.minuten, 
+         CASE 
+           WHEN a.kategorie_id = -1 THEN 0
+           WHEN j.belastung_userid = ".$user->id." THEN (-1 * j.minuten)
+	         ELSE j.minuten
+         END AS fuer_saldo_berechnung, 
+         j.datum_antrag, j.datum_quittung, a.kurztext arbeitsgattung,
+         CASE 
+           WHEN j.belastung_userid = ".$user->id." THEN ''
+		       WHEN j.belastung_userid != ".$user->id." AND a.id = 3 THEN 'Anonymous'
+           ELSE (SELECT u.name FROM joomghjos_users u WHERE u.id = j.belastung_userid)
+         END bekommen_von,
+		     CASE 
+           WHEN j.gutschrift_userid = ".$user->id." THEN ''
+		       ELSE (SELECT u.name FROM joomghjos_users u WHERE u.id = j.gutschrift_userid)
+		     END uebergeben_an,
+         CONCAT('\"', j.kommentar_antrag, '\"') kommentar_antrag,
+         CONCAT('\"', j.kommentar_quittung, '\"') kommentar_quittung
+    	 FROM joomghjos_mgh_zb_journal j JOIN joomghjos_mgh_zb_arbeit a ON j.arbeit_id = a.id
+       WHERE j.datum_quittung != '0000-00-00'
+         AND j.admin_del = 0
+         AND (j.gutschrift_userid = ".$user->id." OR j.belastung_userid = ".$user->id.")
+       ORDER BY j.datum_antrag DESC, j.id DESC
     ";
   
     $db->setQuery($query);

@@ -18,6 +18,7 @@ $max_journal_buchungen = 10000;
 
 $user = JFactory::getUser();
 $model = $this->getModel();
+$lastYear = intval(date('Y')) - 1;
 
 echo '<div class="component">';
 
@@ -66,6 +67,8 @@ if(check_user()):
 	echo "<h1>Zeitbank: Giessereistundenfonds</h1>";
 	$saldoStundenfonds = $this->getSaldoStundenfonds();
 	echo "Stunden im Giessereistundenfonds für ".date('Y').":&nbsp;&nbsp;&nbsp;<strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfonds)." h</strong><br /><br />";
+	$saldoStundenfondsVorjahr = $this->getSaldoStundenfondsVorjahr();
+	echo "Stunden im Giessereistundenfonds für ".$lastYear.":&nbsp;&nbsp;&nbsp;<strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfondsVorjahr)." h</strong><br /><br />";
 	
 	// Offene Quittierungen und Anträge
 	echo "<h1>Zeitbank: Quittierungen und Anträge</h1>";
@@ -225,7 +228,6 @@ if(check_user()):
 		          </td>
 		        </tr>';
 		}
-		$lastYear = intval(date('Y')) - 1;
 		echo   '<tr>
 		          <td class="description">Dein Jahressaldo des Vorjahres '.$lastYear.'</td>
 		          <td class="time">'.ZeitbankFrontendHelper::formatTime($saldoVorjahr).' h</td>
@@ -307,10 +309,11 @@ if(check_user()):
 		}
 		else {
 			// Noch keine Buchungen dieses Jahr
-			echo "<p>Noch keine Buchungen vorhanden</p>"; 
+			echo "<p>Noch keine Buchungen für ".date('Y')." vorhanden.</p>"; 
 		}
 		
-		echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/>";
+		echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/><br/><br/>";
+		echo '<ul><li><a href="/index.php?option=com_zeitbank&task=report.kontoauszug&format=raw">Download: Kontoauszug (Format CSV, Encoding UTF-8)</a></li></ul>';
 else:
  echo ZB_BITTE_ANMELDEN;
 endif;	// Userprüfung

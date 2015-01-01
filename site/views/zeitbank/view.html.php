@@ -71,6 +71,14 @@ class ZeitbankViewZeitbank extends JView {
   }
   
   /**
+   * Liefert den Saldo des Stundenfonds für das Vorjahr.
+   */
+  protected function getSaldoStundenfondsVorjahr() {
+    $userId = BuchungHelper::getStundenfondsUserId();
+    return ZeitbankCalc::getSaldoVorjahr($userId);
+  }
+
+  /**
    * Liefert true, wenn das angemeldete Mitglied ein Gewerbe ist.
    */
   protected function isGewerbe() {

@@ -47,4 +47,16 @@ class ZeitbankControllerReport extends JController {
     $model = $this->getModel('report');
     $model->exportAemtliBuchungenToCSV();
   }
+  
+  /**
+   * Liefert eine CSV-Datei mit quittierten Buchungen für das Konto des angemeldeten Benutzers - ohne Zeiteinschränkung. 
+   */
+  public function kontoauszug() {
+    if (!ZeitbankAuth::checkAuthZeitbank()) {
+      return false;
+    }
+  
+    $model = $this->getModel('report');
+    $model->exportKontoauszugToCSV();
+  }
 }
