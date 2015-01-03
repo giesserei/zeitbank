@@ -9,10 +9,13 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'zeitbank.php');
 
-// Stellt die Liste aller Âmtli für den Ämtli-Administrator dar
+// Stellt die Liste aller Ämtli für den Ämtli-Administrator dar
 function get_arbeitsliste($menuitem) {
 	$db =& JFactory::getDBO();
 	$user =& JFactory::getUser();
+	
+	$laufendes_jahr = intval(date('Y'));
+	
 	$zb = new ZeitbankModelZeitbank();
 	
 	$output ="<table class=\"zeitbank\">";
@@ -20,15 +23,23 @@ function get_arbeitsliste($menuitem) {
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     
-    $output .= "<tr class=\"head\"><th>Kurztext</th><th>Jahressoll</th><th>Kadenz</th><th>Summe Buchungen</th>
-    			<th>Pauschale</th><th>Kategorie</th><th>Aktiviert</th><th> &nbsp; </th></tr>";
+    $output .= "<tr class=\"head\">
+                  <th>Kurztext</th>
+                  <th>Jahressoll</th>
+                  <th>Kadenz</th>
+                  <th>Buchungen ".$laufendes_jahr."</th>
+                  <th>Pauschale</th>
+                  <th>Kategorie</th>
+                  <th>Aktiviert</th>
+                  <th> &nbsp; </th>
+                </tr>";
     $k = 0;	// Zebra start
     
     if($db->getAffectedRows() > 0):
     	foreach ($rows as $row):
     		$style = $k ? "even" : "odd"; // Zebramuster				
     	
-    		$summe = arbeit_summe($row->id, $row->pauschale);
+    		$summe = arbeit_summe($row->id, $laufendes_jahr);
     		
     		$output .= "<tr class=\"".$style."\">";
     		$output .= "<td>".$row->kurztext."</td>";
@@ -65,13 +76,16 @@ function get_arbeitsliste($menuitem) {
 function get_arbeitsliste_enduser() {
 	$db =& JFactory::getDBO();
 	$user =& JFactory::getUser();
+	
+	$laufendes_jahr = intval(date('Y'));
+	$lastYear = $laufendes_jahr - 1;
+	
 	$zb = new ZeitbankModelZeitbank();
 	$output = "";
 	
     $query = "SELECT bezeichnung,id FROM #__mgh_zb_kategorie ORDER BY ordering";
     $db->setQuery($query);
     $kategorien = $db->loadObjectList();
-    
 	
     if($db->getAffectedRows() > 0):
     	foreach ($kategorien as $kat):
@@ -83,9 +97,15 @@ function get_arbeitsliste_enduser() {
     		if($db->getAffectedRows() > 0):
 	    		$output .= "<h3>Kategorie: ".$kat->bezeichnung."</h3>";
 				$output .="<table class=\"zeitbank\">";
-	    		$output .= "<tr class=\"head\"><th width=\"300\">Kurztext (wie im Auswahlmenü)<br />und Kommentar</th><th width=\"150\">Zuständig</th>
-	    					<th width=\"70\">Jahressoll</th><th width=\"100\">Kadenz</th>
-	    					<th width=\"100\">Summe Buchungen</th><th width=\"70\">Pauschale</th></tr>";
+	    		$output .= "<tr class=\"head\">
+	    		              <th width=\"300\">Kurztext (wie im Auswahlmenü)<br />und Kommentar</th>
+	    		              <th width=\"150\">Zuständig</th>
+	    					        <th width=\"70\" align=\"right\">Jahressoll</th>
+	    		              <th width=\"100\" align=\"right\">Kadenz</th>
+	    					        <th width=\"100\" align=\"right\">Buchungen ".$laufendes_jahr."</th>
+	    					        <th width=\"100\" align=\"right\">Buchungen ".$lastYear."</th>
+	    					        <th width=\"70\" align=\"right\">Pauschale</th>
+	    					      </tr>";
 			
     			foreach($arbeiten as $ab):
     				$style = $k ? "even" : "odd"; // Zebramuster				
@@ -95,13 +115,14 @@ function get_arbeitsliste_enduser() {
 	    			if($ab->kadenz > 0):
 	    				$output .= "<td align=\"right\">".$ab->kadenz." Einsätze/Jahr</td>";
 	    			else:
-	    				$output .="<td align=\"right\"> (keine) </td>";
+	    				$output .="<td align=\"right\">-</td>";
 	    			endif;
-	    			$output .= "<td align=\"right\">".round(arbeit_summe($ab->id, $ab->pauschale)/60,0)." h</td>";
-	    			$output .= "<td align=\"right\">".$ab->pauschale." min</td>";
+	    			$output .= "<td align=\"right\">".round(arbeit_summe($ab->id, $laufendes_jahr)/60,0)." h</td>";
+	    			$output .= "<td align=\"right\">".round(arbeit_summe($ab->id, $lastYear)/60,0)." h</td>";
+	    			$output .= "<td align=\"right\">".($ab->pauschale > 0 ? $ab->pauschale.' min' : '-')."</td>";
 	    			$output .= "</tr>";
 	    			if(strlen($ab->beschreibung) > 1):
-	    				$output .= "<tr class=\"".$style."\"><td colspan=\"6\"> &nbsp; &raquo; ".$ab->beschreibung."</td></tr>";
+	    				$output .= "<tr class=\"".$style."\"><td colspan=\"7\"> &nbsp; &raquo; ".$ab->beschreibung."</td></tr>";
 	    			endif;
 	    			$k = 1 - $k;
     			endforeach;
@@ -115,15 +136,14 @@ function get_arbeitsliste_enduser() {
 
 
 // Ermittelt die Summe der Stunden eines bestimmten Ämtlis während des laufenden Kalenderjahres
-// TODO zweiten Parameter $pauschale entfernen -> wurde nie richtig verwendet
-function arbeit_summe($id, $pauschale) {
+function arbeit_summe($id, $jahr) {
 	$db =& JFactory::getDBO();
-	$laufendes_jahr = date('Y');
 	
 	$query = "SELECT COALESCE(sum(minuten),0) minuten FROM #__mgh_zb_journal 
-	          WHERE datum_quittung > '0000-00-00' 
-	            AND datum_antrag >= '".$laufendes_jahr."-01-01' 
-	            AND admin_del='0' AND arbeit_id='".$id."'";
+	          WHERE datum_quittung != '0000-00-00' 
+	            AND (datum_antrag BETWEEN '".$jahr."-01-01' AND '".$jahr."-12-31')
+	            AND admin_del = 0 
+	            AND arbeit_id = ".$id;
 	
 	$db->setQuery($query);
   return $db->loadResult();

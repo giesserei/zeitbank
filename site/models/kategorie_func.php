@@ -15,6 +15,9 @@ require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'zeitb
 function get_kat_list($menuitem) {
 	$db =& JFactory::getDBO();
 	$user =& JFactory::getUser();
+	
+	$laufendes_jahr = intval(date('Y'));
+	
 	$zb = new ZeitbankModelZeitbank();
 	
 	// Ämtli-Verwalter einlesen
@@ -32,8 +35,18 @@ function get_kat_list($menuitem) {
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     
-    $output .= "<tr class=\"head\"><th>Kurztext</th><th>Jahressoll</th><th>Kadenz</th><th>Summe Buchungen</th><th>Reststunden</th><th>Pauschale</th>
-    			<th>Aktiviert</th><th>Administrator</th><th>Reihenfolge</th><th>&nbsp;</th></tr>";
+    $output .= "<tr class=\"head\">
+                  <th>Kurztext</th>
+                  <th>Jahressoll</th>
+                  <th>Kadenz</th>
+                  <th>Buchungen ".$laufendes_jahr."</th>
+                  <th>Reststunden</th>
+                  <th>Pauschale</th>
+    			        <th>Aktiviert</th>
+                  <th>Administrator</th>
+                  <th>Reihenfolge</th>
+                  <th>&nbsp;</th>
+                </tr>";
     $k = 0;	// Zebra start
     $summe = 0;	// Summe der Arbeiten eines Ämtlis
     $kat_summe = 0; // Summe ganzen Kategorie
@@ -43,7 +56,7 @@ function get_kat_list($menuitem) {
     	foreach ($rows as $row):
     		$style = $k ? "even" : "odd"; // Zebramuster				
     	
-    		$summe = arbeit_summe($row->id, $row->pauschale);
+    		$summe = arbeit_summe($row->id, $laufendes_jahr);
     		$kat_summe += $summe;
     		
     		$soll_summe += $row->jahressoll;
