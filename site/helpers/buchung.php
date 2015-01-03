@@ -41,6 +41,19 @@ class BuchungHelper {
   }
   
   /**
+   * Liefert true, wenn der übergebene User das Zeitkonto eines Gewerbes ist.
+   */
+  public static function isGewerbe($userid) {
+    $db = JFactory::getDBO();
+    $query = "SELECT typ
+              FROM #__mgh_mitglied
+              WHERE userid = ".$userid;
+    $db->setQuery($query);
+    $props = $db->loadObject();
+    return $props->typ == 2;
+  }
+  
+  /**
    * Liefert die User-Id des Stundenfonds.
    */
   public static function getStundenfondsUserId() {

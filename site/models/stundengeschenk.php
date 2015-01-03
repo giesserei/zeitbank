@@ -93,8 +93,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
    * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
    * Es kann Zeit maximal bis zur Erreichung des Stundensolls des Empfängers verschenkt werden.
    * 
-   * 2014-09-21 Es wird berücksichtigt, dass einige Tage nach dem Jahreswechsel auch noch auf das 
-   * letzte Jahr gebucht werden darf.    
+   * 2014-09-21 Es wird berücksichtigt, dass einige Tage nach dem Jahreswechsel auch noch auf das letzte Jahr gebucht werden darf.    
    */
   private function validateMinuten($minuten, $empfaengerId, $lastYear) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
@@ -118,8 +117,8 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
       return false;
     }
     
-    // Prüfung des Empfängersolls nicht bei Stundenfonds nötig.
-    if (!BuchungHelper::isStundenfonds($empfaengerId)) {
+    // Prüfung des Empfängersolls nicht bei Stundenfonds nötig - beim Gewerbe wird zur Vereinfachung bisher auf die Prüfung verzichtet
+    if (!BuchungHelper::isStundenfonds($empfaengerId) && !BuchungHelper::isGewerbe($empfaengerId)) {
       $saldoEmpfaenger = $lastYear ? ZeitbankCalc::getSaldoVorjahr($empfaengerId) : ZeitbankCalc::getSaldo($empfaengerId);
       
       // Dispensation wird nicht berücksichtigt (geschenkte Stunden können so eine Zahlung der Hauswartspauschale verhindern)
@@ -150,7 +149,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
   
     $query = "SELECT userid, vorname, nachname
               FROM #__mgh_mitglied m
-              WHERE m.typ IN (1,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
+              WHERE m.typ IN (1,2,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
                 AND userid = ".mysql_real_escape_string($empfaengerId)."
                 AND userid != ".$this->user->id;
   

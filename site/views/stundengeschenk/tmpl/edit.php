@@ -93,10 +93,9 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
     <strong>Hinweise:</strong>
     <ul>
       <li>Stunden können nur verschenkt werden, wenn ein Guthaben vorhanden ist.</li>
-      <li>Der/die EmpfängerIn kann Stunden nur bis zur Erreichung des Stundensolls empfangen.</li>
+      <li>Der/die EmpfängerIn kann Stunden nur bis zur Erreichung des Stundensolls empfangen - <strong>Ausnahme:</strong> Keine Prüfung bei Gewerbe.</li>
       <li>Der/die EmpfängerIn kann nicht sehen, wer die Stunden verschenkt hat.</li>
       <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
-      <li>Stunden können bisher noch nicht an das Gewerbe verschenkt werden.</li>
       <li>Hier könnt ihr auch Stunden an den <strong>Giessereistundenfonds</strong> verschenken.</li>
       <li>Nach dem Jahreswechsel kannst du noch bis zum <strong>05.01.</strong> Stunden für das vergangene Jahr verschenken.</li>
     </ul>
