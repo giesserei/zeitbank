@@ -66,7 +66,7 @@ if(check_user()):
 	// Giessereifonds
 	echo "<h1>Zeitbank: Giessereistundenfonds</h1>";
 	$saldoStundenfonds = $this->getSaldoStundenfonds();
-	echo "Stunden im Giessereistundenfonds für ".date('Y').":&nbsp;&nbsp;&nbsp;<strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfonds)." h</strong><br /><br />";
+	echo "Stunden im Giessereistundenfonds für ".date('Y').":&nbsp;&nbsp;&nbsp;<strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfonds)." h</strong><br />";
 	$saldoStundenfondsVorjahr = $this->getSaldoStundenfondsVorjahr();
 	echo "Stunden im Giessereistundenfonds für ".$lastYear.":&nbsp;&nbsp;&nbsp;<strong>".ZeitbankFrontendHelper::formatTime($saldoStundenfondsVorjahr)." h</strong><br /><br />";
 	
@@ -312,8 +312,11 @@ if(check_user()):
 			echo "<p>Noch keine Buchungen für ".date('Y')." vorhanden.</p>"; 
 		}
 		
-		echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/><br/><br/>";
-		echo '<ul><li><a href="/index.php?option=com_zeitbank&task=report.kontoauszug&format=raw">Download: Kontoauszug (Format CSV, Encoding UTF-8)</a></li></ul>';
+		//echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/><br/><br/>";
+		echo '<br /><br /><ul>
+		        <li><a href="/index.php?option=com_zeitbank&view=userJournal&Itemid='.MENUITEM.'">Alle Buchungen anzeigen</a></li>
+		        <li><a href="/index.php?option=com_zeitbank&task=report.kontoauszug&format=raw">Download: Kontoauszug (Format CSV, Encoding UTF-8)</a></li>
+		      </ul>';
 else:
  echo ZB_BITTE_ANMELDEN;
 endif;	// Userprüfung
