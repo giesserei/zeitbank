@@ -14,14 +14,9 @@ jimport('joomla.application.component.view');
  */
 class ZeitbankViewQuittungsliste_Amt extends JView {
   
-  protected $pagination;
-  
-  protected $quittungsliste;
-  
   public function display($tpl = null) {
     $model = $this->getModel();
     $this->quittungsliste = $model->getQuittungsliste();
- 	  $this->pagination = $model->getPagination();
  
  	  ZeitbankFrontendHelper::addComponentStylesheet();
  	  

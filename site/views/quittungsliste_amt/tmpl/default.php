@@ -38,12 +38,7 @@ if (check_user()) {
 		        </tr>';
 			$k = 1 - $k; 
 		}
-		echo "</table><br/>";
-		echo "<form>".$this->pagination->getListFooter();
-		$itemid = JRequest::getVar('Itemid');
-		echo '<input type="hidden" name="option" value="com_zeitbank" />';
-		echo '<input type="hidden" name="Itemid" value="'.$itemid.'" />';
-		echo '<input type="hidden" name="view" value="userJournal" /></form>';
+		echo "</table>";
 }
 else {
   echo ZB_BITTE_ANMELDEN;

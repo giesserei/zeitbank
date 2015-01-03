@@ -11,48 +11,18 @@ jimport('joomla.application.component.model');
  */
 class ZeitbankModelQuittungsliste_Amt extends JModel {
 	
-  var $total = null;
-  var $pagination = null;
-
-  /**
-   * Konstruktor.
-   */
-  public function __construct() {
- 	  parent::__construct();
- 
-	  $mainframe = JFactory::getApplication();
- 
-	  // Get pagination request variables
-	  $limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int');
-	  $limitstart = JRequest::getVar('limitstart', 0, '', 'int');
- 
-	  // In case limit has been changed, adjust it
-	  $limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
- 
-	  $this->setState('limit', $limit);
-	  $this->setState('limitstart', $limitstart);
-  }
-  
   /**
    * Liefert die Liste mit allen vom Benutzer quittierten Buchungen.
+   * 2015-01-03 Pagination entfernt -> zu fehlerhaft
    */
   public function getQuittungsliste() {
     $db = JFactory::getDBO();
     $query = $this->buildQuery();
-    return $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));	
+    $db->setQuery($query);
+    $rows = $db->loadObjectList();
+    return $rows;
   }
 
-  /**
-   * Liefert eine Instanz der Klasse JPagination. 
-   */
-  public function getPagination() {
- 	  if (empty($this->pagination)) {
- 	    jimport('joomla.html.pagination');
- 	    $this->pagination = new JPagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit') );
- 	  }
- 	  return $this->pagination;
-  }
-  
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------
@@ -69,18 +39,6 @@ class ZeitbankModelQuittungsliste_Amt extends JModel {
        ORDER BY j.datum_antrag DESC, j.id DESC";
   
     return($query);
-  }
-  
-  /**
-   * Liefert die Gesamtanzahl der quittierten Buchungen.
-   */
-  private function getTotal() {
-    if (empty($this->total)) {
-      $query = $this->buildQuery();
-      $this->total = $this->_getListCount($query);
-    }
-    return $this->total;
-  }
-  
+  }  
 } 
 ?>
