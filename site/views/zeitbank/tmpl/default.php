@@ -32,7 +32,7 @@ if(check_user()):
 	if($kategorie=check_kat_admin(0)):
 		echo "<h1>Zeitbank: Du bist Kategorien-Administrator</h1>";
 		//echo "<p>Status: ".show_status(get_status($kategorie))."</p>";
-		echo "<p>Du kannst:";
+		echo "Du kannst:";
 		echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Manager&Itemid=".MENUITEM."\">Deine Ämtli-Verantwortlichen verwalten</a></li>";
 		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Budget&Itemid=".MENUITEM."\">Dein Kategorienbudget verwalten</a></li>";
 		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Amt_Zuweisen&Itemid=".MENUITEM."\">Deine Ämtli-Verantwortlichen einem Ämtli zuteilen</a></li></ul></p><br />";
