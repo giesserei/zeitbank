@@ -271,6 +271,8 @@ class ZeitbankModelReport extends JModel {
   
   /**
    * Erstellt eine CSV-Datei mit quittierten Buchungen für alle Ämtli, die vom angemeldeten Benutzer verwaltet werden.
+   * 
+   * 2015-01-07 SF: keine Einschränkung hinsichtlich Zeitraum vornehmen
    */
   private function createAemtliBuchungenCSVFile($filepath) {
     $db = $this->getDBO();
@@ -286,7 +288,6 @@ class ZeitbankModelReport extends JModel {
     	 FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
        WHERE j.datum_quittung != '0000-00-00'
          AND j.admin_del = 0
-         AND j.datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')
          AND a.admin_id = ".$user->id."
        ORDER BY a.kurztext, j.datum_antrag DESC, j.id DESC
     ";
