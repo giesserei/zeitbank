@@ -35,14 +35,14 @@ if(check_user()):
 		echo "<p>Du kannst:";
 		echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Manager&Itemid=".MENUITEM."\">Deine Ämtli-Verantwortlichen verwalten</a></li>";
 		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Budget&Itemid=".MENUITEM."\">Dein Kategorienbudget verwalten</a></li>";
-		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Amt_Zuweisen&Itemid=".MENUITEM."\">Ämtli-Zuteilung anpassen</a></li></ul></p><br />";
+		echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Amt_Zuweisen&Itemid=".MENUITEM."\">Deine Ämtli-Verantwortlichen einem Ämtli zuteilen</a></li></ul></p><br />";
 	endif;
 		
 	// Ämtli-Administrator?
 	if(check_arbeit_admin(0,MENUITEM)):
 		echo "<h1>Zeitbank: Du bist Ämtli-Administrator</h1>";
 		echo "Du kannst:";
-		echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Amt_Manager&Itemid=".MENUITEM."\">Ämtli verwalten</a></li>";
+		echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Amt_Manager&Itemid=".MENUITEM."\">Ämtli verwalten und Status (aktiv/inaktiv) ändern</a></li>";
 		echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=".MENUITEM."\">Anträge quittieren</a> (offene Anträge: ".get_anzahl_offen().")</li>";
 		echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=".MENUITEM."\">Quittierte Buchungen anzeigen</a></li>";
 		echo "<li><a href=\"/index.php?option=com_zeitbank&task=report.aemtliBuchungen&format=raw\">Download: Quittierte Buchungen mit Kommentaren</a></li>";
