@@ -16,7 +16,7 @@ WHERE arbeit_id NOT IN (1, 3)
   AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - 1, '-01-01') AND CONCAT(YEAR(NOW()) - 1, '-12-31');
 
 -- Liefert die Summen der verbuchten und quittierten Stunden je Arbeitskategorie (ohne Geschenke, Stundentausch und Freiwilligenarbeit)
-SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget
+SELECT ROUND((sum(j.minuten) / 60), 3) saldo, k.id, k.bezeichnung, k.gesamtbudget
 FROM joomghjos_mgh_zb_journal_quittiert_vorjahr j 
   JOIN joomghjos_mgh_zb_arbeit a ON a.id = j.arbeit_id
   JOIN joomghjos_mgh_zb_kategorie k ON k.id = a.kategorie_id

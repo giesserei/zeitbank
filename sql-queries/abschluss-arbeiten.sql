@@ -33,6 +33,7 @@ GROUP BY name, email, arbeitsgattung
 ORDER BY name, arbeitsgattung;
 
 -- Saldo aller Mitglieder
+-- Keine Berücksichtigung der Bewohner, die unterjährig ausgezogen sind 
 SELECT id AS "User ID", typ AS "Typ", vorname AS "Vorname", nachname AS "Nachname",  
   (gutschrift_eigenleistungen + gutschrift_stundentausch + gutschrift_geschenk - belastung_stundentausch - belastung_geschenk) AS "Saldo", 
   gutschrift_eigenleistungen AS "(+) Eigenleistungen", gutschrift_stundentausch "(+) Stundentausch", belastung_stundentausch AS "(-) Stundentausch", 
@@ -47,32 +48,57 @@ FROM (
     (SELECT GROUP_CONCAT(DISTINCT objektid ORDER BY objektid DESC SEPARATOR ',') FROM joomghjos_mgh_x_mitglied_mietobjekt o WHERE o.userid = m.userid) wohnung,
     m.jahrgang, 
     CASE 
-      WHEN (m.typ = 1 AND (m.austritt = '0000-00-00' OR m.austritt > '2014-12-31')) THEN 'Bewohner' 
-      WHEN (m.typ = 1 AND m.austritt < '2015-01-01') THEN 'Bewohner ausgezogen' 
-      ELSE 'Gewerbe' 
+      WHEN m.typ = 1 THEN 'Bewohner'  
+      WHEN m.typ = 2 THEN 'Gewerbe'  
+      WHEN m.typ = 7 THEN 'Giessereifonds'  
+      ELSE 'unbekannt' 
     END AS typ,
        
     ROUND(COALESCE((SELECT SUM(minuten) FROM joomghjos_mgh_zb_journal_quittiert_vorjahr 
                     WHERE gutschrift_userid = m.userid
                       AND arbeit_id NOT IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = -1)
-                      AND arbeit_id NOT IN (1, 3)), 0) / 60, 2) gutschrift_eigenleistungen,
+                      AND arbeit_id NOT IN (1, 3)), 0) / 60, 3) gutschrift_eigenleistungen,
     ROUND(COALESCE((SELECT SUM(minuten) FROM joomghjos_mgh_zb_journal_quittiert_vorjahr 
                     WHERE gutschrift_userid = m.userid
-                      AND arbeit_id = 1), 0) / 60, 2) gutschrift_stundentausch,
+                      AND arbeit_id = 1), 0) / 60, 3) gutschrift_stundentausch,
     ROUND(COALESCE((SELECT SUM(minuten) FROM joomghjos_mgh_zb_journal_quittiert_vorjahr 
                     WHERE belastung_userid = m.userid
-                      AND arbeit_id = 1), 0) / 60, 2) belastung_stundentausch,
+                      AND arbeit_id = 1), 0) / 60, 3) belastung_stundentausch,
     ROUND(COALESCE((SELECT SUM(minuten) FROM joomghjos_mgh_zb_journal_quittiert_vorjahr 
                     WHERE gutschrift_userid = m.userid
-                      AND arbeit_id = 3), 0) / 60, 2) gutschrift_geschenk,
+                      AND arbeit_id = 3), 0) / 60, 3) gutschrift_geschenk,
     ROUND(COALESCE((SELECT SUM(minuten) FROM joomghjos_mgh_zb_journal_quittiert_vorjahr 
                     WHERE belastung_userid = m.userid
-                      AND arbeit_id = 3), 0) / 60, 2) belastung_geschenk
+                      AND arbeit_id = 3), 0) / 60, 3) belastung_geschenk
        
   FROM joomghjos_mgh_mitglied m JOIN joomghjos_users u ON m.userid = u.id
-  WHERE m.typ IN (1, 2)
-    AND (m.austritt = '0000-00-00' OR m.austritt > '2014-01-01')
+  WHERE m.typ IN (1, 2, 7)
+    AND (m.austritt = '0000-00-00' OR m.austritt >= '2014-12-31')
 ) t1
 ORDER BY t1.typ, t1.nachname;
+
+-- Eigenleistungsstunden, die auf Konten von ausgezogenen oder gelöschten Bewohnern gebucht wurden
+SELECT j.*, u.name  FROM joomghjos_mgh_zb_journal_quittiert_vorjahr j LEFT OUTER JOIN joomghjos_users u ON j.gutschrift_userid = u.id
+WHERE j.arbeit_id NOT IN (1, 3)
+  AND j.gutschrift_userid NOT IN (
+    SELECT userid FROM joomghjos_mgh_mitglied m
+    WHERE m.typ IN (1, 2, 7)
+      AND (m.austritt = '0000-00-00' OR m.austritt >= '2014-12-31')
+  )
+ORDER BY u.name;
+  
+-- Geschenkte Stunden, die auf Konten von ausgezogenen oder gelöschten Bewohnern gebucht wurden
+SELECT j.*, u.name  FROM joomghjos_mgh_zb_journal_quittiert_vorjahr j LEFT OUTER JOIN joomghjos_users u ON j.gutschrift_userid = u.id
+WHERE j.arbeit_id = 3
+  AND j.gutschrift_userid NOT IN (
+    SELECT userid FROM joomghjos_mgh_mitglied m
+    WHERE m.typ IN (1, 2, 7)
+      AND (m.austritt = '0000-00-00' OR m.austritt >= '2014-12-31')
+  )
+ORDER BY u.name;
+
+-- Spezialuser: Zeitbankbenutzer Anonymous
+SELECT * FROM joomghjos_mgh_zb_journal_quittiert_vorjahr j
+WHERE j.belastung_userid = 722 OR j.gutschrift_userid = 722
 
 
