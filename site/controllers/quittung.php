@@ -26,7 +26,7 @@ class ZeitbankControllerQuittung extends ZeitbankControllerUpdJournalBase {
   /**
    * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
    */
-  protected function saveDataInSession() {
+  protected function isSaveDataInSession() {
     return true;
   }
   
@@ -43,7 +43,7 @@ class ZeitbankControllerQuittung extends ZeitbankControllerUpdJournalBase {
   /**
    * Buchung vervollständigen.
    */
-  protected function completeBuchung($data) {  
+  protected function modifyDataBeforeSave($data) {
     $buchung = array();
     $buchung['datum_quittung'] = date('Y-m-d');
     $buchung['kommentar_quittung'] = $data['kommentar_quittung'];

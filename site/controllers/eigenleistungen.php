@@ -26,7 +26,7 @@ class ZeitbankControllerEigenleistungen extends ZeitbankControllerUpdJournalBase
   /**
    * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
    */
-  protected function saveDataInSession() {
+  protected function isSaveDataInSession() {
     return true;
   }
   
@@ -46,7 +46,7 @@ class ZeitbankControllerEigenleistungen extends ZeitbankControllerUpdJournalBase
   /**
    * Buchung vervollständigen.
    */
-  protected function completeBuchung($data) {  
+  protected function modifyDataBeforeSave($data) {
     $buchung = array();
     $buchung['minuten'] = $this->getModel()->getMinuten(intval($data['minuten']), $data['arbeit_id']);
     $buchung['belastung_userid'] = $this->getModel()->getZeitkonto($data['arbeit_id']);

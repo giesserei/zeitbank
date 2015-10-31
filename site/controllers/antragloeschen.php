@@ -45,48 +45,26 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase 
     return true;
   }
   
-  /**
-   * Löscht einen Eintrag.
-   */
-  public function delete() {
-    $app = JFactory::getApplication();
-    
-    if (!ZeitbankAuth::checkAuthZeitbank()) {
-      return false;
-    }
-  
-    $id = $this->getId();
-  
-    // Prüfen, ob der User den Antrag löschen darf
-    if (!$this->isEditAllowed($id)) {
-      return false;
-    }
-  
-    // Eintrag löschen
-    $model = $this->getModel();
-    if ($model->delete($id)) {
-      $this->redirectSuccessView();
-      return true;
-    }
-    else {
-      // Fehlermeldung dem Benutzer anzeigen
-      $errors = $model->getErrors();
-      foreach ($errors as $error) {
-        $app->enqueueMessage($error, 'warning');
-      }
-    
-      // Zurück zum Formular
-      $this->redirectConfirmView($id);
-    
-      return false;
-    }
-    return false;
-  }
-  
   // -------------------------------------------------------------------------
   // protected section
   // -------------------------------------------------------------------------
-  
+
+  /**
+   * Zeigt die Fehlermeldungen an, wenn das Löschen nicht funktioniert hat.
+   */
+  protected function perfomOnDeleteError() {
+    $model = $this->getModel();
+    $errors = $model->getErrors();
+    foreach ($errors as $error) {
+      $app = JFactory::getApplication();
+      $app->enqueueMessage($error, 'warning');
+    }
+
+    // Zurück zum Formular
+    $id = $this->getId();
+    $this->redirectConfirmView($id);
+  }
+
   /**
    * @see ZeitbankControllerUpdJournalBase::getViewName()
    */
@@ -97,7 +75,7 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase 
   /**
    * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
    */
-  protected function saveDataInSession() {
+  protected function isSaveDataInSession() {
     return false;
   }
   

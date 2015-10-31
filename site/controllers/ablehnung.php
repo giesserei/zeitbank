@@ -27,7 +27,7 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   /**
    * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
    */
-  protected function saveDataInSession() {
+  protected function isSaveDataInSession() {
     return true;
   }
   
@@ -44,7 +44,7 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   /**
    * Buchung vervollständigen.
    */
-  protected function completeBuchung($data) {  
+  protected function modifyDataBeforeSave($data) {
     $buchung = array();
     $buchung['abgelehnt'] = 1;
     $buchung['kommentar_ablehnung'] = $data['kommentar_ablehnung'];

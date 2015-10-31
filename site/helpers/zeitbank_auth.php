@@ -74,7 +74,31 @@ class ZeitbankAuth {
     $db->setQuery($query);
     return $db->loadResult() > 0;
   }
-  
+
+  /**
+   * Liefert true, wenn der Benutzer ein Kategorie-Admin ist. Sofern auch eine Kategorie-ID übergeben wird, muss der
+   * Benutzer Admin dieser Kategorie sein.
+   *
+   * @param $kategorie int ID der Kategorie
+   * @return bool siehe Beschreibung
+   */
+  public static function isKategorieAdmin($kategorie = 0) {
+    $db =& JFactory::getDBO();
+    $user =& JFactory::getUser();
+    $kategorie = strval($kategorie);
+
+    if ($kategorie > 0) {
+      $query = sprintf("SELECT * FROM #__mgh_zb_kategorie WHERE admin_id = %s AND id = %s",
+          $user->id, mysql_real_escape_string($kategorie));
+    }
+    else {
+      $query = sprintf("SELECT * FROM #__mgh_zb_kategorie WHERE admin_id = %s", $user->id);
+    }
+
+    $db->setQuery($query);
+    return $db->loadResult() > 0;
+  }
+
   // -------------------------------------------------------------------------
   // private section
   // -------------------------------------------------------------------------

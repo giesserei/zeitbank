@@ -26,7 +26,7 @@ class ZeitbankControllerFreiwilligenarbeit extends ZeitbankControllerUpdJournalB
   /**
    * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
    */
-  protected function saveDataInSession() {
+  protected function isSaveDataInSession() {
     return true;
   }
   
@@ -46,7 +46,7 @@ class ZeitbankControllerFreiwilligenarbeit extends ZeitbankControllerUpdJournalB
   /**
    * Buchung vervollständigen.
    */
-  protected function completeBuchung($data) {  
+  protected function modifyDataBeforeSave($data) {
     $buchung = array();
     $buchung['minuten'] = intval($data['minuten']);
     $buchung['belastung_userid'] = $this->getModel()->getZeitkonto($data['arbeit_id']);

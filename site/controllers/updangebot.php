@@ -17,24 +17,15 @@ class ZeitbankControllerUpdAngebot extends ZeitbankControllerUpdAngebotBase {
   // -------------------------------------------------------------------------
   // protected section
   // -------------------------------------------------------------------------
-  
-  /**
-   * @see ZeitbankControllerUpdAngebotBase::getViewName()
-   */
+
   protected function getViewName() {
     return "updangebot";
   }
-  
-  /**
-   * @see ZeitbankControllerUpdAngebotBase::saveDataInSession()
-   */
-  protected function saveDataInSession() {
+
+  protected function isSaveDataInSession() {
     return true;
   }
-  
-  /**
-   * @see ZeitbankControllerUpdAngebotBase::filterFormFields()
-   */
+
   protected function filterFormFields($data) {
     $dataAllowed = array();
     $dataAllowed['id'] = $data['id'];
@@ -51,10 +42,7 @@ class ZeitbankControllerUpdAngebot extends ZeitbankControllerUpdAngebotBase {
     
     return $dataAllowed;
   }
-  
-  /**
-   * @see ZeitbankControllerUpdAngebotBase::redirectSuccessView()
-   */
+
   protected function redirectSuccessView() {
     $app = JFactory::getApplication();
     $menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);

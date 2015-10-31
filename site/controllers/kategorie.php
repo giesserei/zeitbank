@@ -9,11 +9,11 @@ JLoader::register('ZeitbankControllerUpdBase', JPATH_COMPONENT . '/controllers/u
 jimport('joomla.application.component.controllerform');
 
 /**
- * Basis-Klasse für die Controller zum Editieren eines Journaleintrags der Zeitbank.
+ * Controller zum Editieren einer Kategorie.
  *
  * @author Steffen Förster
  */
-abstract class ZeitbankControllerUpdJournalBase extends ZeitbankControllerUpdBase {
+class ZeitbankControllerKategorie extends ZeitbankControllerUpdBase {
 
   protected function checkGeneralPermission() {
     return ZeitbankAuth::checkAuthZeitbank();
@@ -28,31 +28,31 @@ abstract class ZeitbankControllerUpdJournalBase extends ZeitbankControllerUpdBas
     $app = JFactory::getApplication();
     $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, $data);
   }
-  
-  /**
-   * Schneidet den Kommentar auf die zulässige Länge ab.
-   *
-   * @param $kommentar string Kommentar
-   * @return string ggf. gekürzter Kommentar
-   */
-  protected function cropKommentar($kommentar) {
-    return ZeitbankFrontendHelper::cropText($kommentar, 1000);
+
+  protected function filterFormFields($data) {
+    $dataAllowed = array();
+    $dataAllowed['id'] = $data['id'];
+    $dataAllowed['gesamtbudget'] = $data['gesamtbudget'];
+    return $dataAllowed;
+  }
+
+  protected function isSaveDataInSession() {
+    return true;
+  }
+
+  protected function getViewName() {
+    return "kategorie";
   }
   
   /**
-   * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
+   * Liefert true, wenn der Benutzer die Kategorie bearbeiten darf.
    */
   protected function isEditAllowed($id) {
-    if ($id == 0) {
-      return true;
-    }
-  
-    $model = $this->getModel();
-    if(!$model->isEditAllowed($id)) {
+    if ($id == 0 || !ZeitbankAuth::isKategorieAdmin($id)) {
       JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.','warning');
       return false;
     }
     return true;
   }
-
+  
 }
