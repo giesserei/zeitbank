@@ -18,7 +18,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
    * Führt nach ein paar Vorarbeiten einen Redirect auf die View durch, welche das Formular anzeigt.
    */
   public function edit() {
-    if ($this->checkGeneralPermission()) {
+    if (!$this->checkGeneralPermission()) {
       return false;
     }
 
@@ -39,7 +39,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
    * Speichert die Formulardaten in der Datenbank.
    */
   public function save() {
-    if ($this->checkGeneralPermission()) {
+    if (!$this->checkGeneralPermission()) {
       return false;
     }
     
@@ -73,10 +73,12 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
    * Löscht einen Eintrag.
    */
   public function delete() {
-    if ($this->checkGeneralPermission()) {
+    if (!$this->checkGeneralPermission()) {
       return false;
     }
-    
+
+    $this->saveMenuIdInSession();
+
     $id = $this->getId();
     if (!$this->isEditAllowed($id)) {
       return false;
