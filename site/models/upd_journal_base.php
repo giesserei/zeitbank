@@ -10,7 +10,7 @@ jimport('joomla.application.component.modeladmin');
 jimport('joomla.log.log');
 
 /**
- * Model für die Ausführung eines Stundengeschenks.
+ * Basisklasse für die Model-Klassen, mit denen Journal-Einträge erstellt oder bearbeitet werden können.
  * 
  * @author Steffen Förster
  */
