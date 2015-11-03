@@ -17,7 +17,7 @@ jimport('joomla.application.component.model');
  * 
  * @author Steffen Förster
  */
-class ZeitbankModelReport extends JModel {
+class ZeitbankModelReport extends JModelLegacy {
   
   /**
    * Erstellt eine CSV-Datei mit den aktuellen Kontosaldo der Bewohner und des Gewerbes

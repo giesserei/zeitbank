@@ -7,12 +7,12 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'zeitbank.php');
+require_once(JPATH_BASE.'/components/com_zeitbank/models/zeitbank.php');
 
 // Stellt die Liste aller Ämtli für den Ämtli-Administrator dar
 function get_arbeitsliste($menuitem) {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	
 	$laufendes_jahr = intval(date('Y'));
 	
@@ -74,8 +74,8 @@ function get_arbeitsliste($menuitem) {
 
 // Stellt die Liste aller Ämtli für die Endbenutzer dar
 function get_arbeitsliste_enduser() {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	
 	$laufendes_jahr = intval(date('Y'));
 	$lastYear = $laufendes_jahr - 1;
@@ -137,7 +137,7 @@ function get_arbeitsliste_enduser() {
 
 // Ermittelt die Summe der Stunden eines bestimmten Ämtlis während des laufenden Kalenderjahres
 function arbeit_summe($id, $jahr) {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	
 	$query = "SELECT COALESCE(sum(minuten),0) minuten FROM #__mgh_zb_journal 
 	          WHERE datum_quittung != '0000-00-00' 
@@ -151,8 +151,8 @@ function arbeit_summe($id, $jahr) {
 
 // Ermittelt die Anzahl noch zu quittierenden Anträge für einen Admin
 function get_anzahl_offen() {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	
     $query = "SELECT journal.id,journal.cf_uid as cf_uid,minuten,users.name as name,datum_antrag,arbeit.kurztext,
     		kat.user_id as gegenkonto,kommentar.text as text
@@ -170,7 +170,7 @@ function get_anzahl_offen() {
 
 // Ermittelt den User für die Gegenbuchung
 function get_gegenkonto($kategorie) {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 
 	$query = "SELECT user_id FROM #__mgh_zb_kategorie WHERE id='".strval($kategorie)."'";
 	
@@ -186,8 +186,8 @@ function get_gegenkonto($kategorie) {
 
 // Prüft ob User berechtigt ist, einen Eintrag zu quittieren
 function user_ok($token) {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 
 	// Ist User selbst zuständig?
 	$query = "SELECT belastung_userid FROM #__mgh_zb_journal WHERE cf_uid = '".$token."' AND datum_quittung='0000-00-00'";
@@ -217,7 +217,7 @@ function user_ok($token) {
 
 // Bestimmt den Wert für das Feld reihenfolge, damit neues Ämtli am Schluss eingefügt wird
 function get_ende_reihenfolge() {
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		
 		$query = "SELECT ordering FROM #__mgh_zb_arbeit ORDER BY ordering DESC";
 		$db->setQuery($query);
@@ -231,5 +231,3 @@ function get_ende_reihenfolge() {
     	
 		
 } // get_ende_reihenfolge()
-
-?>

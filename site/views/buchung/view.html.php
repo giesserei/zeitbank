@@ -13,7 +13,7 @@ jimport('joomla.application.component.view');
  * @author JAL
  * @author Steffen Förster
  */
-class ZeitbankViewBuchung extends JView {
+class ZeitbankViewBuchung extends JViewLegacy {
   
   protected $buchung;
   

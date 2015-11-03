@@ -10,7 +10,7 @@ JLoader::register('BuchungHelper', JPATH_COMPONENT . '/helpers/buchung.php');
 /**
  * View der Einstiegsseite zur Zeitbank.
  */
-class ZeitbankViewZeitbank extends JView {
+class ZeitbankViewZeitbank extends JViewLegacy {
   
   protected $quittierungen;
   

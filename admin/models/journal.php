@@ -24,7 +24,7 @@ class ZeitbankModelJournal extends JModel {
 	}
 
 	function delete() {
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		$cids = JRequest::getVar('cid',array(0),'post','array');
 		$ok = true;
 		

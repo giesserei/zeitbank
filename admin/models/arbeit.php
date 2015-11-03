@@ -38,7 +38,7 @@ class ArbeitenModelArbeit extends JModel {
 	} // getData()	
 	
 	function getKategorien() {
-	    $db =& JFactory::getDBO();
+	    $db = JFactory::getDBO();
 		$query = "SELECT * FROM #__mgh_zb_kategorie ORDER BY ordering";
 	    $db->setQuery($query);
 	    $rows = $db->loadObjectList();
@@ -49,7 +49,7 @@ class ArbeitenModelArbeit extends JModel {
 		global $mainframe;			// für Fehlerausgabe
 
 		// Datenbankhandle für "fremde" Tabellen
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		
 		$row =& $this->getTable();
 		$data = JRequest::get( 'post' );

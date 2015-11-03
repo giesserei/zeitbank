@@ -5,7 +5,7 @@ jimport('joomla.application.component.view');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 
-class ZeitbankViewUserjournal extends JView {
+class ZeitbankViewUserjournal extends JViewLegacy {
   
   protected $journal;
   

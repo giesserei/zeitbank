@@ -24,7 +24,7 @@ function getBewohner($whg_nr) {
 // Liste aller MieterInnen
 // TODO: Auf neuer Website muss diese Funktion den neuen Gegebenheiten angepasst werden
 function getBelegung( ) {
-    $db =& JFactory::getDBO();
+    $db = JFactory::getDBO();
 /*    $query = "SELECT res.whg_nr,vorname,nachname,email,vr.id as vid,joomla_user_id 
     		FROM #__mgh_reservation as res,#__mgh_vorreservation as vr,#__mgh_mitgliederliste as mgl
     		LEFT JOIN #__mgh_x_vorres_mitglied as vm ON mgl.id = vm.m_id
@@ -47,7 +47,7 @@ function getBelegung( ) {
 // z.B. 5 Bewohner x 365 (ganzes Jahr) + 1 x 61 (Einzug am 1.11.) = 1886 Tage
 // TODO: Auf neuer Website muss diese Funktion den neuen Gegebenheiten angepasst werden
 function summeBewohnerTage() {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$summeTage = 0;
 global $mainframe;			// für Fehlerausgabe
 	
@@ -88,7 +88,7 @@ function getAnzahlPersonen() {
 } // getAnzahlPersonen
 
 function summeGewerbeTage() {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$summeTage = 0;
 	$summe = 0;
 	$mieter = getBelegung();
@@ -121,7 +121,7 @@ function summeGewerbeTage() {
 
 // Summiert die alle Kategorienbudgets 
 function summeKategorien() {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$summe = 0;
 	
 	$query = "SELECT * FROM #__mgh_zb_kategorie";	
@@ -140,7 +140,7 @@ function summeKategorien() {
 
 // Bucht aus dem Haupttopf die Kategorienbudgets um
 function buchenKategorien() {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$summe = 0;
 	
 	$query = "SELECT * FROM #__mgh_zb_kategorie";	
@@ -158,7 +158,7 @@ function buchenKategorien() {
 
 // Umbuchen der budgetierten Stunden aus dem Haupttopf an die Kategorien-User
 function buchenJahresbudget($jahressoll,$totalPflichtstunden) {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$mieter = getBelegung();
 global $mainframe;			// für Fehlerausgabe
 	

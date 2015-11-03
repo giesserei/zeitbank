@@ -11,7 +11,7 @@ jimport('joomla.application.component.view');
  * 
  * @author Steffen Förster
  */
-class ZeitbankViewQuittung extends JView {
+class ZeitbankViewQuittung extends JViewLegacy {
 
   protected $menuId;
   

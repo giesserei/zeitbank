@@ -8,7 +8,7 @@ jimport('joomla.application.component.model');
 /**
  * Model für die Übersichtsseite der Zeitbank.
  */
-class ZeitbankModelZeitbank extends JModel {
+class ZeitbankModelZeitbank extends JModelLegacy {
 	
 	/**
 	 * Liefert String mit menschenlesbarer Zeitangabe
@@ -111,7 +111,7 @@ class ZeitbankModelZeitbank extends JModel {
   }
   
   function getUserName($uid) {
-    $db =& JFactory::getDBO();
+    $db = JFactory::getDBO();
     $query = "SELECT name FROM #__users WHERE id='".$uid."'";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
@@ -123,7 +123,7 @@ class ZeitbankModelZeitbank extends JModel {
   } // getUserName
 
   function getBelastungsKommentar($jid) {
-    $db =& JFactory::getDBO();
+    $db = JFactory::getDBO();
     $query = "SELECT text FROM #__mgh_zb_antr_kommentar WHERE journal_id='".$jid."'";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
@@ -135,7 +135,7 @@ class ZeitbankModelZeitbank extends JModel {
   } // getBelastungsKommentar
 
   function getQuittierungsKommentar($jid) {
-    $db =& JFactory::getDBO();
+    $db = JFactory::getDBO();
     $query = "SELECT text FROM #__mgh_zb_quit_kommentar WHERE journal_id='".$jid."'";
     $db->setQuery($query);
     $rows = $db->loadObjectList();

@@ -11,7 +11,7 @@ jimport('joomla.application.component.view');
  * 
  * @author Steffen Förster
  */
-class ZeitbankViewAblehnung extends JView {
+class ZeitbankViewAblehnung extends JViewLegacy {
 
   protected $menuId;
   

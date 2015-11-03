@@ -12,7 +12,7 @@ jimport('joomla.application.component.view');
  *
  * @author Steffen Förster
  */
-class ZeitbankViewReport extends JView {
+class ZeitbankViewReport extends JViewLegacy {
   
   protected $overview;
   

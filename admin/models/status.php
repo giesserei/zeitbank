@@ -42,7 +42,7 @@ class ZeitbankModelStatus extends JModel {
 
 	function writeStatus($status) {
 		// Kategoriestatus in alle Kategorien schreiben
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		$query = "UPDATE #__mgh_zb_kategorie SET status='".intval($status)."' WHERE 1";	
 		$db->setQuery( $query );
 		if($db->query()):
@@ -56,7 +56,7 @@ class ZeitbankModelStatus extends JModel {
 		global $mainframe;			// für Fehlerausgabe
 
 		// Datenbankhandle für "fremde" Tabellen
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		
 		$row =& $this->getTable();
 		$data = JRequest::get( 'post' );

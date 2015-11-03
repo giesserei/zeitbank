@@ -11,7 +11,7 @@ $filter_order = JRequest::getVar('filter_order','reihenfolge');
 $filter_order_Dir = JRequest::getVar('filter_order_Dir','asc');
 
 
-$db =& JFactory::getDBO();
+$db = JFactory::getDBO();
 
 $this->pagination = new JPagination(count( $this->items ), 0, $this->items );
 

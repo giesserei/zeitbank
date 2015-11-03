@@ -83,8 +83,8 @@ class ZeitbankAuth {
    * @return bool siehe Beschreibung
    */
   public static function isKategorieAdmin($kategorie = 0) {
-    $db =& JFactory::getDBO();
-    $user =& JFactory::getUser();
+    $db = JFactory::getDBO();
+    $user = JFactory::getUser();
     $kategorie = strval($kategorie);
 
     if ($kategorie > 0) {

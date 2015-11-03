@@ -12,7 +12,7 @@ jimport('joomla.application.component.view');
  * @author JAL
  * @author Steffen Förster
  */
-class ZeitbankViewQuittungsliste_Amt extends JView {
+class ZeitbankViewQuittungsliste_Amt extends JViewLegacy {
   
   public function display($tpl = null) {
     $model = $this->getModel();

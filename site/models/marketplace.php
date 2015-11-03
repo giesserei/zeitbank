@@ -12,7 +12,7 @@ jimport('joomla.application.component.model');
  *
  * @author Steffen Förster
  */
-class ZeitbankModelMarketPlace extends JModel {
+class ZeitbankModelMarketPlace extends JModelLegacy {
   
   private $db;
   

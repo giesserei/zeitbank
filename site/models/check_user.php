@@ -17,8 +17,8 @@ nutzbar. Bitte melde dich mit deinem <strong>persönlichen</strong> Login an.<br
 
 
 function check_user() {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	
     $query = "SELECT * FROM #__mgh_zb_gesperrte_user WHERE userid='".$user->id."'";
     $db->setQuery($query);
@@ -34,8 +34,8 @@ function check_user() {
 
 // Ist ein User ein Ämtli-Administrator?
 function check_arbeit_admin($kategorie) {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	$kategorie = strval($kategorie);
 	
 	if($kategorie > 0):
@@ -57,8 +57,8 @@ function check_arbeit_admin($kategorie) {
 
 // Ist ein User ein Kategorie-Administrator?
 function check_kat_admin($kategorie) {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	$kategorie = strval($kategorie);
 	
 	if($kategorie > 0):

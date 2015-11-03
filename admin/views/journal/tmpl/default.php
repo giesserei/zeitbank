@@ -8,7 +8,7 @@ defined('_JEXEC') or die('Restricted access');
 /*
 if(JRequest::getVar('act',NULL) == 'blibla'):
 	jimport('joomla.user.helper');
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	echo "Blibla";	
 else:
 */

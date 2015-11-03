@@ -9,7 +9,7 @@ jimport('joomla.application.component.model');
  * @author JAL
  * @author Steffen Förster
  */
-class ZeitbankModelQuittung_Amt extends JModel {
+class ZeitbankModelQuittung_Amt extends JModelLegacy {
 	
   /**
    * Liefert alle offenen Anträge, für die der angemeldete Benutzer der Administrator ist.

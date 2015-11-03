@@ -12,7 +12,7 @@ jimport('joomla.application.component.view');
  * 
  * @author JAL
  */
-class ZeitbankViewQuittung_Amt extends JView {
+class ZeitbankViewQuittung_Amt extends JViewLegacy {
   
   protected $quittierungen;
   

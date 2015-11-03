@@ -11,7 +11,7 @@ jimport('joomla.application.component.view');
  * 
  * @author Steffen Förster
  */
-class ZeitbankViewUpdAngebot extends JView {
+class ZeitbankViewUpdAngebot extends JViewLegacy {
 
   protected $form;
   

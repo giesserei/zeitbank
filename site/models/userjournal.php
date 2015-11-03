@@ -3,7 +3,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
-class ZeitbankModelUserjournal extends JModel {
+class ZeitbankModelUserjournal extends JModelLegacy {
 
   function getUserJournal() {
     $db = JFactory::getDBO();

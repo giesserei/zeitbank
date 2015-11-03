@@ -7,14 +7,14 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'arbeit_func.php');
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'zeitbank.php');
+require_once(JPATH_BASE.'/components/com_zeitbank/models/arbeit_func.php');
+require_once(JPATH_BASE.'/components/com_zeitbank/models/zeitbank.php');
 
 
 // Ausgeben der Ämtli einer Kategorie
 function get_kat_list($menuitem) {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
+	$user = JFactory::getUser();
 	
 	$laufendes_jahr = intval(date('Y'));
 	
@@ -118,8 +118,7 @@ function get_kat_list($menuitem) {
 
 // Erstellt eine Liste aller Ämtli-Admins für ChronoForms
 function get_admin_list($kategorie,$menuitem) {
-	$db =& JFactory::getDBO();
-	$user =& JFactory::getUser();
+	$db = JFactory::getDBO();
 	
 	$output ="<ul>";
     $query = "SELECT users.id,users.name,cf_uid FROM #__mgh_zb_x_kat_arbeitadmin as kat,#__users as users WHERE kat_id='".$kategorie."' AND user_id=users.id ORDER BY users.name";
@@ -137,7 +136,7 @@ function get_admin_list($kategorie,$menuitem) {
 
 // Bewegt ein Amt in der Reihenfolge nach oben
 function order_up($amt_id,$kat_id) {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$query="SELECT * FROM #__mgh_zb_arbeit WHERE kategorie_id='".intval($kat_id)."' ORDER BY ordering";
 	$db->setQuery($query);
 	$rows = $db->loadObjectList();
@@ -161,7 +160,7 @@ function order_up($amt_id,$kat_id) {
 
 // Bewegt ein Amt in der Reihenfolge nach unten
 function order_down($amt_id,$kat_id) {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$query="SELECT * FROM #__mgh_zb_arbeit WHERE kategorie_id='".intval($kat_id)."' ORDER BY ordering DESC";
 	$db->setQuery($query);
 	$rows = $db->loadObjectList();
@@ -184,7 +183,7 @@ function order_down($amt_id,$kat_id) {
 } // order down
 
 function get_status($kategorie_id) {
-	$db =& JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$query="SELECT status FROM #__mgh_zb_kategorie WHERE id='".intval($kategorie_id)."'";
 	$db->setQuery($query);
 	$rows = $db->loadObjectList();

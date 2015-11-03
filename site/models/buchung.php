@@ -9,7 +9,7 @@ jimport('joomla.application.component.model');
  * @author JAL
  * @author Steffen Förster
  */
-class ZeitbankModelBuchung extends JModel {
+class ZeitbankModelBuchung extends JModelLegacy {
   
   protected $db;
   

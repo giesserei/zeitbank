@@ -9,7 +9,7 @@ jimport('joomla.application.component.model');
  * @author JAL
  * @author Steffen Förster
  */
-class ZeitbankModelQuittungsliste_Amt extends JModel {
+class ZeitbankModelQuittungsliste_Amt extends JModelLegacy {
 	
   /**
    * Liefert die Liste mit allen vom Benutzer quittierten Buchungen.

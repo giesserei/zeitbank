@@ -41,7 +41,7 @@ class KategorienModelKategorie extends JModel {
 		global $mainframe;			// für Fehlerausgabe
 
 		// Datenbankhandle für "fremde" Tabellen
-		$db =& JFactory::getDBO();
+		$db = JFactory::getDBO();
 		
 		$row =& $this->getTable();
 		$data = JRequest::get( 'post' );

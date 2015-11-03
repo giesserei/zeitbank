@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-JHTML::_('behavior.mootools');
+JHTML::_('behavior.framework');
 JHTML::_('behavior.modal');
 
 require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check_user.php');
