@@ -10,7 +10,7 @@ jimport('joomla.application.component.controller');
  *
  * @author Steffen Förster
 */
-class ZeitbankControllerReport extends JController {
+class ZeitbankControllerReport extends JControllerLegacy {
   
   /**
    * Liefert die aktuellen Kontosaldo aller Bewohner für das laufende Jahr.

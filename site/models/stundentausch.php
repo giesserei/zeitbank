@@ -30,6 +30,8 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
 
   /**
    * @see JModelForm::getForm()
+   *
+   * @inheritdoc
    */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.stundentausch', 'stundentausch', array (
@@ -52,9 +54,11 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
    * @see JModelForm::validate()
+   *
+   * @inheritdoc
    */
-  public function validate($form, $data) {
-    $validateResult = parent::validate($form, $data);
+  public function validate($form, $data, $group = NULL) {
+    $validateResult = parent::validate($form, $data, $group);
     if ($validateResult === false) {
       return false;
     }
@@ -63,7 +67,7 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
     $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
     
     if ((bool) $valid) {
-      $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id']);
+      $valid &= $this->validateMinuten($validateResult['minuten']);
     }
     if ((bool) $valid) {
       $valid &= $this->validateDatumAntrag($validateResult['datum_antrag']);
@@ -103,7 +107,7 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
   // private section
   // -------------------------------------------------------------------------
   
-  private function validateMinuten($minuten, $empfaengerId) {
+  private function validateMinuten($minuten) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
       $this->setError('Bitte die Minuten eingeben.');
       return false;

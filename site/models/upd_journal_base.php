@@ -89,6 +89,8 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   
   /**
    * @see JModel::getTable()
+   *
+   * @inheritdoc
    */
   public function getTable($type = 'Journal', $prefix = 'Table', $config = array()) {
     return JTable::getInstance($type, $prefix, $config);
@@ -97,12 +99,13 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   /**
    * Eigene Implementierung der save-Methode.
    *
+   * @param $data array Zu speichernde Daten
    * @return true, wenn das Speichern erfolgreich war, sonst false
    *
    * @see JModelAdmin::save()
    */
-  public function save($data, $id) {
-    $user = JFactory::getUser();
+  public function save($data) {
+    $id = $data['id'];
     $table = $this->getTable();
   
     try {

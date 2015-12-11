@@ -23,8 +23,10 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
   /**
    * Liefert bei einer Arbeitskategorie mit einer Pauschalen die Pauschale; ansonsten die beantragten Minuten.
    *
-   * @param $minuten beantragte Minuten
-   * @param $arbeitId Arbeitskategorie
+   * @param $minuten int beantragte Minuten
+   * @param $arbeitId int Arbeitskategorie
+   *
+   * @return int siehe Beschreibung
    */
   public function getMinuten($minuten, $arbeitId) {
     $query = "SELECT pauschale
@@ -39,7 +41,9 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
   /**
    * Liefert das Zeitkonto für die übergebene Arbeitskategorie.
    *
-   * @param $arbeitId Arbeitskategorie
+   * @param $arbeitId int Arbeitskategorie
+   *
+   * @return int User-Id des Zeitkontos
    */
   public function getZeitkonto($arbeitId) {
     $query = "SELECT k.user_id
@@ -55,6 +59,8 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
    *
    * Die Liste ist eine geschachtelte Liste von Arrays. In der ersten Dimension sind die Arbeitskategorien gelistet.
    * in der zweiten Dimension sind die zugehörigen Arbeiten gelistet.
+   *
+   * @return array siehe Beschreibung
    */
   public function getArbeitsgattungen() {
     // Zunächst alle relevanten Arbeitskategorien selektieren
@@ -101,6 +107,8 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
 
   /**
    * @see JModelForm::getForm()
+   *
+   * @inheritdoc
    */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.eigenleistungen', 'eigenleistungen', array (
@@ -116,16 +124,16 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
   }
   
   /**
-   * Prüft, ob die Eingaben korrekt sind.
+   * Prüft, ob die Eingaben korrekt sind. Validierungsmeldungen werden im Model gespeichert.
    * 
-   * Validierungsmeldungen werden im Model gespeichert.
-   * 
-   * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
+   * @return mixed Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
    * @see JModelForm::validate()
+   *
+   * @inheritdoc
    */
-  public function validate($form, $data) {
-    $validateResult = parent::validate($form, $data);
+  public function validate($form, $data, $group = NULL) {
+    $validateResult = parent::validate($form, $data, $group);
     if ($validateResult === false) {
       return false;
     }
@@ -176,6 +184,10 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
   /**
    * Die gewählte Arbeitskategorie darf nicht zur Kategorie Freiwilligenarbeit gehören.
    * Auch darf es sich nicht um ein Stundengeschenk oder einen Stundentausch handeln.
+   *
+   * @param $arbeitId int ID des Ämtli
+   *
+   * @return boolean
    */
   private function validateArbeit($arbeitId) {
     if (empty($arbeitId) || $arbeitId <= 0) {

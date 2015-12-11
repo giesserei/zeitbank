@@ -368,11 +368,13 @@ class ZeitbankModelReport extends JModelLegacy {
    */
   private function deliverFile($filepath, $filename) {
     $filesize = filesize($filepath);
-    JResponse::setHeader('Content-Type', 'application/octet-stream');
-    JResponse::setHeader('Content-Transfer-Encoding', 'Binary');
-    JResponse::setHeader('Content-Disposition', 'attachment; filename='.$filename.'_'.date('Y-m-d').'.csv');
-    JResponse::setHeader('Content-Length', $filesize);
-    echo JFile::read($filepath);
+    $appWeb = JApplicationWeb::getInstance();
+    $appWeb->setHeader('Content-Type', 'application/octet-stream', true);
+    $appWeb->setHeader('Content-Transfer-Encoding', 'Binary', true);
+    $appWeb->setHeader('Content-Disposition', 'attachment; filename='.$filename.'_'.date('Y-m-d').'.csv', true);
+    $appWeb->setHeader('Content-Length', $filesize, true);
+    $appWeb->sendHeaders();
+    echo file_get_contents($filepath);
   }
   
 }

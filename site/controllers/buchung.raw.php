@@ -13,7 +13,7 @@ jimport('joomla.application.component.controller');
  *
  * @author Steffen Förster
 */
-class ZeitbankControllerBuchung extends JController {
+class ZeitbankControllerBuchung extends JControllerLegacy {
   
   /**
    * Liefert die Mitglieder als JSON-Struktur.
@@ -23,7 +23,7 @@ class ZeitbankControllerBuchung extends JController {
       return false;
     }
     
-    $doc =& JFactory::getDocument();
+    $doc = JFactory::getDocument();
     $doc->setMimeEncoding('text/plain');
     
     $query = $this->getQuery();
