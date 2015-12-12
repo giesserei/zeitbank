@@ -16,6 +16,9 @@ class ZeitbankCalc {
   
   /**
    * Liefert den Saldo (Minuten) des laufenden Jahres für das übergebene Mitglied.
+   *
+   * @param $userId int
+   * @return int
    */
   public static function getSaldo($userId) {
     $db = JFactory::getDBO();
@@ -31,6 +34,9 @@ class ZeitbankCalc {
   
   /**
    * Liefert den Saldo (Minuten) des Vorjahres für das übergebene Mitglied.
+   *
+   * @param $userId int
+   * @return int
    */
   public static function getSaldoVorjahr($userId) {
     $db = JFactory::getDBO();
@@ -46,6 +52,9 @@ class ZeitbankCalc {
   
   /**
    * Liefert den Saldo der Freiwilligenarbeit des laufenden Jahres für das übergebene Mitglied.
+   *
+   * @param $userId int
+   * @return int
    */
   public static function getSaldoFreiwilligenarbeit($userId) {
     $db = JFactory::getDBO();
@@ -68,6 +77,10 @@ class ZeitbankCalc {
    * Vorbedingungen:
    * - Mitglied ist ein Bewohner
    * - Einzugsdatum ist in der DB erfasst
+   *
+   * @param $userId int
+   * @param $inklDispensation boolean
+   * @return int
    */
   public static function getSollBewohner($userId, $inklDispensation = true) {
     $db = JFactory::getDBO();
@@ -103,6 +116,8 @@ class ZeitbankCalc {
   /**
    * Liefert true, wenn eine Buchung für das vergangene Jahr erlaubt ist.
    * Aktuelles Datum muss zwischen dem 01.01. und dem 05.01. liegen.
+   *
+   * @return boolean
    */
   public static function isLastYearAllowed() {
     $dateLower = new DateTime(date('Y').'-01-01');
@@ -126,6 +141,8 @@ class ZeitbankCalc {
   /**
    * Liefert true, wenn keine Buchungen durchgeführt werden können.
    * Während der Abschlussarbeiten ist die Zeitbank gesperrt: 06.01. bis 10.01.
+   *
+   * @return boolean
    */
   public static function isBuchungGesperrt() {
     $dateLower = new DateTime(date('Y').'-01-06');

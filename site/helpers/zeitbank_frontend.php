@@ -75,7 +75,8 @@ class ZeitbankFrontendHelper {
    * Liefert true, wenn der übergebene String-Wert NULL ist oder eine leere Zeichenkette ist. 
    * Alle Whitespaces werden für den Test entfernt.
    * 
-   * @param string $value
+   * @param $value string
+   * @return boolean
    */
   public static function isBlank($value) {
     if (empty($value)) {
@@ -87,6 +88,10 @@ class ZeitbankFrontendHelper {
   
   /**
    * Liefert eine Zeitangabe in der Form Stunden:Minuten.
+   *
+   * @param $time_in_minutes
+   * @return string
+   *
    */
   public static function formatTime($time_in_minutes) {
     $time_in_minutes = round($time_in_minutes);

@@ -65,5 +65,4 @@ class ZeitbankModelUserjournal extends JModelLegacy {
     }
   }
   
-} 
-?>
+}

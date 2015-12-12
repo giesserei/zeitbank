@@ -32,6 +32,8 @@ class ZeitbankControllerFreiwilligenarbeit extends ZeitbankControllerUpdJournalB
   
   /**
    * @see ZeitbankControllerUpdJournalBase::filterFormFields()
+   *
+   * @inheritdoc
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
@@ -45,6 +47,8 @@ class ZeitbankControllerFreiwilligenarbeit extends ZeitbankControllerUpdJournalB
   
   /**
    * Buchung vervollständigen.
+   *
+   * @inheritdoc
    */
   protected function modifyDataBeforeSave($data) {
     $buchung = array();

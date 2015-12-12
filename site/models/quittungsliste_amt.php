@@ -40,5 +40,4 @@ class ZeitbankModelQuittungsliste_Amt extends JModelLegacy {
   
     return($query);
   }  
-} 
-?>
+}

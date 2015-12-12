@@ -101,39 +101,51 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
    */
   private function validateMinuten($minuten, $empfaengerId, $lastYear) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
-      $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest.');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte die Zeit eingeben, die du verschenken möchtest.', 'warning');
       return false;
     }
     if (!is_numeric($minuten)) {
-      $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
+      JFactory::getApplication()->enqueueMessage(
+          'Im Feld Minuten sind nur Zahlen zulässig.', 'warning');
       return false;
     }
     $minutenInt = intval($minuten);
     if ($minutenInt <= 0) {
-      $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
+      JFactory::getApplication()->enqueueMessage(
+          'Die Anzahl der Minuten muss grösser 0 sein.', 'warning');
       return false;
     }
     
     $saldo = $lastYear ? ZeitbankCalc::getSaldoVorjahr($this->user->id) : ZeitbankCalc::getSaldo($this->user->id);
     
     if ($minutenInt > $saldo) {
-      $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldo.' Minuten).');
+      JFactory::getApplication()->enqueueMessage(
+          'Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldo.' Minuten).', 'warning');
       return false;
     }
     
-    // Prüfung des Empfängersolls nicht bei Stundenfonds nötig - beim Gewerbe wird zur Vereinfachung bisher auf die Prüfung verzichtet
+    // Prüfung des Empfängersolls nicht bei Stundenfonds nötig - beim Gewerbe wird zur Vereinfachung bisher auf die
+    // Prüfung verzichtet
     if (!BuchungHelper::isStundenfonds($empfaengerId) && !BuchungHelper::isGewerbe($empfaengerId)) {
-      $saldoEmpfaenger = $lastYear ? ZeitbankCalc::getSaldoVorjahr($empfaengerId) : ZeitbankCalc::getSaldo($empfaengerId);
+      $saldoEmpfaenger = $lastYear
+          ? ZeitbankCalc::getSaldoVorjahr($empfaengerId)
+          : ZeitbankCalc::getSaldo($empfaengerId);
       
-      // Dispensation wird nicht berücksichtigt (geschenkte Stunden können so eine Zahlung der Hauswartspauschale verhindern)
+      // Dispensation wird nicht berücksichtigt (geschenkte Stunden können so eine Zahlung der
+      // Hauswartspauschale verhindern) => kleine Unschärfe: Jugendliche in Erstausbildung sind dispensiert, zahlen
+      // jedoch keine Hauswartentschädigung
       $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId, false);
       
       if ($saldoEmpfaenger >= $sollEmpfaenger) {
-        $this->setError('Der Empfänger benötigt keine Stunden mehr.');
+        JFactory::getApplication()->enqueueMessage(
+            'Der Empfänger benötigt keine Stunden mehr.', 'warning');
         return false;
       }
       else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
-        $this->setError('Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger).' Minuten zur Erreichung des Stundensolls.');
+        JFactory::getApplication()->enqueueMessage(
+            'Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger)
+            .' Minuten zur Erreichung des Stundensolls.', 'warning');
         return false;
       }
     }
@@ -144,10 +156,14 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
   /**
    * Liefert true, wenn der Empfänger ein aktiver Bewohner oder der Stundenfonds ist; sonst false.
    * Auch darf dies nicht der angemeldete Benutzer sein.
+   *
+   * @param $empfaengerId int User-ID, des Empfängers
+   *
+   * @return boolean
    */
   private function validateEmpfaenger($empfaengerId) {
     if (!isset($empfaengerId)) {
-      $this->setError('Bitte Empfänger auswählen');
+      JFactory::getApplication()->enqueueMessage('Bitte Empfänger auswählen', 'warning');
       return false;
     }
   
@@ -161,7 +177,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     $count = $this->db->loadResult();
   
     if ($count == 0) {
-      $this->setError('Der Empfänger ist nicht zulässig.');
+      JFactory::getApplication()->enqueueMessage('Der Empfänger ist nicht zulässig.', 'warning');
       return false;
     }
   

@@ -30,6 +30,10 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
    * Liefert true, wenn der angemeldete Benutzer Erfasser des übergebenen Journaleintrags ist.
    * Weiterhin darf der Antrag noch nicht bestätigt sein.
    * -> Funktioniert nicht für Stundengeschenke, da der Antragssteller hier keine Gutschrift bekommt.
+   *
+   * @param $id int ID des Datensatzes
+   *
+   * @return boolean
    */
   public function isEditAllowed($id) {
     $query = sprintf(
@@ -47,6 +51,10 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
    * Liefert true, wenn der angemeldete Benutzer der Admin der Arbeitskategorie ist, welche im übergebenen 
    * Journaleintrag verwendet wird. 
    * Ausnahme: Beim Stundentausch muss der angemeldete Benutzer der Besitzer des Belastungskontos sein.
+   *
+   * @param $id int ID der zu prüfenden Buchung
+   *
+   * @return boolean
    */
   public function isArbeitAdmin($id) {
     $query = sprintf(
@@ -61,6 +69,10 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   
   /**
    * Liefert true, wenn der Journaleintrag zu einem Ämtli gehört und damit nicht zum privaten Stundentausch.
+   *
+   * @param $id int ID der Buchung
+   *
+   * @return boolean
    */
   public function isJournalAemtli($id) {
     $query = sprintf(
@@ -75,6 +87,10 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   
   /**
    * Liefert den Antrag.
+   *
+   * @param $id int ID der Buchung, die zu bestätigen ist
+   *
+   * @return array
    */
   public function getAntrag($id) {
     $query = sprintf(
@@ -114,25 +130,25 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   
       // Properties mit neuen Daten überschreiben
       if (!$table->bind($data, 'id')) {
-        $this->setError($table->getError());
+        JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
         return false;
       }
   
       // Tabelle kann vor dem Speichern letzte Datenprüfung vornehmen
       if (!$table->check()) {
-        $this->setError($table->getError());
+        JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
         return false;
       }
   
       // Jetzt Daten speichern
       if (!$table->store()) {
-        $this->setError($table->getError());
+        JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
         return false;
       }
     }
     catch (Exception $e) {
       JLog::add($e->getMessage(), JLog::ERROR);
-      $this->setError('Speichern fehlgeschlagen!');
+      JFactory::getApplication()->enqueueMessage('Speichern fehlgeschlagen!', 'error');
       return false;
     }
   
@@ -141,10 +157,15 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
   
   /**
    * Prüft, ob das Antragsdatum korrekt gesetzt ist.
+   *
+   * @param $datumAntrag DateTime Antragsdatum
+   *
+   * @return boolean
    */
   public function validateDatumAntrag($datumAntrag) {
     if (ZeitbankCalc::isBuchungGesperrt()) {
-      $this->setError('Das Antragsdatum ist nicht korrekt!');
+      JFactory::getApplication()->enqueueMessage(
+          'Das Antragsdatum ist nicht korrekt!', 'warning');
       return false;
     }
     
@@ -157,8 +178,9 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin {
         return true;
       }
     }
-  
-    $this->setError('Das Antragsdatum ist nicht korrekt!');
+
+    JFactory::getApplication()->enqueueMessage(
+        'Das Antragsdatum ist nicht korrekt!', 'warning');
     return false;
   }
   

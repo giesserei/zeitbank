@@ -23,6 +23,8 @@ class ZeitbankModelAntragLoeschen extends ZeitbankModelUpdJournalBase {
  
   /**
    * @see JModelForm::getForm()
+   *
+   * @inheritdoc
    */
   public function getForm($data = array(), $loadData = true) {
     return false;
@@ -30,19 +32,22 @@ class ZeitbankModelAntragLoeschen extends ZeitbankModelUpdJournalBase {
   
   /**
    * Löscht den übergebenen Antrag aus der Datenbank.
+   *
+   * @inheritdoc
    */
   public function delete($id) {
     $table = $this->getTable();
   
     try {
       if (!$table->delete($id)) {
-        $this->setError($table->getError());
+        JLog::add($table->getError(), JLog::ERROR);
+        JFactory::getApplication()->enqueueMessage('Löschen fehlgeschlagen!', 'error');
         return false;
       }
     }
     catch (Exception $e) {
       JLog::add($e->getMessage(), JLog::ERROR);
-      $this->setError('Löschen fehlgeschlagen!');
+      JFactory::getApplication()->enqueueMessage('Löschen fehlgeschlagen!', 'error');
       return false;
     }
     return true;

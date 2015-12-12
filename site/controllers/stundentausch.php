@@ -32,6 +32,8 @@ class ZeitbankControllerStundentausch extends ZeitbankControllerUpdJournalBase {
   
   /**
    * @see ZeitbankControllerUpdJournalBase::filterFormFields()
+   *
+   * @inheritdoc
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
@@ -48,6 +50,8 @@ class ZeitbankControllerStundentausch extends ZeitbankControllerUpdJournalBase {
   
   /**
    * Buchung vervollständigen.
+   *
+   * @inheritdoc
    */
   protected function modifyDataBeforeSave($data) {
     $buchung = array();

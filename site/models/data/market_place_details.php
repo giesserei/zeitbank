@@ -6,7 +6,7 @@ defined('_JEXEC') or die('Restricted access');
  * 
  * @author Steffen Förster
  */
-class MarketPlaceDetails extends JObject {
+class MarketPlaceDetails {
   
   public $item = null;
   

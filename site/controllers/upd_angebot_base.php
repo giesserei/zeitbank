@@ -40,6 +40,9 @@ abstract class ZeitbankControllerUpdAngebotBase extends ZeitbankControllerUpdBas
 
   /**
    * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
+   *
+   * @param $id int
+   * @return boolean
    */
   protected function isEditAllowed($id) {
     if ($id == 0) {

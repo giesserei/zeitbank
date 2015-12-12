@@ -46,6 +46,8 @@ class ZeitbankControllerKategorie extends ZeitbankControllerUpdBase {
   
   /**
    * Liefert true, wenn der Benutzer die Kategorie bearbeiten darf.
+   *
+   * @inheritdoc
    */
   protected function isEditAllowed($id) {
     if ($id == 0 || !ZeitbankAuth::isKategorieAdmin($id)) {

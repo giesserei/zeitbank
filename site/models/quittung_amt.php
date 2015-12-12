@@ -33,4 +33,3 @@ class ZeitbankModelQuittung_Amt extends JModelLegacy {
   }
   
 }
-?>

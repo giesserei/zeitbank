@@ -106,6 +106,9 @@ class ZeitbankAuth {
   /**
    * Liefert true, wenn der Benutzer angemeldet ist; sonst false.
    * Wenn false, dann wird eine Systemmeldung hinzugefügt.
+   *
+   * @param $user JUser
+   * @return boolean
    */
   private static function checkSignedIn($user) {
     if ($user->guest) {
@@ -118,6 +121,9 @@ class ZeitbankAuth {
   /**
    * Liefert true, wenn der User ein Bewohner oder ein Gewerbe ist; sonst false.
    * Wenn false, dann wird eine Systemmeldung hinzugefügt.
+   *
+   * @param $user JUser
+   * @return boolean
    */
   private static function checkBewohnerGewerbe($user) {
     $db = JFactory::getDBO();

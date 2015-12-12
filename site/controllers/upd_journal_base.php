@@ -41,6 +41,8 @@ abstract class ZeitbankControllerUpdJournalBase extends ZeitbankControllerUpdBas
   
   /**
    * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
+   *
+   * @inheritdoc
    */
   protected function isEditAllowed($id) {
     if ($id == 0) {
@@ -49,7 +51,8 @@ abstract class ZeitbankControllerUpdJournalBase extends ZeitbankControllerUpdBas
   
     $model = $this->getModel();
     if(!$model->isEditAllowed($id)) {
-      JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.','warning');
+      JFactory::getApplication()->enqueueMessage(
+          'Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.','warning');
       return false;
     }
     return true;

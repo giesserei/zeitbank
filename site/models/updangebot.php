@@ -90,6 +90,8 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   
   /**
    * @see JModel::getTable()
+   *
+   * @inheritdoc
    */
   public function getTable($type = 'Marketplace', $prefix = 'ZeitbankTable', $config = array()) {
     return JTable::getInstance($type, $prefix, $config);
@@ -97,6 +99,8 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
 
   /**
    * @see JModelForm::getForm()
+   *
+   * @inheritdoc
    */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.updangebot', 'updangebot', array (
@@ -119,9 +123,11 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
    * @see JModelForm::validate()
+   *
+   * @inheritdoc
    */
-  public function validate($form, $data) {
-    $validateResult = parent::validate($form, $data);
+  public function validate($form, $data, $group = NULL) {
+    $validateResult = parent::validate($form, $data, $group);
     if ($validateResult === false) {
       return false;
     }
@@ -151,36 +157,37 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
    * @return true, wenn das Speichern erfolgreich war, sonst false
    * 
    * @see JModelAdmin::save()
+   *
+   * @inheritdoc
    */
   public function save($data, $id) {
-    $user = JFactory::getUser();
     $table = $this->getTable();
-  
+
     try {
       // Daten in die Tabellen-Instanz laden
       $table->load($id);
       
       // Properties mit neuen Daten überschreiben
       if (!$table->bind($data, 'id')) {
-        $this->setError($table->getError());
+        JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
         return false;
       }
   
       // Tabelle kann vor dem Speichern letzte Datenprüfung vornehmen
       if (!$table->check()) {
-        $this->setError($table->getError());
+        JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
         return false;
       }
   
       // Jetzt Daten speichern
       if (!$table->store()) {
-        $this->setError($table->getError());
+        JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
         return false;
       }
     }
     catch (Exception $e) {
       JLog::add($e->getMessage(), JLog::ERROR);
-      $this->setError('Speichern fehlgeschlagen!');
+      JFactory::getApplication()->enqueueMessage('Speichern fehlgeschlagen!', 'error');
       return false;
     }
 
@@ -192,13 +199,14 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     
     try {
       if (!$table->delete($id)) {
-        $this->setError($table->getError());
+        JLog::add($table->getError(), JLog::ERROR);
+        JFactory::getApplication()->enqueueMessage('Löschen fehlgeschlagen!', 'error');
         return false;
       }
     }
     catch (Exception $e) {
       JLog::add($e->getMessage(), JLog::ERROR);
-      $this->setError('Löschen fehlgeschlagen!');
+      JFactory::getApplication()->enqueueMessage('Löschen fehlgeschlagen!', 'error');
       return false;
     }
     return true;
@@ -233,10 +241,16 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
    * Liefert true, wenn Suche oder Biete beim Stundentausch gewählt wurde; sonst false.
    * True wird auch geliefert, wenn Arbeitsangebot gewählt wurde.
    * Die Fehlermeldung wird im Model gespeichert.
+   *
+   * @param $art int Arbeitsangebot/Tausch
+   * @param $richtung int Bieten/Suchen
+   *
+   * @return boolean
    */
   private function validateArtRichtung($art, $richtung) {
     if ($art == 2 && $richtung != 1 && $richtung != 2) {
-      $this->setError('Bitte treffe eine Auswahl beim Feld "Suche / Biete"');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte treffe eine Auswahl beim Feld "Suche / Biete"', 'warning');
       return false;
     }
     return true;
@@ -244,11 +258,18 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   
   /**
    * Liefert true, wenn 'Stundentausch' gewählt wurde. Wurde 'Arbeitsangebot' gewählt, so muss der 
-   * User ein Ämtli-Administrator in der gewählten Kategorie sein. Ausserdem muss eine Arbeitsgattung gewählt worden sein.
+   * User ein Ämtli-Administrator in der gewählten Kategorie sein. Ausserdem muss eine Arbeitsgattung gewählt worden
+   * sein.
+   *
+   * @param $art int Arbeitsangebot/Tausch
+   * @param $arbeitId int ID der Arbeitsgattung
+   *
+   * @return boolean
    */
   private function validateKategorie($art, $arbeitId) {
     if ($art == 1 && $arbeitId <= 0) {
-      $this->setError('Bitte wähle eine Arbeitsgattung aus');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte wähle eine Arbeitsgattung aus', 'warning');
       return false;
     }
     else if ($art == 1) {
@@ -260,7 +281,8 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
       $this->db->setQuery($query);
       $count = $this->db->loadResult();
       if ($count == 0) {
-        $this->setError('Du bist kein Ämtli-Administrator für die gewählte Arbeitskategorie.');
+        JFactory::getApplication()->enqueueMessage(
+            'Du bist kein Ämtli-Administrator für die gewählte Arbeitskategorie.', 'warning');
         return false;
       }
     }
@@ -269,25 +291,37 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   
   /**
    * Wenn ein 'Arbeitsangebot' bearbeitet oder angelegt wird, müssen verschiedene Felder zwingend angefüllt werden.
+   *
+   * @param $art int Arbeitsangebot/Tausch
+   * @param $aufwand string Zeitaufwand
+   * @param $zeit string Ausführungszeit
+   * @param $anforderung string Anforderungen
+   * @param $beschreibung string Beschreibung der Tätigkeit
+   *
+   * @return boolean
    */
   private function validateRequiredFields($art, $aufwand, $zeit, $anforderung, $beschreibung) {
     if ($art != 1) {
       return true;
     }
     if (ZeitbankFrontendHelper::isBlank($beschreibung)) {
-      $this->setError('Bitte beschreibe die Arbeit.');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte beschreibe die Arbeit.', 'warning');
       return false;
     }
     if (ZeitbankFrontendHelper::isBlank($anforderung)) {
-      $this->setError('Bitte erfasse die Anforderungen für die Arbeit.');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte erfasse die Anforderungen für die Arbeit.', 'warning');
       return false;
     }
     if (ZeitbankFrontendHelper::isBlank($zeit)) {
-      $this->setError('Bitte gebe an, bis wann die Arbeit ausgeführt werden soll.');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte gebe an, bis wann die Arbeit ausgeführt werden soll.', 'warning');
       return false;
     }
     if (ZeitbankFrontendHelper::isBlank($aufwand)) {
-      $this->setError('Bitte gebe an, wie viel Aufwand für die Arbeit verbucht werden kann.');
+      JFactory::getApplication()->enqueueMessage(
+          'Bitte gebe an, wie viel Aufwand für die Arbeit verbucht werden kann.', 'warning');
       return false;
     }
     return true;

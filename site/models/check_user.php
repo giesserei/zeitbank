@@ -53,7 +53,7 @@ function check_arbeit_admin($kategorie) {
     	return(false);
     endif;
 	
-} // check_admin
+}
 
 // Ist ein User ein Kategorie-Administrator?
 function check_kat_admin($kategorie) {
@@ -76,8 +76,4 @@ function check_kat_admin($kategorie) {
     	return(false);
     endif;
 	
-} // check_kat_admin()
-
-
-
-?>
+}

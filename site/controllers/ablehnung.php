@@ -33,6 +33,8 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   
   /**
    * @see ZeitbankControllerUpdJournalBase::filterFormFields()
+   *
+   * @inheritdoc
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
@@ -43,6 +45,8 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   
   /**
    * Buchung vervollständigen.
+   *
+   * @inheritdoc
    */
   protected function modifyDataBeforeSave($data) {
     $buchung = array();
@@ -53,6 +57,8 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   
   /**
    * Liefert true, wenn der Benutzer den Eintrag ablehnen darf.
+   *
+   * @inheritdoc
    */
   protected function isEditAllowed($id) { 
     $model = $this->getModel();
@@ -67,6 +73,8 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
    * Wenn ein Ämtli-Antrag quittiert wurde, so wird auf die Liste der offenen Anträge verzweigt.
    * 
    * @see ZeitbankControllerUpdJournalBase::redirectSuccessView()
+   *
+   * @inheritdoc
    */
   protected function redirectSuccessView($id = 0) {
     $app = JFactory::getApplication();

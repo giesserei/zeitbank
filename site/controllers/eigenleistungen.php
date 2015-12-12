@@ -32,6 +32,8 @@ class ZeitbankControllerEigenleistungen extends ZeitbankControllerUpdJournalBase
   
   /**
    * @see ZeitbankControllerUpdJournalBase::filterFormFields()
+   *
+   * @inheritdoc
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
@@ -45,6 +47,8 @@ class ZeitbankControllerEigenleistungen extends ZeitbankControllerUpdJournalBase
   
   /**
    * Buchung vervollständigen.
+   *
+   * @inheritdoc
    */
   protected function modifyDataBeforeSave($data) {
     $buchung = array();

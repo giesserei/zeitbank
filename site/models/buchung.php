@@ -52,5 +52,3 @@ class ZeitbankModelBuchung extends JModelLegacy {
   }
   
 }
-
-?>

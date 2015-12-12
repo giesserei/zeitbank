@@ -9,26 +9,32 @@ jimport('joomla.application.component.model');
  * Model für die Übersichtsseite der Zeitbank.
  */
 class ZeitbankModelZeitbank extends JModelLegacy {
-	
-	/**
-	 * Liefert String mit menschenlesbarer Zeitangabe
-	 */
-	function showTime($time_in_minutes) {
+
+  /**
+	 * Liefert String mit menschenlesbarer Zeitangabe HH:MM
+   *
+   * @param $time_in_minutes int
+   *
+   * @return string
+   */
+  public function showTime($time_in_minutes) {
 		$time_in_minutes = round($time_in_minutes);
 		
 		// Negative Werte gesondert behandeln
-		if($time_in_minutes >= 0):
-			$hours = floor($time_in_minutes/60);
-			$minutes = $time_in_minutes - $hours*60;
-		else:
-			$hours = ceil($time_in_minutes/60);
-			$minutes = $time_in_minutes - $hours*60;
-		endif;
+		if ($time_in_minutes >= 0) {
+      $hours = floor($time_in_minutes / 60);
+      $minutes = $time_in_minutes - $hours * 60;
+    } else {
+      $hours = ceil($time_in_minutes / 60);
+      $minutes = $time_in_minutes - $hours * 60;
+    }
 
 		// Minuszeichen bei den Minuten wegschneiden
-		$minutes = ltrim($minutes,'-');
-		if(strlen($minutes) <= 1) $minutes = "0".$minutes;
-		return($hours.":".$minutes);
+		$minutes = ltrim($minutes, '-');
+		if (strlen($minutes) <= 1) {
+      $minutes = "0".$minutes;
+    }
+		return ($hours.":".$minutes);
 	}
 	
 	/**
@@ -39,7 +45,7 @@ class ZeitbankModelZeitbank extends JModelLegacy {
 	 * 
 	 * Besser ist jedoch eine Funktion im Backend, von wo man Quittierungen durchführen kann.
 	 */
-	function getOffeneQuittierungen() {
+	public function getOffeneQuittierungen() {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
     $query = "SELECT j.id, j.minuten, j.datum_antrag, a.kurztext, j.kommentar_antrag text, u.email, m.vorname, m.nachname
@@ -60,7 +66,7 @@ class ZeitbankModelZeitbank extends JModelLegacy {
   /**
    * Liefert die Liste der eigenen Anträge, welche noch nicht quittiert sind.
    */
-  function getOffeneAntraege() {
+  public function getOffeneAntraege() {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
     $query = "SELECT j.id, j.minuten, u.name, j.datum_antrag, a.kurztext, j.kommentar_antrag as text, 
@@ -91,7 +97,7 @@ class ZeitbankModelZeitbank extends JModelLegacy {
   /**
    * Liefert alle Buchungen des angemeldeten Benutzers für das laufende Jahr.
    */
-  function getUserJournal() {
+  public function getUserJournal() {
     $db = JFactory::getDBO();
     $user = JFactory::getUser();
     $query = "SELECT journal.id AS id, journal.cf_uid, minuten, belastung_userid, gutschrift_userid, datum_antrag, 
@@ -109,8 +115,14 @@ class ZeitbankModelZeitbank extends JModelLegacy {
     $rows = $db->loadObjectList();
     return $rows;
   }
-  
-  function getUserName($uid) {
+
+  /**
+   * Liefert den Namen aus der User-Tabelle zur übergebenen User-ID.
+   *
+   * @param $uid int
+   * @return string
+   */
+  public function getUserName($uid) {
     $db = JFactory::getDBO();
     $query = "SELECT name FROM #__users WHERE id='".$uid."'";
     $db->setQuery($query);
@@ -120,34 +132,13 @@ class ZeitbankModelZeitbank extends JModelLegacy {
     else:
     	return(NULL);
     endif;
-  } // getUserName
-
-  function getBelastungsKommentar($jid) {
-    $db = JFactory::getDBO();
-    $query = "SELECT text FROM #__mgh_zb_antr_kommentar WHERE journal_id='".$jid."'";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-    if($db->getAffectedRows() > 0):
-    	return($rows[0]->text);
-    else:
-    	return(NULL);
-    endif;
-  } // getBelastungsKommentar
-
-  function getQuittierungsKommentar($jid) {
-    $db = JFactory::getDBO();
-    $query = "SELECT text FROM #__mgh_zb_quit_kommentar WHERE journal_id='".$jid."'";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-    if($db->getAffectedRows() > 0):
-    	return($rows[0]->text);
-    else:
-    	return(NULL);
-    endif;
-  } // getBelastungsKommentar
+  }
   
   /**
    * Liefert true, wenn das übergebene Mitglied ein Gewerbe ist.
+   *
+   * @param $userId int
+   * @return boolean
    */
   public function isGewerbe($userId) {
     $db = JFactory::getDBO();
@@ -161,4 +152,3 @@ class ZeitbankModelZeitbank extends JModelLegacy {
   }
   
 }
-?>

@@ -81,6 +81,8 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase 
   
   /**
    * @see ZeitbankControllerUpdJournalBase::filterFormFields()
+   *
+   * @inheritdoc
    */
   protected function filterFormFields($data) {
     $dataAllowed = array();
@@ -94,6 +96,8 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase 
   
   /**
    * Auf die Confirm-View weiterleiten.
+   *
+   * @param $id int
    */
   private function redirectConfirmView($id) {
     $app = JFactory::getApplication();

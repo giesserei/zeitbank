@@ -1,15 +1,17 @@
 <?php
 
-/* Funktionen für Management-Oberfläche Ämtli 
+/**
+ * Funktionen für Management-Oberfläche Ämtli
  * 22.5.2013 jal
- * 
- * */
+ */
 
 defined('_JEXEC') or die('Restricted access');
 
 require_once(JPATH_BASE.'/components/com_zeitbank/models/zeitbank.php');
 
-// Stellt die Liste aller Ämtli für den Ämtli-Administrator dar
+/**
+ * Stellt die Liste aller Ämtli für den Ämtli-Administrator dar.
+ */
 function get_arbeitsliste($menuitem) {
 	$db = JFactory::getDBO();
 	$user = JFactory::getUser();
@@ -19,7 +21,11 @@ function get_arbeitsliste($menuitem) {
 	$zb = new ZeitbankModelZeitbank();
 	
 	$output ="<table class=\"zeitbank\">";
-    $query = "SELECT *,ab.id as id,kat.bezeichnung,kat.id as kat_id FROM #__mgh_zb_arbeit AS ab,#__mgh_zb_kategorie AS kat WHERE ab.admin_id='".$user->id."' AND kategorie_id = kat.id ORDER BY kat.ordering,ab.ordering";
+    $query = "SELECT *,ab.id as id,kat.bezeichnung,kat.id as kat_id
+              FROM #__mgh_zb_arbeit AS ab,#__mgh_zb_kategorie AS kat
+              WHERE ab.admin_id='".$user->id."'
+                AND kategorie_id = kat.id
+              ORDER BY kat.ordering,ab.ordering";
     $db->setQuery($query);
     $rows = $db->loadObjectList();
     

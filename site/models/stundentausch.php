@@ -109,16 +109,16 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
   
   private function validateMinuten($minuten) {
     if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
-      $this->setError('Bitte die Minuten eingeben.');
+      JFactory::getApplication()->enqueueMessage('Bitte die Minuten eingeben.', 'warning');
       return false;
     }
     if (!is_numeric($minuten)) {
-      $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
+      JFactory::getApplication()->enqueueMessage('Im Feld Minuten sind nur Zahlen zulässig.', 'warning');
       return false;
     }  
     $minutenInt = intval($minuten);
     if ($minutenInt <= 0) {
-      $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
+      JFactory::getApplication()->enqueueMessage('Die Anzahl der Minuten muss grösser 0 sein.', 'warning');
       return false;
     }
     
@@ -128,10 +128,14 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
   /**
    * Liefert true, wenn der Empfänger ein aktiver Bewohner oder Gewerbe ist; sonst false.
    * Auch darf dies nicht der angemeldete Benutzer sein.
+   *
+   * @param $empfaengerId int User-ID des Empfängers
+   *
+   * @return boolean
    */
-  private function validateEmpfaenger($empfaengerId, $inklStundenfonds = false) {
+  private function validateEmpfaenger($empfaengerId) {
     if (!isset($empfaengerId)) {
-      $this->setError('Bitte Empfänger auswählen');
+      JFactory::getApplication()->enqueueMessage('Bitte Empfänger auswählen', 'warning');
       return false;
     }
     
@@ -145,7 +149,7 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
     $count = $this->db->loadResult();
   
     if ($count == 0) {
-      $this->setError('Der Empfänger ist nicht zulässig.');
+      JFactory::getApplication()->enqueueMessage('Der Empfänger ist nicht zulässig.', 'warning');
       return false;
     }
   

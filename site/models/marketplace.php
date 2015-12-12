@@ -74,7 +74,9 @@ class ZeitbankModelMarketPlace extends JModelLegacy {
   
   /**
    * Liefert die Details zu einem Angebot einschliesslich der Kontaktdaten des Ansprechpartners.
-   * 
+   *
+   * @param $id int ID des Angebotes
+   *
    * @return MarketPlaceDetails
    */
   public function getDetails($id) {
@@ -128,6 +130,9 @@ class ZeitbankModelMarketPlace extends JModelLegacy {
   
   /**
    * Es werden nur die Einträge von aktiven Mitgliedern berücksichtigt.
+   *
+   * @param $overview MarketPlaceOverview Datenstruktur zur Anzeige der Übersicht
+   * @param $limit int maximale Anzahl der Angebote, die geladen werden sollen
    */
   private function addAngeboteArbeiten(&$overview, $limit) {
     $query = "SELECT m.*, mgl.vorname, mgl.nachname, mgl.email,
@@ -157,6 +162,9 @@ class ZeitbankModelMarketPlace extends JModelLegacy {
   
   /**
    * Es werden nur die Einträge von aktiven Mitgliedern berücksichtigt.
+   *
+   * @param $overview MarketPlaceOverview Datenstruktur zur Anzeige der Übersicht
+   * @param $limit int maximale Anzahl der Angebote, die geladen werden sollen
    */
   private function addAngeboteTauschen(&$overview, $limit) {
     $query = "SELECT m.*, mgl.vorname, mgl.nachname, mgl.email
@@ -181,4 +189,3 @@ class ZeitbankModelMarketPlace extends JModelLegacy {
   }
   
 }
-?>

@@ -129,6 +129,9 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
   /**
    * Abgeleitete Controller können über diese Methode zusätzliche Verarbeitungslogik vor dem Speichern des Objektes
    * ausführen => z.B. Objekt-Daten verändern.
+   *
+   * @param $data array
+   * @return array
    */
   protected function modifyDataBeforeSave($data) {
     return $data;
@@ -138,12 +141,16 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
    * Liefert true, wenn der Benutzer den Eintrag editieren/löschen darf.
    *
    * @param $id int ID des Objektes, welches bearbeitet/gelöscht werden soll
+   * @return boolean
    */
   abstract protected function isEditAllowed($id);
 
   /**
    * Liefert ein Array mit den Formdaten zurück, die gespeichert werden dürfen.
    * -> Verhindert, dass nicht zulässige Tabellen-Felder verändert werden.
+   *
+   * @param $data array
+   * @return array
    */
   abstract protected function filterFormFields($data);
   
@@ -167,8 +174,10 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
 
   /**
    * Führt einen Redirect auf die Seite durch, die nach dem Speichern angezeigt werden soll.
-   * In abgeleiteten Controllern, kann die anzuzeigende Seite abhängig vom bearbeiteten Journaleintrag sein.
+   * In abgeleiteten Controllern, kann die anzuzeigende Seite abhängig vom bearbeiteten Objekt sein.
    * Daher kann die ID des Eintrags übergeben werden.
+   *
+   * @param $id int
    */
   protected function redirectSuccessView($id) {
     $app = JFactory::getApplication();
@@ -180,20 +189,25 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
   
   /**
    * Auf die Edit-View weiterleiten.
+   *
+   * @param $id int ID der Buchung
    */
   protected function redirectEditView($id) {
     $app = JFactory::getApplication();
     $menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
     $this->setRedirect(
-        JRoute::_('index.php?option=com_zeitbank&view=' . $this->getViewName() . '&layout=edit&id='.$id.'&Itemid=' . $menuId, false)
+        JRoute::_('index.php?option=com_zeitbank&view='.$this->getViewName().'&layout=edit&id='.$id.'&Itemid='.$menuId, false)
     );
   }
   
   /**
-   * Speichert die Daten. Tritt ein Fehler auf, werden die Eingaben in der Session gespeichert,
-   * damit diese erneut angezeigt werden können.
+   * Speichert die Daten. Tritt ein Fehler auf, werden die Eingaben in der Session gespeichert damit diese erneut
+   * angezeigt werden können.
    *
    * Fehlermeldungen werden direkt angezeigt.
+   *
+   * @param $data array
+   * @param $id ID des Objektes
    *
    * @return boolean True, wenn das Speichern erfolgreich war
    */
@@ -222,7 +236,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
   }
 
   /**
-   * Liefert die ID des Angebots, welche bearbeitet/gelöscht werden soll.
+   * Liefert des Objektes, welches bearbeitet/gelöscht werden soll.
    */
   protected function getId() {
     $app = JFactory::getApplication();
@@ -266,7 +280,6 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    */
   private function validateData($data, $id) {
-    $app = JFactory::getApplication();
     $model = $this->getModel();
     $form = $model->getForm($data, false);
 
@@ -274,17 +287,6 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
 
     // Nur die ersten drei Fehler dem Benutzer anzeigen
     if ($validateResult === false) {
-      $errors = $model->getErrors();
-
-      for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
-        if ($errors[$i] instanceof Exception) {
-          $app->enqueueMessage($errors[$i]->getMessage(), 'warning');
-        }
-        else {
-          $app->enqueueMessage($errors[$i], 'warning');
-        }
-      }
-
       if ($this->isSaveDataInSession()) {
         $this->saveDataInSession($data);
       }
@@ -295,7 +297,5 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm {
     }
     return $validateResult;
   }
-  
 
-  
 }

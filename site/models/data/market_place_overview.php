@@ -6,7 +6,7 @@ defined('_JEXEC') or die('Restricted access');
  * 
  * @author Steffen Förster
  */
-class MarketPlaceOverview extends JObject {
+class MarketPlaceOverview {
   
   /**
    * Array mit den eigenen Angeboten des Mitglieds.

@@ -22,6 +22,8 @@ class ZeitbankModelAblehnung extends ZeitbankModelUpdJournalBase {
 
   /**
    * @see JModelForm::getForm()
+   *
+   * @inheritdoc
    */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.ablehnung', 'ablehnung', array (
@@ -92,7 +94,7 @@ class ZeitbankModelAblehnung extends ZeitbankModelUpdJournalBase {
    */
   private function validateKommentar($kommentar) {
     if (ZeitbankFrontendHelper::isBlank($kommentar)) {
-      $this->setError('Bitte begründe die Ablehnung des Antrags.');
+      JFactory::getApplication()->enqueueMessage('Bitte begründe die Ablehnung des Antrags.', 'warning');
       return false;
     }
     

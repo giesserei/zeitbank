@@ -22,6 +22,8 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
 
   /**
    * @see JModelForm::getForm()
+   *
+   * @inheritdoc
    */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.quittung', 'quittung', array (
@@ -37,16 +39,16 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
   }
   
   /**
-   * Prüft, ob die Eingaben korrekt sind.
-   * 
-   * Validierungsmeldungen werden im Model gespeichert.
+   * Prüft, ob die Eingaben korrekt sind. Validierungsmeldungen werden im Model gespeichert.
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
    * @see JModelForm::validate()
+   *
+   * @inheritdoc
    */
-  public function validate($form, $data) {
-    $validateResult = parent::validate($form, $data);
+  public function validate($form, $data, $group = NULL) {
+    $validateResult = parent::validate($form, $data, $group);
     if ($validateResult === false) {
       return false;
     }
@@ -90,6 +92,10 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
   /**
    * Beim privaten Stundentausch muss ein entsprechendes Guthaben vorhanden sein.
    * Sonst gibt es keine weitere Validierung.
+   *
+   * @param $journalId int ID der Buchung
+   *
+   * @return boolean True, wenn die Validierung erfolgreich war
    */
   private function validateMinuten($journalId) {
     $buchung = $this->getItem($journalId);
@@ -98,7 +104,8 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
       $saldo = ZeitbankCalc::getSaldo($this->user->id);
       
       if ($buchung->minuten > $saldo) {
-        $this->setError('Der Stundentausch übersteigt dein aktuelles Guthaben ('.$saldo.' Minuten).');
+        JFactory::getApplication()->enqueueMessage(
+            'Der Stundentausch übersteigt dein aktuelles Guthaben ('.$saldo.' Minuten).', 'warning');
         return false;
       }
     }

@@ -191,7 +191,7 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
    */
   private function validateArbeit($arbeitId) {
     if (empty($arbeitId) || $arbeitId <= 0) {
-      $this->setError('Bitte eine Arbeitskategorie auswählen.');
+      JFactory::getApplication()->enqueueMessage('Bitte eine Arbeitskategorie auswählen.', 'warning');
       return false;
     }
     
@@ -205,7 +205,7 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
     $count = $this->db->loadResult();
     
     if ($count == 0) {
-      $this->setError('Die Arbeitskategorie ist nicht zulässig.');
+      JFactory::getApplication()->enqueueMessage('Die Arbeitskategorie ist nicht zulässig.', 'warning');
       return false;
     }
     
@@ -222,14 +222,14 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase {
     
     // Nur Zahlen sind zulässig
     if (!is_numeric($minutenToValidate)) {
-      $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
+      JFactory::getApplication()->enqueueMessage('Im Feld Minuten sind nur Zahlen zulässig.', 'warning');
       return false;
     }
     
     // Bei einer Arbeitskategorie mit einer Pauschale, die Pauschale holen
     $minutenToValidate = $this->getMinuten($minutenToValidate, $arbeitId);
     if ($minutenToValidate <= 0) {
-      $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
+      JFactory::getApplication()->enqueueMessage('Die Anzahl der Minuten muss grösser 0 sein.', 'warning');
       return false;
     }
     
