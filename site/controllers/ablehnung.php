@@ -17,25 +17,14 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   // protected section
   // -------------------------------------------------------------------------
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::getViewName()
-   */
   protected function getViewName() {
     return "ablehnung";
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
-   */
   protected function isSaveDataInSession() {
     return true;
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::filterFormFields()
-   *
-   * @inheritdoc
-   */
   protected function filterFormFields($data) {
     $dataAllowed = array();
     $dataAllowed['id'] = $data['id'];
@@ -72,8 +61,6 @@ class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase {
   /**
    * Wenn ein Ämtli-Antrag quittiert wurde, so wird auf die Liste der offenen Anträge verzweigt.
    * 
-   * @see ZeitbankControllerUpdJournalBase::redirectSuccessView()
-   *
    * @inheritdoc
    */
   protected function redirectSuccessView($id = 0) {

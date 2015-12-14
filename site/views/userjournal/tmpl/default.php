@@ -4,7 +4,7 @@ defined('_JEXEC') or die('Restricted access');
 JHTML::_('behavior.framework');
 JHTML::_('behavior.modal');
 
-require_once(JPATH_BASE.'/components/com_zeitbank/models/check_user.php');
+require_once(JPATH_COMPONENT.'/models/check_user.php');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');

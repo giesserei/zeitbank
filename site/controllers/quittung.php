@@ -16,23 +16,14 @@ class ZeitbankControllerQuittung extends ZeitbankControllerUpdJournalBase {
   // protected section
   // -------------------------------------------------------------------------
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::getViewName()
-   */
   protected function getViewName() {
     return "quittung";
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
-   */
   protected function isSaveDataInSession() {
     return true;
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::filterFormFields()
-   */
   protected function filterFormFields($data) {
     $dataAllowed = array();
     $dataAllowed['id'] = $data['id'];
@@ -64,8 +55,8 @@ class ZeitbankControllerQuittung extends ZeitbankControllerUpdJournalBase {
   
   /**
    * Wenn ein Ämtli quittiert wurde, so wird auf die Liste der offenen Anträge verzweigt.
-   * 
-   * @see ZeitbankControllerUpdJournalBase::redirectSuccessView()
+   *
+   * @inheritdoc
    */
   protected function redirectSuccessView($id = 0) {
     $app = JFactory::getApplication();

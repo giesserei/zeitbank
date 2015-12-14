@@ -5,7 +5,6 @@ jimport('joomla.application.component.view');
 
 class ZeitbankViewArbeitsliste extends JViewLegacy {
   function display($tpl = null) {
-    parent::display($tpl);
+    return parent::display($tpl);
   }
 }
-?> 

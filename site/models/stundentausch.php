@@ -28,11 +28,6 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
     return $this->db->loadResult();
   }
 
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.stundentausch', 'stundentausch', array (
         'control' => 'jform',
@@ -53,8 +48,6 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
-   * @see JModelForm::validate()
-   *
    * @inheritdoc
    */
   public function validate($form, $data, $group = NULL) {
@@ -85,8 +78,6 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase {
 
   /**
    * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
-   * 
-   * @see JModelForm::loadFormData()
    */
   protected function loadFormData() {
     $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array ());

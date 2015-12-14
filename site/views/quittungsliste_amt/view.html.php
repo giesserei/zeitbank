@@ -13,14 +13,18 @@ jimport('joomla.application.component.view');
  * @author Steffen Förster
  */
 class ZeitbankViewQuittungsliste_Amt extends JViewLegacy {
-  
+
+  /**
+   * @var array[]
+   */
+  protected $quittungsliste;
+
   public function display($tpl = null) {
     $model = $this->getModel();
     $this->quittungsliste = $model->getQuittungsliste();
  
  	  ZeitbankFrontendHelper::addComponentStylesheet();
  	  
-    parent::display($tpl);
+    return parent::display($tpl);
   }
 }
-?> 

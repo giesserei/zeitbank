@@ -20,11 +20,6 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
     parent::__construct();
   }
 
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.quittung', 'quittung', array (
         'control' => 'jform',
@@ -42,8 +37,6 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
    * Prüft, ob die Eingaben korrekt sind. Validierungsmeldungen werden im Model gespeichert.
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
-   * 
-   * @see JModelForm::validate()
    *
    * @inheritdoc
    */
@@ -68,8 +61,6 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase {
 
   /**
    * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
-   * 
-   * @see JModelForm::loadFormData()
    */
   protected function loadFormData() {
     $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array ());

@@ -88,20 +88,10 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
     return $liste;
   }
   
-  /**
-   * @see JModel::getTable()
-   *
-   * @inheritdoc
-   */
   public function getTable($type = 'Marketplace', $prefix = 'ZeitbankTable', $config = array()) {
     return JTable::getInstance($type, $prefix, $config);
   }
 
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.updangebot', 'updangebot', array (
         'control' => 'jform',
@@ -121,8 +111,6 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
    * Validierungsmeldungen werden im Model gespeichert.
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
-   * 
-   * @see JModelForm::validate()
    *
    * @inheritdoc
    */
@@ -155,8 +143,6 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
    * Eigene Implementierung der save-Methode.
    * 
    * @return true, wenn das Speichern erfolgreich war, sonst false
-   * 
-   * @see JModelAdmin::save()
    *
    * @inheritdoc
    */
@@ -216,9 +202,6 @@ class ZeitbankModelUpdAngebot extends JModelAdmin {
   // protected section
   // -------------------------------------------------------------------------
 
-  /**
-   * @see JModelForm::loadFormData()
-   */
   protected function loadFormData() {
     $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, array ());
     

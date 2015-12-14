@@ -20,12 +20,7 @@ class ZeitbankModelAntragLoeschen extends ZeitbankModelUpdJournalBase {
   public function __construct() {
     parent::__construct();
   }
- 
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
+
   public function getForm($data = array(), $loadData = true) {
     return false;
   }

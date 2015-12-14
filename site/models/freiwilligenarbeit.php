@@ -76,11 +76,6 @@ class ZeitbankModelFreiwilligenarbeit extends ZeitbankModelUpdJournalBase {
     return $liste;
   }
 
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.freiwilligenarbeit', 'freiwilligenarbeit', array (
         'control' => 'jform',
@@ -101,8 +96,6 @@ class ZeitbankModelFreiwilligenarbeit extends ZeitbankModelUpdJournalBase {
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
-   * @see JModelForm::validate()
-   *
    * @inheritdoc
    */
   public function validate($form, $data, $group = NULL) {

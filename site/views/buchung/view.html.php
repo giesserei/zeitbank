@@ -14,7 +14,10 @@ jimport('joomla.application.component.view');
  * @author Steffen Förster
  */
 class ZeitbankViewBuchung extends JViewLegacy {
-  
+
+  /**
+   * @var stdClass
+   */
   protected $buchung;
   
   public function display($tpl = null) {
@@ -34,7 +37,7 @@ class ZeitbankViewBuchung extends JViewLegacy {
     
     ZeitbankFrontendHelper::addComponentStylesheet();
     
-    parent::display($tpl);
+    return parent::display($tpl);
   }
   
   protected function isGeschenk($arbeitId) {
@@ -59,4 +62,3 @@ class ZeitbankViewBuchung extends JViewLegacy {
     return true;
   }
 }
-?> 

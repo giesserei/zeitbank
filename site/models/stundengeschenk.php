@@ -21,11 +21,6 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
     parent::__construct();
   }
   
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.stundengeschenk', 'stundengeschenk', array (
         'control' => 'jform',
@@ -45,8 +40,6 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
    * Validierungsmeldungen werden im Model gespeichert.
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
-   * 
-   * @see JModelForm::validate()
    *
    * @inheritdoc
    */

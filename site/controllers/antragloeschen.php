@@ -65,25 +65,14 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase 
     $this->redirectConfirmView($id);
   }
 
-  /**
-   * @see ZeitbankControllerUpdJournalBase::getViewName()
-   */
   protected function getViewName() {
     return "antragloeschen";
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
-   */
   protected function isSaveDataInSession() {
     return false;
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::filterFormFields()
-   *
-   * @inheritdoc
-   */
   protected function filterFormFields($data) {
     $dataAllowed = array();
     $dataAllowed['id'] = $data['id'];

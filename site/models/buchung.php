@@ -24,6 +24,9 @@ class ZeitbankModelBuchung extends JModelLegacy {
   /**
    * Liefert true, wenn der angemeldete Benutzer Empfänger oder Geber der Stunden ist. Es wird auch 
    * true geliefert, wenn der Benutzer der Admin des betroffenen Ämtli ist.
+   *
+   * @param int $id ID der Buchung
+   * @return boolean
    */
   public function isViewAllowed($id) {
     $query = sprintf(
@@ -38,6 +41,9 @@ class ZeitbankModelBuchung extends JModelLegacy {
   
   /**
    * Liefert die Buchung mit der übergebenen ID.
+   *
+   * @param int $id ID der Buchung
+   * @return array
    */
   public function getBuchung($id) {
     $query = sprintf(

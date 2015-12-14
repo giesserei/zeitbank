@@ -1,48 +1,24 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
-JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
-
-jimport('joomla.application.component.view');
+JLoader::register('BaseFormView', JPATH_COMPONENT . '/views/base_form_view.php');
 
 /**
  * View-Klasse für das Edit-Formular.
  * 
  * @author Steffen Förster
  */
-class ZeitbankViewUpdAngebot extends JViewLegacy {
-
-  protected $form;
-  
-  protected $menuId;
-  
-  protected $state;
-  
-  protected $art;
+class ZeitbankViewUpdAngebot extends BaseFormView {
 
   /**
-   * @see JView::display()
+   * @var int
    */
+  protected $art;
+
   public function display($tpl = null) {
-    $app = JFactory::getApplication();
-    
-    // Form holen für Aufbereitung des Formulars
-    $this->state = $this->get('State');
-    
-    $this->form	= $this->get('Form');
+    $this->initView();
     $this->setArt();
-
-    if (count($errors = $this->get('Errors'))) {
-      throw new Exception(implode('\n', $errors));
-    }
-    
-    ZeitbankFrontendHelper::addComponentStylesheet();
-
-    // Menü-Id wird in View im Form-Action gesetzt
-    $this->menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
-    
-    parent::display($tpl);
+    return parent::display($tpl);
   }
   
   protected function getKategorien() {
@@ -55,10 +31,6 @@ class ZeitbankViewUpdAngebot extends JViewLegacy {
     return $model->getArbeitsgattungen();
   }
   
-  protected function getId() {
-    return (int) $this->state->get($this->getModel()->getName().'.id');
-  }
-  
   protected function isTauschView() {
     return $this->getArt() == 2;
   }
@@ -69,10 +41,6 @@ class ZeitbankViewUpdAngebot extends JViewLegacy {
   
   protected function getArt() {
     return $this->art;
-  }
-  
-  protected function isNew() {
-    return $this->getId() == 0;
   }
   
   // -------------------------------------------------------------------------

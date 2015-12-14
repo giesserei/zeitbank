@@ -20,11 +20,6 @@ class ZeitbankModelAblehnung extends ZeitbankModelUpdJournalBase {
     parent::__construct();
   }
 
-  /**
-   * @see JModelForm::getForm()
-   *
-   * @inheritdoc
-   */
   public function getForm($data = array(), $loadData = true) {
     $form = $this->loadForm('com_zeitbank.ablehnung', 'ablehnung', array (
         'control' => 'jform',
@@ -45,10 +40,10 @@ class ZeitbankModelAblehnung extends ZeitbankModelUpdJournalBase {
    * 
    * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
    * 
-   * @see JModelForm::validate()
+   * @inheritdoc
    */
-  public function validate($form, $data) {
-    $validateResult = parent::validate($form, $data);
+  public function validate($form, $data, $group = NULL) {
+    $validateResult = parent::validate($form, $data, $group);
     if ($validateResult === false) {
       return false;
     }

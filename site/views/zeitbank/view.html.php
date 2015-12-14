@@ -87,4 +87,3 @@ class ZeitbankViewZeitbank extends JViewLegacy {
     return $model->isGewerbe($user->id);
   }
 }
-?> 

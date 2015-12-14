@@ -13,6 +13,8 @@ class ZeitbankModelQuittung_Amt extends JModelLegacy {
 	
   /**
    * Liefert alle offenen Anträge, für die der angemeldete Benutzer der Administrator ist.
+   *
+   * @return array[]
    */
 	public function getOffeneQuittierungen() {
     $db = JFactory::getDBO();

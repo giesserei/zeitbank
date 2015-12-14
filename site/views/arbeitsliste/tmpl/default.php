@@ -4,8 +4,8 @@ defined('_JEXEC') or die('Restricted access');
 JHTML::_('behavior.framework');
 JHTML::_('behavior.modal');
 
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'check_user.php');
-require_once(JPATH_BASE .DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'arbeit_func.php');
+require_once(JPATH_COMPONENT.'/models/check_user.php');
+require_once(JPATH_COMPONENT.'/models/arbeit_func.php');
 
 // Lokales CSS laden
 $doc = JFactory::getDocument();

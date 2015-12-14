@@ -16,25 +16,14 @@ class ZeitbankControllerStundenGeschenk extends ZeitbankControllerUpdJournalBase
   // protected section
   // -------------------------------------------------------------------------
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::getViewName()
-   */
   protected function getViewName() {
     return "stundengeschenk";
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
-   */
   protected function isSaveDataInSession() {
     return true;
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::filterFormFields()
-   *
-   * @inheritdoc
-   */
   protected function filterFormFields($data) {
     $dataAllowed = array();
     $dataAllowed['id'] = 0;

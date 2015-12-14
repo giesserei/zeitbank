@@ -13,19 +13,25 @@ jimport('joomla.application.component.view');
  * @author Steffen Förster
  */
 class ZeitbankViewReport extends JViewLegacy {
-  
+
+  /**
+   * @var MarketPlaceOverview
+   */
   protected $overview;
-  
+
+  /**
+   * @var int
+   */
   protected $menuId;
   
-  function display($tpl = null) {
+  public function display($tpl = null) {
     if (!ZeitbankAuth::checkAuthZeitbank() || !ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_KEY_DATA)) {
       return false;
     }
   
     $this->prepareDefault();
   
-    parent::display($tpl);
+    return parent::display($tpl);
   }
   
   /**

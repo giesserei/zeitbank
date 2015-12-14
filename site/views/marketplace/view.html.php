@@ -13,13 +13,22 @@ jimport('joomla.application.component.view');
  * @author Steffen Förster
  */
 class ZeitbankViewMarketPlace extends JViewLegacy {
-  
+
+  /**
+   * @var MarketPlaceOverview
+   */
   protected $overview;
-  
+
+  /**
+   * @var MarketPlaceDetails
+   */
   protected $details;
-  
+
+  /**
+   * @var int
+   */
   protected $menuId;
-  
+
   function display($tpl = null) {
     if (!ZeitbankAuth::checkAuthMarket()) {
       return false;
@@ -41,7 +50,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy {
       $this->prepareDefault();
     }
     
-    parent::display($tpl);
+    return parent::display($tpl);
   }
   
   /**
@@ -61,6 +70,11 @@ class ZeitbankViewMarketPlace extends JViewLegacy {
   /**
    * Liefert einen Link zur Anzeige der Details in einem JS-Window.
    * Der Parameter tmpl=component sorgt dafür, dass nur die View ohne Template angezeigt wird.
+   *
+   * @param int $id ID des Objektes
+   * @param string text Link-Text
+   *
+   * @return string
    */
   protected function getLink($id, $text) {
     return '<a class="modal"

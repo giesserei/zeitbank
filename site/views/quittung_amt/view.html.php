@@ -7,13 +7,15 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 jimport('joomla.application.component.view');
 
 /**
- * Diese View listet alle offenen Anträge auf, für die der Benutzer als Ämtli-Administrator 
- * registriert ist.
+ * Diese View listet alle offenen Anträge auf, für die der Benutzer als Ämtli-Administrator registriert ist.
  * 
  * @author JAL
  */
 class ZeitbankViewQuittung_Amt extends JViewLegacy {
-  
+
+  /**
+   * @var array[]
+   */
   protected $quittierungen;
   
   public function display($tpl = null) {
@@ -22,7 +24,6 @@ class ZeitbankViewQuittung_Amt extends JViewLegacy {
     
     ZeitbankFrontendHelper::addComponentStylesheet();
     
-    parent::display($tpl);
+    return parent::display($tpl);
   }
 }
-?> 

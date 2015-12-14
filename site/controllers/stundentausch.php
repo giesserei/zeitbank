@@ -16,25 +16,14 @@ class ZeitbankControllerStundentausch extends ZeitbankControllerUpdJournalBase {
   // protected section
   // -------------------------------------------------------------------------
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::getViewName()
-   */
   protected function getViewName() {
     return "stundentausch";
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::saveDataInSession()
-   */
   protected function isSaveDataInSession() {
     return true;
   }
   
-  /**
-   * @see ZeitbankControllerUpdJournalBase::filterFormFields()
-   *
-   * @inheritdoc
-   */
   protected function filterFormFields($data) {
     $dataAllowed = array();
     $dataAllowed['id'] = $data['id'];
