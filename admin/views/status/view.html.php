@@ -7,7 +7,7 @@
 
  jimport('joomla.application.component.view');
 
- class ZeitbankViewStatus extends JView {
+ class ZeitbankViewStatus extends JViewLegacy {
     function display($tpl = null) {
         JToolBarHelper::title('Zeitbank: Status','user.png');
         JToolBarHelper::preferences('com_zeitbank');

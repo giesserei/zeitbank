@@ -8,7 +8,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
-class ZeitbankModelJournal extends JModel {
+class ZeitbankModelJournal extends JModelLegacy {
 	var $_data;
 	function getData() {
 		if(empty($this->_data)) {

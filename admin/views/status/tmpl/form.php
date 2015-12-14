@@ -5,7 +5,7 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_BASE.DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'zentralbank_func.php');
+require_once(JPATH_BASE.'/components/com_zeitbank/models/zentralbank_func.php');
 
 $db = JFactory::getDBO();
 $param = JRequest::get( 'get' );

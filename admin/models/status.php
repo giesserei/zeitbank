@@ -11,7 +11,7 @@ require_once(JPATH_BASE.DS.'components'.DS.'com_zeitbank'.DS.'models'.DS.'zentra
 
 
 
-class ZeitbankModelStatus extends JModel {
+class ZeitbankModelStatus extends JModelLegacy {
 	var $_data;
 
 	function __construct() {

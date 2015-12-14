@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
-class ArbeitenViewArbeit extends JView {
+class ArbeitenViewArbeit extends JViewLegacy {
 	
 	function display( $tpl = null ) {
 		$arbeit =& $this->get( 'Data' );

@@ -7,7 +7,7 @@
 
  jimport('joomla.application.component.view');
 
- class ArbeitenViewArbeiten extends JView {
+ class ArbeitenViewArbeiten extends JViewLegacy {
  	function display($tpl = null) {
  		JToolBarHelper::title('Zeitbank: Arbeiten','user.png');
  		//JToolBarHelper::deleteList();
