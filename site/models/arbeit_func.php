@@ -78,67 +78,65 @@ function get_arbeitsliste($menuitem) {
 } // get_arbeitsliste
 
 
-// Stellt die Liste aller Ämtli für die Endbenutzer dar
+/**
+ * Stellt die Liste aller Ämtli für die Endbenutzer dar
+ */
 function get_arbeitsliste_enduser() {
 	$db = JFactory::getDBO();
-	$user = JFactory::getUser();
 	
 	$laufendes_jahr = intval(date('Y'));
 	$lastYear = $laufendes_jahr - 1;
-	
-	$zb = new ZeitbankModelZeitbank();
+
 	$output = "";
 	
-    $query = "SELECT bezeichnung,id FROM #__mgh_zb_kategorie ORDER BY ordering";
-    $db->setQuery($query);
-    $kategorien = $db->loadObjectList();
+	$query = "SELECT bezeichnung, id FROM #__mgh_zb_kategorie ORDER BY ordering";
+	$db->setQuery($query);
+	$kategorien = $db->loadObjectList();
 	
-    if($db->getAffectedRows() > 0):
-    	foreach ($kategorien as $kat):
-    		$query = "SELECT * FROM #__mgh_zb_arbeit WHERE kategorie_id='".$kat->id."' AND aktiviert='1' ORDER BY ordering";
-    		$db->setQuery($query);
-    		$arbeiten = $db->loadObjectList();
-    		$k = 0;	// Zebra start
-    		
-    		if($db->getAffectedRows() > 0):
-	    		$output .= "<h3>Kategorie: ".$kat->bezeichnung."</h3>";
-				$output .="<table class=\"zeitbank\">";
-	    		$output .= "<tr class=\"head\">
-	    		              <th width=\"300\">Kurztext (wie im Auswahlmenü)<br />und Kommentar</th>
+	if($db->getAffectedRows() > 0) {
+		foreach ($kategorien as $kat) {
+			$query = "SELECT * FROM #__mgh_zb_arbeit WHERE kategorie_id='" . $kat->id . "' AND aktiviert='1' ORDER BY ordering";
+			$db->setQuery($query);
+			$arbeiten = $db->loadObjectList();
+			$k = 0;  // Zebra start
+
+			if ($db->getAffectedRows() > 0) {
+				$output .= "<h3>Kategorie: " . $kat->bezeichnung . "</h3>";
+				$output .= "<table class=\"zeitbank\">";
+				$output .= "<tr class=\"head\">
+	    		              <th width=\"300\">Kurztext</th>
 	    		              <th width=\"150\">Zuständig</th>
 	    					        <th width=\"70\" align=\"right\">Jahressoll</th>
-	    		              <th width=\"100\" align=\"right\">Kadenz</th>
-	    					        <th width=\"100\" align=\"right\">Buchungen ".$laufendes_jahr."</th>
-	    					        <th width=\"100\" align=\"right\">Buchungen ".$lastYear."</th>
+	    					        <th width=\"100\" align=\"right\">Buchungen " . $laufendes_jahr . "</th>
+	    					        <th width=\"100\" align=\"right\">Buchungen " . $lastYear . "</th>
 	    					        <th width=\"70\" align=\"right\">Pauschale</th>
-	    					      </tr>";
-			
-    			foreach($arbeiten as $ab):
-    				$style = $k ? "even" : "odd"; // Zebramuster				
-    				$output .= "<tr class=\"".$style."\"><td><strong>".$ab->kurztext."</strong></td>";
-	    			$output .= "<td>".JFactory::getUser($ab->admin_id)->name."</td>";
-	    			$output .= "<td align=\"right\">".$ab->jahressoll." h</td>";
-	    			if($ab->kadenz > 0):
-	    				$output .= "<td align=\"right\">".$ab->kadenz." Einsätze/Jahr</td>";
-	    			else:
-	    				$output .="<td align=\"right\">-</td>";
-	    			endif;
-	    			$output .= "<td align=\"right\">".round(arbeit_summe($ab->id, $laufendes_jahr)/60,0)." h</td>";
-	    			$output .= "<td align=\"right\">".round(arbeit_summe($ab->id, $lastYear)/60,0)." h</td>";
-	    			$output .= "<td align=\"right\">".($ab->pauschale > 0 ? $ab->pauschale.' min' : '-')."</td>";
-	    			$output .= "</tr>";
-	    			if(strlen($ab->beschreibung) > 1):
-	    				$output .= "<tr class=\"".$style."\"><td colspan=\"7\"> &nbsp; &raquo; ".$ab->beschreibung."</td></tr>";
-	    			endif;
-	    			$k = 1 - $k;
-    			endforeach;
+	    					    </tr>";
+
+				foreach ($arbeiten as $ab) {
+					$style = $k ? "even" : "odd"; // Zebramuster
+					$output .= "<tr class=\"" . $style . "\"><td><strong>" . $ab->kurztext . "</strong></td>";
+					$output .= "<td>" . JFactory::getUser($ab->admin_id)->name . "</td>";
+					$output .= "<td align=\"right\">" . $ab->jahressoll . " h</td>";
+					$output .= "<td align=\"right\">" . round(arbeit_summe($ab->id, $laufendes_jahr) / 60, 0) . " h</td>";
+					$output .= "<td align=\"right\">" . round(arbeit_summe($ab->id, $lastYear) / 60, 0) . " h</td>";
+					$output .= "<td align=\"right\">" . ($ab->pauschale > 0 ? $ab->pauschale . ' min' : '-') . "</td>";
+					$output .= "</tr>";
+
+					/*
+					if (strlen($ab->beschreibung) > 1) {
+						$output .= "<tr class=\"" . $style . "\"><td colspan=\"7\"> &nbsp; &raquo; " . $ab->beschreibung . "</td></tr>";
+					}
+					*/
+
+					$k = 1 - $k;
+				}
 				$output .= "</table><br />";
-    		endif;
-    	endforeach;
-    endif;
+			}
+		}
+	}
     
-	return($output);
-} //get_arbeitsliste_enduser
+	return $output;
+}
 
 
 // Ermittelt die Summe der Stunden eines bestimmten Ämtlis während des laufenden Kalenderjahres
