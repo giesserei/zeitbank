@@ -8,7 +8,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
-class KategorienModelKategorie extends JModelLegacy {
+class ZeitbankModelKategorie extends JModelLegacy {
 	var $_data;
 
 	function __construct() {

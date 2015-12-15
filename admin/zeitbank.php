@@ -1,11 +1,9 @@
-<?php
+<?php 
 defined('_JEXEC') or die('Restricted access');
 
-jimport ('joomla.application.component.controller');
+jimport('joomla.application.component.controller');
 
 $controller = JControllerLegacy::getInstance('zeitbank');
-//$controller = new ZeitbankController();
-
 $input = JFactory::getApplication()->input;
 $controller->execute($input->get('task'));
 $controller->redirect();

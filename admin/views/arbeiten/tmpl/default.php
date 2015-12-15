@@ -1,8 +1,5 @@
 <?php
-/*
- * Created on 28.12.2012
- *
- */
+
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.html.pagination');
@@ -10,7 +7,7 @@ jimport('joomla.html.pagination');
 $filter_order = JRequest::getVar('filter_order','reihenfolge');
 $filter_order_Dir = JRequest::getVar('filter_order_Dir','asc');
 
-$model = & $this->getModel();
+$model = $this->getModel();
 $db = JFactory::getDBO();
 
 $this->pagination = new JPagination(count( $this->items ), 0, $this->items );

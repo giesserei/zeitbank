@@ -1,23 +1,19 @@
 <?php
-/*
- * Created on 27.12.2010
- *
- */
+
  defined('_JEXEC') or die('Restricted access');
 
  jimport('joomla.application.component.view');
 
- class ArbeitenViewArbeiten extends JViewLegacy {
- 	function display($tpl = null) {
- 		JToolBarHelper::title('Zeitbank: Arbeiten','user.png');
- 		//JToolBarHelper::deleteList();
- 		JToolBarHelper::editListX();
- 		JToolBarHelper::addNewX();
- 		$items =& $this->get('Data');
- 		
- 		$this->assignRef('items',$items);
- 		
- 		parent::display($tpl);
-  	}
+ class ZeitbankViewArbeiten extends JViewLegacy {
+ 	 function display($tpl = null) {
+		 JToolBarHelper::title('Zeitbank: Arbeiten','user.png');
+ 		 JToolBarHelper::editList();
+ 		 JToolBarHelper::addNew();
+
+ 		 $items = $this->get('Data');
+ 		 $this->assignRef('items', $items);
+
+		 return parent::display($tpl);
+	 }
  }
-?>
+

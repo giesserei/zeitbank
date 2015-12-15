@@ -7,7 +7,7 @@
 
  jimport('joomla.application.component.view');
 
- class KategorienViewKategorien extends JViewLegacy {
+ class ZeitbankViewKategorien extends JViewLegacy {
  	function display($tpl = null) {
  		JToolBarHelper::title('Zeitbank: Kategorien','user.png');
  		// JToolBarHelper::deleteList();

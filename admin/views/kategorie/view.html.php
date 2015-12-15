@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
-class KategorienViewKategorie extends JViewLegacy {
+class ZeitbankViewKategorie extends JViewLegacy {
 	
 	function display( $tpl = null ) {
 		$kategorie =& $this->get( 'Data' );

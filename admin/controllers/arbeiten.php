@@ -1,20 +1,11 @@
 <?php
-/*
- * Created on 27.12.2010
- *
- */
 
 defined('_JEXEC') or die('Restricted access');
 
 jimport ('joomla.application.component.controller');
-JLoader::register('ZeitbankHelper', JPATH_COMPONENT.'/helpers/zeitbank.php');
 
-class ArbeitenController extends JControllerLegacy {
+class ZeitbankControllerArbeiten extends JControllerLegacy {
 	function display() {
-		$input = JFactory::getApplication()->input;
-		$view = $input->get('view', $this->default_view);
-		ZeitbankHelper::addSubmenu($view);
-		
 		parent::display();
 	}
 
