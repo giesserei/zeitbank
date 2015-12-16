@@ -1,79 +1,69 @@
 <?php
-/*
- * Created on 28.12.2012
- *
- */
+
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.html.pagination');
+$listDirn = JRequest::getVar('filter_order', 'reihenfolge');
+$listOrder = JRequest::getVar('filter_order_Dir', 'asc');
 
-$filter_order = JRequest::getVar('filter_order','reihenfolge');
-$filter_order_Dir = JRequest::getVar('filter_order_Dir','asc');
+?>
 
-
-$db = JFactory::getDBO();
-
-$this->pagination = new JPagination(count( $this->items ), 0, $this->items );
-
-?>	
-
-<form action="index.php" method="POST" name="adminForm">
-<div id="editcell">
-    <table class="adminlist">
-    <thead>
-        <tr>
-            <th width="20">
-				<input type="checkbox" name="toggle" value=""
-				       onclick="checkAll(<?php echo count( $this->items ); ?>);" />
-
-
-			</th>
-			<th width="25">ID</th>
-			<th>Bezeichnung</th>
-			<th>Gesamtbudget [h/Jahr]</th>
-			<th>Gegenkonto</th>
-            <th width="70">
-			  <?php echo JText::_( 'ORDERING' ); ?>
-           	  <?php echo JHTML::_('grid.order',  $this->items ); ?>                   
-        </tr>
-    </thead>
-    <?php
-    $k = 0;
-    for ($i=0, $n=count( $this->items ); $i < $n; $i++) {
-        $row =& $this->items[$i];
-		$checked    = JHTML::_( 'grid.id', $i, $row->id );
-		$link = JRoute::_(
-		    'index.php?option=com_zeitbank'
-			.'&controller=kategorien'
-			.'&task=edit&cid[]='. $row->id );			
+<div id="kategorien" class="clearfix">
+  <form action="index.php" method="POST" name="adminForm" class="form-inline">
+    <table class="table table-striped" id="kategorienList">
+      <thead>
+      <tr>
+        <th width="20" class="center">
+          <?php echo JHtml::_('grid.checkall'); ?>
+        </th>
+        <th width="25" class="center">
+          <?php echo JHtml::_('grid.sort', 'ID', 'id', $listDirn, $listOrder); ?>
+        </th>
+        <th class="nowrap">
+          <?php echo JHtml::_('grid.sort', 'Bezeichnung', 'bezeichnung', $listDirn, $listOrder); ?>
+        </th>
+        <th class="nowrap">
+          Gesamtbudget [h/Jahr]
+        </th>
+        <th class="nowrap">
+          Gegenkonto
+        </th>
+      </tr>
+      </thead>
+      <?php
+      for ($i = 0, $n = count($this->items); $i < $n; $i++) {
+        $item = $this->items[$i];
+        $checked = JHTML::_('grid.id', $i, $item->id);
+        $link = JRoute::_('index.php?option=com_zeitbank' . '&controller=kategorien' . '&task=edit&cid[]=' . $item->id);
         ?>
-        <tr class="<?php echo "row$k"; ?>">
-            <td><?php echo $checked; ?></td>
-			<td align="right">
-				<?php echo $row->id; ?></td>
-            <td><a href="<?php echo $link; ?>"><?php echo $row->bezeichnung; ?></a></td>
-            <td><?php echo $row->gesamtbudget; ?></td>		
-            <td><?php echo $row->user_id; ?></td>	    
-            <td class="order"><span><?php echo $this->pagination->orderUpIcon( $i, ($i > 0), 'orderup', 'Auf',$row->ordering); ?></span>
-				<span><?php echo $this->pagination->orderDownIcon( $i, $n, ($i < $n ), 'orderdown', 'Ab',$row->ordering); ?></span>
-				<input type="text" name="ordering[]" size="5" value="<?php echo $row->ordering; ?>" class="text_area" style="text-align: center" />
-			    
-			    <!--  echo $row->reihenfolge; --> 
-			    </td>
+        <tr class="row<?php echo $i % 2; ?>">
+          <td class="center">
+            <?php echo JHtml::_('grid.id', $i, $item->id); ?>
+          </td>
+          <td class="center">
+            <?php echo $item->id; ?>
+          </td>
+          <td class="nowrap">
+            <a href="<?php echo $link; ?>"><?php echo $item->bezeichnung; ?></a>
+          </td>
+          <td class="nowrap">
+            <?php echo $item->gesamtbudget; ?>
+          </td>
+          <td>
+            <?php echo $item->user_id; ?>
+          </td>
         </tr>
         <?php
-        $k = 1 - $k;
-    }
-    ?>
+      }
+      ?>
     </table>
 
-	</div>
+    <input type="hidden" name="option" value="com_zeitbank"/>
+    <input type="hidden" name="filter_order" value="<?php echo $listDirn; ?>"/>
+    <input type="hidden" name="filter_order_Dir" value="<?php echo $listOrder; ?>"/>
+    <input type="hidden" name="view" value="kategorien"/>
+    <input type="hidden" name="boxchecked" value="0"/>
+    <input type="hidden" name="controller" value="kategorien"/>
+    <input type="hidden" name="task" value=""/>
+  </form>
 
-	<input type="hidden" name="option" value="com_zeitbank" />
-	<input type="hidden" name="filter_order" value="<?php echo $filter_order; ?>" />
-	<input type="hidden" name="filter_order_Dir" value="<?php echo $filter_order_Dir; ?>" />
-	<input type="hidden" name="view" value="kategorien" />
-	<input type="hidden" name="boxchecked" value="0" />
-	<input type="hidden" name="controller" value="kategorien" />
-	<input type="hidden" name="task" value="" />
-	</form>
+</div>

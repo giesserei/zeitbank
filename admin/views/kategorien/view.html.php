@@ -1,23 +1,20 @@
 <?php
-/*
- * Created on 27.12.2010
- *
- */
- defined('_JEXEC') or die('Restricted access');
 
- jimport('joomla.application.component.view');
+defined('_JEXEC') or die('Restricted access');
 
- class ZeitbankViewKategorien extends JViewLegacy {
- 	function display($tpl = null) {
+jimport('joomla.application.component.view');
+
+class ZeitbankViewKategorien extends JViewLegacy {
+
+	protected $items;
+
+	function display($tpl = null) {
  		JToolBarHelper::title('Zeitbank: Kategorien','user.png');
- 		// JToolBarHelper::deleteList();
- 		JToolBarHelper::editListX();
- 		JToolBarHelper::addNewX();
- 		$items =& $this->get('Data');
+ 		JToolBarHelper::editList();
+ 		JToolBarHelper::addNew();
+
+		$this->items = $this->getModel()->getData();
  		
- 		$this->assignRef('items',$items);
- 		
- 		parent::display($tpl);
+ 		return parent::display($tpl);
  	}
- }
-?>
+}
