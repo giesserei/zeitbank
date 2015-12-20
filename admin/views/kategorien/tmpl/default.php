@@ -61,10 +61,13 @@ if ($saveOrder)
           Gesamtbudget [h/Jahr]
         </th>
         <th width="10%">
-          Gegenkonto
+          Zeitbankkonto
         </th>
         <th width="10%">
           Administrator
+        </th>
+        <th width="1%">
+          Reihenfolge
         </th>
       </tr>
       </thead>
@@ -112,6 +115,9 @@ if ($saveOrder)
           </td>
           <td>
             <?php echo $item->admin_name; ?>
+          </td>
+          <td>
+            <?php echo $item->ordering; ?>
           </td>
         </tr>
         <?php } ?>

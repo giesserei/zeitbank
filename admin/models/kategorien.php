@@ -85,10 +85,10 @@ class ZeitbankModelKategorien extends JModelList
 						'list.select',
 						$db->quoteName(
 								array(
-										'a.id', 'a.bezeichnung', 'a.gesamtbudget', 'a.user_id'
+										'a.id', 'a.bezeichnung', 'a.gesamtbudget', 'a.user_id', 'a.ordering'
 								),
 								array(
-										null, null, null, null
+										null, null, null, null, null
 								)
 						)
 				)

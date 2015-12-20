@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset>
+        <field
+                name="id"
+                type="text"
+                class="readonly"
+                label="JGLOBAL_FIELD_ID_LABEL"
+                description="JGLOBAL_FIELD_ID_DESC"
+                default="0"
+                filter="int"
+                readonly="true"/>
+
+        <field
+                name="bezeichnung"
+                type="text"
+                label="Bezeichnung"
+                description="Bezeichnung der Kategorie"
+                class="input-xxlarge input-large-text"
+                size="40"
+                required="true"/>
+
+        <field
+                name="gesamtbudget"
+                type="text"
+                label="Gesamtbudget"
+                description="Summe der Budgets aller Ämtli dieser Kategorie"
+                class="input-medium"
+                default="0"
+                size="10"/>
+
+        <field
+                name="user_id"
+                type="user"
+                label="Zeitbankkonto"
+                description="Joomla-User, welcher als Gegenkonto für die Buchungen fungiert"
+                required="true"/>
+
+        <field
+                name="admin_id"
+                type="user"
+                label="Administrator"
+                description="Joomla-User, welcher die Admin-Berechtigungen für die Kategorie hat"
+                required="true"/>
+
+        <field
+                name="ordering"
+                type="text"
+                label="Reihenfolge"
+                description="Sortierreihenfolge"
+                required="true"
+                default="0"/>
+
+    </fieldset>
+
+</form>

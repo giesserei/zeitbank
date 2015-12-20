@@ -22,7 +22,7 @@ class ZeitbankHelper
   {
     JHtmlSidebar::addEntry(
         'Kategorien',
-        'index.php?option=com_zeitbank',
+        'index.php?option=com_zeitbank&view=kategorien',
         $vName == 'kategorien'
     );
 

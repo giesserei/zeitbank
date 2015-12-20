@@ -47,6 +47,7 @@ class ZeitbankViewKategorien extends JViewLegacy
 
 		$this->ordering = array();
 
+    /*
 		// Levels filter.
 		$options   = array();
 		$options[] = JHtml::_('select.option', '1', JText::_('J1'));
@@ -61,6 +62,7 @@ class ZeitbankViewKategorien extends JViewLegacy
 		$options[] = JHtml::_('select.option', '10', JText::_('J10'));
 
 		$this->f_levels = $options;
+    */
 
 		$this->addToolbar();
 		$this->sidebar = JHtmlSidebar::render();
@@ -76,8 +78,8 @@ class ZeitbankViewKategorien extends JViewLegacy
 	protected function addToolbar()
 	{
 		JToolbarHelper::title('Zeitbank Administration');
-		JToolbarHelper::addNew('item.add');
-		JToolbarHelper::editList('item.edit');
+		JToolbarHelper::addNew('kategorie.add');
+		JToolbarHelper::editList('kategorie.edit');
 	}
 
 	/**
