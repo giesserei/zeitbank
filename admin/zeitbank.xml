@@ -40,6 +40,7 @@
             <filename>index.php</filename>
             <folder>assets</folder>
             <folder>controllers</folder>
+            <folder>helpers</folder>
             <folder>languages</folder>
             <folder>models</folder>
             <folder>sql</folder>
