@@ -55,7 +55,7 @@ class ZeitbankViewKategorien extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JToolbarHelper::title('Zeitbank Administration');
+		JToolbarHelper::title('Zeitbank - Kategorien');
 		JToolbarHelper::addNew('kategorie.add');
 		JToolbarHelper::editList('kategorie.edit');
 	}

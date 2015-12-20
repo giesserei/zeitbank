@@ -25,17 +25,5 @@ class ZeitbankHelper
         'index.php?option=com_zeitbank&view=kategorien',
         $vName == 'kategorien'
     );
-
-    JHtmlSidebar::addEntry(
-        'Arbeiten',
-        'index.php?option=com_zeitbank&view=arbeiten',
-        $vName == 'arbeiten'
-    );
-
-    JHtmlSidebar::addEntry(
-        'Journal',
-        'index.php?option=com_zeitbank&view=journal',
-        $vName == 'journal'
-    );
   }
 }
