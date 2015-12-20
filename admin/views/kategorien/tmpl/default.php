@@ -80,7 +80,9 @@ if ($saveOrder)
       </tfoot>
 
       <tbody>
-        <?php foreach ($this->items as $i => $item) { ?>
+        <?php foreach ($this->items as $i => $item) {
+          $canEdit = $user->authorise('core.edit', 'com_zeitbank');
+        ?>
         <tr class="row<?php echo $i % 2; ?>">
           <td class="order nowrap center">
             <?php
@@ -105,7 +107,12 @@ if ($saveOrder)
             <?php echo $item->id; ?>
           </td>
           <td class="nowrap">
-            <a href="<?php echo $link; ?>"><?php echo $item->bezeichnung; ?></a>
+            <?php if ($canEdit) : ?>
+              <a href="<?php echo JRoute::_('index.php?option=com_zeitbank&task=kategorie.edit&id=' . (int) $item->id);?>">
+                <?php echo $this->escape($item->bezeichnung); ?></a>
+            <?php else : ?>
+              <?php echo $this->escape($item->bezeichnung); ?>
+            <?php endif; ?>
           </td>
           <td class="nowrap">
             <?php echo $item->gesamtbudget; ?>

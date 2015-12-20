@@ -2,12 +2,6 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\Registry\Registry;
-
-jimport('joomla.filesystem.path');
-
-require_once JPATH_COMPONENT . '/helpers/zeitbank.php';
-
 /**
  * Kategorie Model.
  *
@@ -19,7 +13,6 @@ class ZeitbankModelKategorie extends JModelAdmin
    * The type alias for this content type.
    *
    * @var      string
-   * @since    3.4
    */
   public $typeAlias = 'com_zeitbank.kategorie';
 
@@ -78,11 +71,14 @@ class ZeitbankModelKategorie extends JModelAdmin
    */
   protected function loadFormData()
   {
-    // Check the session for previously entered form data.
-    $data = array_merge((array) $this->getItem(), (array) JFactory::getApplication()->getUserState('com_zeitbank.edit.kategorie.data', array()));
+    $app = JFactory::getApplication();
+    $data = $app->getUserState('com_zeitbank.edit.kategorie.data', array ());
+
+    if (empty($data)) {
+      $data = $this->getItem();
+    }
 
     $this->preprocessData('com_zeitbank.kategorie', $data);
-
     return $data;
   }
 

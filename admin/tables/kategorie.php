@@ -14,3 +14,4 @@ class ZeitbankTableKategorie extends JTable {
 		parent::__construct('#__mgh_zb_kategorie','id',$db);
 	}
 }
+
