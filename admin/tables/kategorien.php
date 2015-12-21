@@ -6,13 +6,16 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-class TableKategorien extends JTable {
-	var $id = null;
-	var $ordering = null;
-	var $bezeichnung = null;
-	
-	function TableKategorien( &$db ) {
-		parent::__construct('#__mgh_zb_kategorie','id',$db);
-	}
+class TableKategorien extends JTable
+{
+    var $id = null;
+    var $ordering = null;
+    var $bezeichnung = null;
+
+    function TableKategorien(&$db)
+    {
+        parent::__construct('#__mgh_zb_kategorie', 'id', $db);
+    }
 }
+
 ?>

@@ -19,34 +19,35 @@ JFactory::getDocument()->addScriptDeclaration('
 
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_zeitbank&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="item-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_zeitbank&layout=edit&id=' . (int)$this->item->id); ?>"
+      method="post" name="adminForm" id="item-form" class="form-validate">
 
-  <div class="form-horizontal">
+    <div class="form-horizontal">
 
-    <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
+        <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
 
-    <?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('Details', true)); ?>
-    <div class="row-fluid">
-      <div class="span3">
-        <?php
-        $this->fields = array(
-            'bezeichnung',
-            'gesamtbudget',
-            'user_id',
-            'admin_id',
-            'ordering'
-        );
-        ?>
-        <?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
-      </div>
+        <?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('Details', true)); ?>
+        <div class="row-fluid">
+            <div class="span3">
+                <?php
+                $this->fields = array(
+                    'bezeichnung',
+                    'gesamtbudget',
+                    'user_id',
+                    'admin_id',
+                    'ordering'
+                );
+                ?>
+                <?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
+            </div>
+        </div>
+        <?php echo JHtml::_('bootstrap.endTab'); ?>
+
+        <?php echo JHtml::_('bootstrap.endTabSet'); ?>
     </div>
-    <?php echo JHtml::_('bootstrap.endTab'); ?>
 
-    <?php echo JHtml::_('bootstrap.endTabSet'); ?>
-  </div>
-
-  <input type="hidden" name="task" value="" />
-  <?php echo $this->form->getInput('component_id'); ?>
-  <?php echo JHtml::_('form.token'); ?>
-  <input type="hidden" id="fieldtype" name="fieldtype" value="" />
+    <input type="hidden" name="task" value=""/>
+    <?php echo $this->form->getInput('component_id'); ?>
+    <?php echo JHtml::_('form.token'); ?>
+    <input type="hidden" id="fieldtype" name="fieldtype" value=""/>
 </form>
