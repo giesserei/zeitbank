@@ -16,15 +16,39 @@ class ZeitbankController extends JControllerLegacy
      * @param   array|boolean $urlparams An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
      *
      * @return  JController    This object to support chaining.
-     *
-     * @since   1.5
      */
     public function display($cachable = false, $urlparams = false)
     {
-        require_once JPATH_COMPONENT . '/helpers/zeitbank.php';
+        $input = JFactory::getApplication()->input;
+        $view = $input->get('view', "empty");
 
-        parent::display();
+        if ($view === 'empty') {
+            $this->setRedirect(JRoute::_('index.php?option=com_zeitbank&view=kategorien', false));
+            return false;
+        }
+
+        if (!$this->isAuthorised($view)) {
+            return false;
+        }
+
+        parent::display($cachable, $urlparams);
 
         return $this;
+    }
+
+    // -------------------------------------------------------------------------
+    // private section
+    // -------------------------------------------------------------------------
+
+    private function isAuthorised($view)
+    {
+        $user = JFactory::getUser();
+        $assetname = 'com_zeitbank';
+
+        if ($view === 'kategorien') {
+            return $user->authorise('view.kategorie', $assetname);
+        }
+
+        return true;
     }
 }

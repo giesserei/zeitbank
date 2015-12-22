@@ -24,17 +24,19 @@ if ($saveOrder) {
 
 <form action="<?php echo JRoute::_('index.php?option=com_zeitbank&view=kategorien'); ?>" method="post" name="adminForm"
       id="adminForm">
+
+    <?php if (!empty($this->sidebar)) : ?>
+    <div id="j-sidebar-container" class="span2">
+        <?php echo $this->sidebar; ?>
+    </div>
+    <div id="j-main-container" class="span10">
+    <?php else : ?>
+        <div id="j-main-container">
+    <?php endif; ?>
+
     <?php
-    if (!empty($this->sidebar)) {
-        echo '<div id="j-sidebar-container" class="span2">';
-        echo $this->sidebar;
-        echo '</div>';
-        echo '<div id="j-main-container" class="span10">';
-    } else {
-        echo '<div id="j-main-container">';
-    }
-    // Search tools bar
-    echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this), null, array('debug' => false));
+        // Search tools bar
+        echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this), null, array('debug' => false));
     ?>
     <?php if (empty($this->items)) : ?>
         <div class="alert alert-no-items">
@@ -72,7 +74,7 @@ if ($saveOrder) {
             </thead>
             <tfoot>
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <?php echo $this->pagination->getListFooter(); ?>
                 </td>
             </tr>
@@ -131,6 +133,7 @@ if ($saveOrder) {
         </table>
     <?php endif; ?>
 
+    </div>
     <input type="hidden" name="task" value=""/>
     <input type="hidden" name="boxchecked" value="0"/>
     <?php echo JHtml::_('form.token'); ?>

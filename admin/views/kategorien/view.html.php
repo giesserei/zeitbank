@@ -58,6 +58,12 @@ class ZeitbankViewKategorien extends JViewLegacy
         JToolbarHelper::title('Zeitbank - Kategorien');
         JToolbarHelper::addNew('kategorie.add');
         JToolbarHelper::editList('kategorie.edit');
+
+        $user = JFactory::getUser();
+
+        if ($user->authorise('core.manage', 'com_zeitbank')) {
+            JToolBarHelper::preferences('com_zeitbank');
+        }
     }
 
     /**
