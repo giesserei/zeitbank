@@ -33,7 +33,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
                                 minChars: 3,
                                 paramName: 'query',
                                 onSelect: function (suggestion) {
-                                    $('#empfaenger_id').val(suggestion.data);
+                                    $('#belastung_userid').val(suggestion.data);
                                 }
                             });
                         }, false);
@@ -88,8 +88,8 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
             <input type="button" value="Abbrechen"
                    onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId) ?>'"/>
             <?php echo JHtml::_('form.token'); ?>
-            <input type="hidden" value="<?php echo $this->form->getValue('empfaenger_id'); ?>"
-                   name="jform[empfaenger_id]" id="empfaenger_id"/>
+            <input type="hidden" value="<?php echo $this->form->getValue('belastung_userid'); ?>"
+                   name="jform[belastung_userid]" id="belastung_userid"/>
             <input type="hidden" value="<?php echo $this->getId(); ?>" name="jform[id]"/>
             <?php echo $this->form->getInput('cf_uid'); ?>
         </fieldset>

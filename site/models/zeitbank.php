@@ -156,4 +156,18 @@ class ZeitbankModelZeitbank extends JModelLegacy
         return $count == 1;
     }
 
+    /**
+     * Liefert das Kategorie-Objekt zur übergebenen ID
+     *
+     * @param int $id
+     * @return object
+     */
+    public function getKategorieItem($id)
+    {
+        $db = JFactory::getDBO();
+        $query = "SELECT * FROM #__mgh_zb_kategorie WHERE id = " . $id;
+        $db->setQuery($query);
+        return $db->loadObject();
+    }
+
 }

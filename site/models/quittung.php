@@ -13,23 +13,9 @@ JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_
 class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function getForm($data = array(), $loadData = true)
     {
-        $form = $this->loadForm('com_zeitbank.quittung', 'quittung', array(
-            'control' => 'jform',
-            'load_data' => $loadData
-        ));
-
-        if (empty($form)) {
-            return false;
-        }
-
-        return $form;
+        return $this->createForm('com_zeitbank.quittung', 'quittung', $loadData);
     }
 
     /**
@@ -53,27 +39,6 @@ class ZeitbankModelQuittung extends ZeitbankModelUpdJournalBase
             return false;
         }
         return $validateResult;
-    }
-
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
-
-    /**
-     * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
-     */
-    protected function loadFormData()
-    {
-        $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array());
-
-        if (empty($data)) {
-            $data = $this->getItem();
-        } else {
-            // ID im State setzen, damit diese von der View ausgelesen werden kann
-            $this->state->set($this->getName() . '.id', $data['id']);
-        }
-
-        return $data;
     }
 
     // -------------------------------------------------------------------------

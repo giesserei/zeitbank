@@ -22,29 +22,29 @@ $lastYear = intval(date('Y')) - 1;
 
 echo '<div class="component">';
 
-if (check_user()):
+if (ZeitbankAuth::checkAuthZeitbank()):
 
     #echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
     #echo 'Die Zeitbank wurde überarbeitet. Bitte sende allfällige Fehler an <a href="mailto:steffen@4foerster.ch">Steffen Förster</a>';
     #echo '</div>';
 
     // Kategorien-Administrator?
-    if ($kategorie = check_kat_admin(0)):
-        echo "<h1>Zeitbank: Du bist Kategorien-Administrator</h1>";
-        //echo "<p>Status: ".show_status(get_status($kategorie))."</p>";
+    if ($kategorieId = ZeitbankAuth::getKategorieId()):
+        $kategorie = $this->getKategorieItem($kategorieId);
+        echo "<h1>Zeitbank: Du bist Administrator der Kategorie <strong>" . $kategorie->bezeichnung . "</strong></h1>";
         echo "Du kannst:";
-        echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Manager&Itemid=" . MENUITEM . "\">Deine Ämtli-Verantwortlichen verwalten</a></li>";
-        echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Budget&Itemid=" . MENUITEM . "\">Dein Kategorienbudget verwalten</a></li>";
-        echo "<li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Kategorie_Amt_Zuweisen&Itemid=" . MENUITEM . "\">Deine Ämtli-Verantwortlichen einem Ämtli zuteilen</a></li></ul></p><br />";
+        echo "<ul>";
+        echo "<li><a href=\"" . JRoute::_("index.php?option=com_zeitbank&task=kategorie.edit&id=" . $kategorieId . "&Itemid=" . $this->menuId) . "\">Dein Kategorienbudget verwalten</a></li>";
+        echo "</ul><br />";
     endif;
 
     // Ämtli-Administrator?
-    if (check_arbeit_admin(0, MENUITEM)):
+    if (check_arbeit_admin(0, $this->menuId)):
         echo "<h1>Zeitbank: Du bist Ämtli-Administrator</h1>";
         echo "Du kannst:";
-        echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Amt_Manager&Itemid=" . MENUITEM . "\">Ämtli verwalten und Status (aktiv/inaktiv) ändern</a></li>";
-        echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=" . MENUITEM . "\">Anträge quittieren</a> (offene Anträge: " . get_anzahl_offen() . ")</li>";
-        echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=" . MENUITEM . "\">Quittierte Buchungen anzeigen</a></li>";
+        echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Amt_Manager&Itemid=" . $this->menuId . "\">Ämtli verwalten und Status (aktiv/inaktiv) ändern</a></li>";
+        echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=" . $this->menuId . "\">Anträge quittieren</a> (offene Anträge: " . get_anzahl_offen() . ")</li>";
+        echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=" . $this->menuId . "\">Quittierte Buchungen anzeigen</a></li>";
         echo "<li><a href=\"/index.php?option=com_zeitbank&task=report.aemtliBuchungen&format=raw\">Download: Quittierte Buchungen mit Kommentaren</a>&nbsp;(Format CSV, Encoding UTF-8)</li>";
         echo "</ul><br />";
     endif;
@@ -53,14 +53,14 @@ if (check_user()):
     if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_KEY_DATA)) {
         echo "<h1>Zeitbank: Du hast Zugriff auf die Zeitbank-Reports</h1>";
         echo "Du kannst:";
-        echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid=' . MENUITEM . '">Kennzahlen ansehen und ggf. Reports erstellen</a></li></ul><br />';
+        echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid=' . $this->menuId . '">Kennzahlen ansehen und ggf. Reports erstellen</a></li></ul><br />';
     }
 
     // Allgemeine Funktionen
     echo "<h1>Zeitbank: Allgemeine Funktionen</h1>";
     echo '<ul>
-		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . MENUITEM . '&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a></li>
-		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . MENUITEM . '&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
+		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a></li>
+		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
 		    </ul><br />';
 
     // Offene Quittierungen und Anträge
@@ -100,7 +100,7 @@ if (check_user()):
 					      <td>' . $ktext . '</td>
 					      <td style="text-align:right">' . $qt->id . '</td>
 					      <td>
-					        <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id=' . $qt->id . '&Itemid=' . MENUITEM . '\'">
+					        <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id=' . $qt->id . '&Itemid=' . $this->menuId . '\'">
 					      </td>
 					    </tr>';
             $k = 1 - $k;
@@ -147,10 +147,10 @@ if (check_user()):
 					      <td>';
 
             if (!ZeitbankCalc::isBuchungGesperrt()) {
-                echo '<input type="button" value="ändern" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=' . $at->task . '&id=' . $at->id . '&Itemid=' . MENUITEM . '\'"/>';
+                echo '<input type="button" value="ändern" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=' . $at->task . '&id=' . $at->id . '&Itemid=' . $this->menuId . '\'"/>';
             }
 
-            echo '<input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id=' . $at->id . '&Itemid=' . MENUITEM . '\'"/>
+            echo '<input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id=' . $at->id . '&Itemid=' . $this->menuId . '\'"/>
 				        </td>
 					    </tr>';
             if ($at->abgelehnt == 1) {
@@ -175,10 +175,10 @@ if (check_user()):
     } else {
         echo '<br />
             <fieldset>
-              <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid=' . MENUITEM . '\'" />&nbsp;&nbsp;
-              <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid=' . MENUITEM . '\'" />&nbsp;&nbsp;
-              <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid=' . MENUITEM . '\'" />&nbsp;&nbsp;
-  		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid=' . MENUITEM . '\'" />
+              <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid=' . $this->menuId . '\'" />&nbsp;&nbsp;
+              <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid=' . $this->menuId . '\'" />&nbsp;&nbsp;
+              <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid=' . $this->menuId . '\'" />&nbsp;&nbsp;
+  		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid=' . $this->menuId . '\'" />
   		      </fieldset>';
     }
 
@@ -299,7 +299,7 @@ if (check_user()):
 
     //echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/><br/><br/>";
     echo '<br /><br /><ul>
-		        <li><a href="/index.php?option=com_zeitbank&view=userJournal&Itemid=' . MENUITEM . '">Alle Buchungen anzeigen</a></li>
+		        <li><a href="/index.php?option=com_zeitbank&view=userJournal&Itemid=' . $this->menuId . '">Alle Buchungen anzeigen</a></li>
 		        <li><a href="/index.php?option=com_zeitbank&task=report.kontoauszug&format=raw">Download: Kontoauszug</a>&nbsp;(Format CSV, Encoding UTF-8)</li>
 		      </ul>';
 

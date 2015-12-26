@@ -3,7 +3,7 @@
 <form>
     <fieldset name="stundentausch">
 
-        <field name="empfaenger_id" type="text" filter="integer"/>
+        <field name="belastung_userid" type="text" filter="integer"/>
 
         <field name="empfaenger" size="60" maxlength="150" type="text" default="-1" label="Empfänger des Antrags: "/>
 

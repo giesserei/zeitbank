@@ -1,8 +1,6 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
 /**
  * Model für die Detailansicht einer Buchung.
  */

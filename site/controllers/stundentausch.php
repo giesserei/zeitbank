@@ -30,7 +30,7 @@ class ZeitbankControllerStundentausch extends ZeitbankControllerUpdJournalBase
         $dataAllowed = array();
         $dataAllowed['id'] = $data['id'];
         $dataAllowed['cf_uid'] = $data['cf_uid'];
-        $dataAllowed['empfaenger_id'] = $data['empfaenger_id'];
+        $dataAllowed['belastung_userid'] = $data['belastung_userid'];
         $dataAllowed['empfaenger'] = $data['empfaenger'];
         $dataAllowed['minuten'] = $data['minuten'];
         $dataAllowed['datum_antrag'] = $data['datum_antrag'];
@@ -48,7 +48,7 @@ class ZeitbankControllerStundentausch extends ZeitbankControllerUpdJournalBase
     {
         $buchung = array();
         $buchung['minuten'] = intval($data['minuten']);
-        $buchung['belastung_userid'] = $data['empfaenger_id'];
+        $buchung['belastung_userid'] = $data['belastung_userid'];
         $buchung['gutschrift_userid'] = JFactory::getUser()->id;
         $buchung['datum_antrag'] = $data['datum_antrag'];
         $buchung['datum_quittung'] = '0000-00-00';

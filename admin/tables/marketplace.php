@@ -3,8 +3,6 @@ defined('_JEXEC') or die;
 
 /**
  * Tabelle zum Speichern der Marktplatz-Einträge.
- *
- * @author Steffen Förster
  */
 class ZeitbankTableMarketplace extends JTable
 {

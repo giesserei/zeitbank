@@ -13,32 +13,9 @@ JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_
 class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function getEmpfaengerName($userId)
-    {
-        $query = "SELECT CONCAT(vorname, ' ', nachname) name
-              FROM #__mgh_aktiv_mitglied
-              WHERE userid = " . $userId;
-        $this->db->setQuery($query);
-        return $this->db->loadResult();
-    }
-
     public function getForm($data = array(), $loadData = true)
     {
-        $form = $this->loadForm('com_zeitbank.stundentausch', 'stundentausch', array(
-            'control' => 'jform',
-            'load_data' => $loadData
-        ));
-
-        if (empty($form)) {
-            return false;
-        }
-
-        return $form;
+        return $this->createForm('com_zeitbank.stundentausch', 'stundentausch', $loadData);
     }
 
     /**
@@ -58,7 +35,7 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase
         }
 
         $valid = 1;
-        $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
+        $valid &= $this->validateEmpfaenger($validateResult['belastung_userid']);
 
         if ((bool)$valid) {
             $valid &= $this->validateMinuten($validateResult['minuten']);
@@ -73,26 +50,13 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase
         return $validateResult;
     }
 
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
-
-    /**
-     * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
-     */
-    protected function loadFormData()
+    public function getEmpfaengerName($userId)
     {
-        $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array());
-
-        if (empty($data)) {
-            $data = $this->getItem();
-            $data->empfaenger_id = $data->belastung_userid;
-        } else {
-            // ID im State setzen, damit diese von der View ausgelesen werden kann
-            $this->state->set($this->getName() . '.id', $data['id']);
-        }
-
-        return $data;
+        $query = "SELECT CONCAT(vorname, ' ', nachname) name
+              FROM #__mgh_aktiv_mitglied
+              WHERE userid = " . $userId;
+        $this->db->setQuery($query);
+        return $this->db->loadResult();
     }
 
     // -------------------------------------------------------------------------

@@ -3,22 +3,76 @@ defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankModelUpdBase', JPATH_COMPONENT . '/models/upd_base.php');
 
 /**
  * Model zum Editieren eines Angebots.
  */
-class ZeitbankModelUpdAngebot extends JModelAdmin
+class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
 {
 
-    private $db;
-
-    private $user;
-
-    public function __construct()
+    public function getTable($type = 'Marketplace', $prefix = 'ZeitbankTable', $config = array())
     {
-        parent::__construct();
-        $this->db = JFactory::getDBO();
-        $this->user = JFactory::getUser();
+        return JTable::getInstance($type, $prefix, $config);
+    }
+
+    protected function getDataFromSession()
+    {
+        return JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, array());
+    }
+
+    public function getForm($data = array(), $loadData = true)
+    {
+        return $this->createForm('com_zeitbank.updangebot', 'updangebot', $loadData);
+    }
+
+    /**
+     * Prüft, ob die Eingaben korrekt sind.
+     *
+     * Validierungsmeldungen werden im Model gespeichert.
+     *
+     * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
+     *
+     * @inheritdoc
+     */
+    public function validate($form, $data, $group = NULL)
+    {
+        $validateResult = parent::validate($form, $data, $group);
+        if ($validateResult === false) {
+            return false;
+        }
+
+        // Beschreibung und Anforderung extra filtern, da Form-Filterung des Editors mit Joomla2.5 nicht funktioniert
+        $validateResult['beschreibung'] = JComponentHelper::filterText($validateResult['beschreibung']);
+        $validateResult['anforderung'] = JComponentHelper::filterText($validateResult['anforderung']);
+
+        // Anforderung darf nur 255 Zeichen haben
+        $validateResult['anforderung'] = ZeitbankFrontendHelper::cropText($validateResult['anforderung'], 255, false);
+
+        $valid = 1;
+        $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
+        $valid &= $this->validateKategorie($validateResult['art'], $validateResult['arbeit_id']);
+        $valid &= $this->validateRequiredFields($validateResult['art'], $validateResult['aufwand'],
+            $validateResult['zeit'], $validateResult['anforderung'], $validateResult['beschreibung']);
+
+        if (!(bool)$valid) {
+            return false;
+        }
+        return $validateResult;
+    }
+
+    protected function loadFormData()
+    {
+        $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, array());
+
+        if (empty($data)) {
+            $data = $this->getItem();
+        } else {
+            // ID im State setzen, damit diese von der View ausgelesen werden kann
+            $this->state->set($this->getName() . '.id', $data['id']);
+        }
+
+        return $data;
     }
 
     /**
@@ -88,136 +142,7 @@ class ZeitbankModelUpdAngebot extends JModelAdmin
         return $liste;
     }
 
-    public function getTable($type = 'Marketplace', $prefix = 'ZeitbankTable', $config = array())
-    {
-        return JTable::getInstance($type, $prefix, $config);
-    }
 
-    public function getForm($data = array(), $loadData = true)
-    {
-        $form = $this->loadForm('com_zeitbank.updangebot', 'updangebot', array(
-            'control' => 'jform',
-            'load_data' => $loadData
-        ));
-
-        if (empty($form)) {
-            return false;
-        }
-
-        return $form;
-    }
-
-    /**
-     * Prüft, ob die Eingaben korrekt sind.
-     *
-     * Validierungsmeldungen werden im Model gespeichert.
-     *
-     * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
-     *
-     * @inheritdoc
-     */
-    public function validate($form, $data, $group = NULL)
-    {
-        $validateResult = parent::validate($form, $data, $group);
-        if ($validateResult === false) {
-            return false;
-        }
-
-        // Beschreibung und Anforderung extra filtern, da Form-Filterung des Editors mit Joomla2.5 nicht funktioniert
-        $validateResult['beschreibung'] = JComponentHelper::filterText($validateResult['beschreibung']);
-        $validateResult['anforderung'] = JComponentHelper::filterText($validateResult['anforderung']);
-
-        // Anforderung darf nur 255 Zeichen haben
-        $validateResult['anforderung'] = ZeitbankFrontendHelper::cropText($validateResult['anforderung'], 255, false);
-
-        $valid = 1;
-        $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
-        $valid &= $this->validateKategorie($validateResult['art'], $validateResult['arbeit_id']);
-        $valid &= $this->validateRequiredFields($validateResult['art'], $validateResult['aufwand'],
-            $validateResult['zeit'], $validateResult['anforderung'], $validateResult['beschreibung']);
-
-        if (!(bool)$valid) {
-            return false;
-        }
-        return $validateResult;
-    }
-
-    /**
-     * Eigene Implementierung der save-Methode.
-     *
-     * @return true, wenn das Speichern erfolgreich war, sonst false
-     *
-     * @inheritdoc
-     */
-    public function save($data, $id)
-    {
-        $table = $this->getTable();
-
-        try {
-            // Daten in die Tabellen-Instanz laden
-            $table->load($id);
-
-            // Properties mit neuen Daten überschreiben
-            if (!$table->bind($data, 'id')) {
-                JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
-                return false;
-            }
-
-            // Tabelle kann vor dem Speichern letzte Datenprüfung vornehmen
-            if (!$table->check()) {
-                JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
-                return false;
-            }
-
-            // Jetzt Daten speichern
-            if (!$table->store()) {
-                JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
-                return false;
-            }
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR);
-            JFactory::getApplication()->enqueueMessage('Speichern fehlgeschlagen!', 'error');
-            return false;
-        }
-
-        return true;
-    }
-
-    public function delete($id)
-    {
-        $table = $this->getTable();
-
-        try {
-            if (!$table->delete($id)) {
-                JLog::add($table->getError(), JLog::ERROR);
-                JFactory::getApplication()->enqueueMessage('Löschen fehlgeschlagen!', 'error');
-                return false;
-            }
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR);
-            JFactory::getApplication()->enqueueMessage('Löschen fehlgeschlagen!', 'error');
-            return false;
-        }
-        return true;
-    }
-
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
-
-    protected function loadFormData()
-    {
-        $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_MARKET_PLACE_DATA, array());
-
-        if (empty($data)) {
-            $data = $this->getItem();
-        } else {
-            // ID im State setzen, damit diese von der View ausgelesen werden kann
-            $this->state->set($this->getName() . '.id', $data['id']);
-        }
-
-        return $data;
-    }
 
     // -------------------------------------------------------------------------
     // private section

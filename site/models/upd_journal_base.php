@@ -5,22 +5,22 @@ defined('_JEXEC') or die;
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
+JLoader::register('ZeitbankModelUpdBase', JPATH_COMPONENT . '/models/upd_base.php');
 
 /**
  * Basisklasse für die Model-Klassen, mit denen Journal-Einträge erstellt oder bearbeitet werden können.
  */
-abstract class ZeitbankModelUpdJournalBase extends JModelAdmin
+abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
 {
 
-    protected $db;
-
-    protected $user;
-
-    public function __construct()
+    public function getTable($type = 'Journal', $prefix = 'Table', $config = array())
     {
-        parent::__construct();
-        $this->db = JFactory::getDBO();
-        $this->user = JFactory::getUser();
+        return JTable::getInstance($type, $prefix, $config);
+    }
+
+    protected function getDataFromSession()
+    {
+        return JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array());
     }
 
     /**
@@ -102,59 +102,6 @@ abstract class ZeitbankModelUpdJournalBase extends JModelAdmin
     		 WHERE journal.id = %s", mysql_real_escape_string($id));
         $this->db->setQuery($query);
         return $this->db->loadObject();
-    }
-
-    /**
-     * @see JModel::getTable()
-     *
-     * @inheritdoc
-     */
-    public function getTable($type = 'Journal', $prefix = 'Table', $config = array())
-    {
-        return JTable::getInstance($type, $prefix, $config);
-    }
-
-    /**
-     * Eigene Implementierung der save-Methode.
-     *
-     * @param $data array Zu speichernde Daten
-     * @return true, wenn das Speichern erfolgreich war, sonst false
-     *
-     * @see JModelAdmin::save()
-     */
-    public function save($data)
-    {
-        $id = $data['id'];
-        $table = $this->getTable();
-
-        try {
-            // Daten in die Tabellen-Instanz laden
-            $table->load($id);
-
-            // Properties mit neuen Daten überschreiben
-            if (!$table->bind($data, 'id')) {
-                JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
-                return false;
-            }
-
-            // Tabelle kann vor dem Speichern letzte Datenprüfung vornehmen
-            if (!$table->check()) {
-                JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
-                return false;
-            }
-
-            // Jetzt Daten speichern
-            if (!$table->store()) {
-                JFactory::getApplication()->enqueueMessage($table->getError(), 'error');
-                return false;
-            }
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR);
-            JFactory::getApplication()->enqueueMessage('Speichern fehlgeschlagen!', 'error');
-            return false;
-        }
-
-        return true;
     }
 
     /**

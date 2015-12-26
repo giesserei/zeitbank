@@ -17,10 +17,17 @@ class ZeitbankViewZeitbank extends JViewLegacy
 
     protected $journal;
 
+    protected $menuId;
+
     function display($tpl = null)
     {
-        $model = $this->getModel();
+        // Menu in Session speichern
+        $app = JFactory::getApplication();
+        $jinput = $app->input;
+        $this->menuId = $jinput->get("Itemid", "0", "INT");
+        $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID, $this->menuId);
 
+        $model = $this->getModel();
         $this->quittierungen = $model->getOffeneQuittierungen();
         $this->antraege = $model->getOffeneAntraege();
         $this->journal = $model->getUserJournal();
@@ -48,49 +55,39 @@ class ZeitbankViewZeitbank extends JViewLegacy
         return ZeitbankCalc::getSaldo($user->id);
     }
 
-    /**
-     * Liefert den Saldo der Freiwilligenarbeit für den Bewohner/das Gewerbe.
-     */
     protected function getSaldoFreiwilligenarbeit()
     {
         $user = JFactory::getUser();
         return ZeitbankCalc::getSaldoFreiwilligenarbeit($user->id);
     }
 
-    /**
-     * Liefert den Saldo des Vorjahres für den Bewohner/das Gewerbe.
-     */
     protected function getSaldoVorjahr()
     {
         $user = JFactory::getUser();
         return ZeitbankCalc::getSaldoVorjahr($user->id);
     }
 
-    /**
-     * Liefert den Saldo des Stundenfonds.
-     */
     protected function getSaldoStundenfonds()
     {
         $userId = BuchungHelper::getStundenfondsUserId();
         return ZeitbankCalc::getSaldo($userId);
     }
 
-    /**
-     * Liefert den Saldo des Stundenfonds für das Vorjahr.
-     */
     protected function getSaldoStundenfondsVorjahr()
     {
         $userId = BuchungHelper::getStundenfondsUserId();
         return ZeitbankCalc::getSaldoVorjahr($userId);
     }
 
-    /**
-     * Liefert true, wenn das angemeldete Mitglied ein Gewerbe ist.
-     */
     protected function isGewerbe()
     {
         $user = JFactory::getUser();
         $model = $this->getModel();
         return $model->isGewerbe($user->id);
+    }
+
+    protected function getKategorieItem($id)
+    {
+        return $this->getModel()->getKategorieItem($id);
     }
 }

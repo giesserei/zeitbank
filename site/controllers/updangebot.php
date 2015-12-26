@@ -11,10 +11,6 @@ JLoader::register('ZeitbankControllerUpdAngebotBase', JPATH_COMPONENT . '/contro
 class ZeitbankControllerUpdAngebot extends ZeitbankControllerUpdAngebotBase
 {
 
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
-
     protected function getViewName()
     {
         return "updangebot";
@@ -43,7 +39,7 @@ class ZeitbankControllerUpdAngebot extends ZeitbankControllerUpdAngebotBase
         return $dataAllowed;
     }
 
-    protected function redirectSuccessView()
+    protected function redirectSuccessView($id)
     {
         $app = JFactory::getApplication();
         $menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);

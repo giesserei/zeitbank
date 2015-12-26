@@ -6,15 +6,16 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 /**
- * Basis-Klasse für die Controller zum Editieren von Zeitbank-Objekten.
+ * Basis-Klasse für die Controller zum Editieren von Datenbank-Objekten.
  */
 abstract class ZeitbankControllerUpdBase extends JControllerForm
 {
 
     /**
      * Führt nach ein paar Vorarbeiten einen Redirect auf die View durch, welche das Formular anzeigt.
+     * @inheritdoc
      */
-    public function edit()
+    public function edit($key = null, $urlVar = null)
     {
         if (!$this->checkGeneralPermission()) {
             return false;
@@ -35,8 +36,9 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
 
     /**
      * Speichert die Formulardaten in der Datenbank.
+     * @inheritdoc
      */
-    public function save()
+    public function save($key = null, $urlVar = null)
     {
         if (!$this->checkGeneralPermission()) {
             return false;
@@ -85,7 +87,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
         }
 
         $model = $this->getModel();
-        if ($model->delete($id)) {
+        if ($model->deleteItem($id)) {
             $this->redirectSuccessView($id);
             return true;
         } else {
@@ -93,10 +95,6 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
             return false;
         }
     }
-
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
 
     /**
      * Prüft, ob der Benutzer grundsätzlich zum Editieren eines Objektes berechtigt ist. Es wird nicht geprüft, ob der
@@ -223,7 +221,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
         $data = $this->modifyDataBeforeSave($data);
 
         // Fehlermeldung dem Benutzer anzeigen
-        if (!$model->save($data, $id)) {
+        if (!$model->saveItem($data, $id)) {
             $errors = $model->getErrors();
             foreach ($errors as $error) {
                 $app->enqueueMessage($error, 'warning');

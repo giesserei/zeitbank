@@ -23,7 +23,7 @@ class ZeitbankViewStundentausch extends BaseFormView
 
     protected function getEmpfaengerName()
     {
-        $userId = $this->form->getValue("empfaenger_id");
+        $userId = $this->form->getValue("belastung_userid");
         if (empty($userId)) {
             return "";
         } else {

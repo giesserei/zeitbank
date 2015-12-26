@@ -104,6 +104,30 @@ class ZeitbankAuth
         return $db->loadResult() > 0;
     }
 
+    /**
+     * Liefert die ID der Kategorie, für die der Benutzer als Admin registriert ist. Das Ergebnis ist false, wenn der
+     * Benutzer keiner Kategorie zugewiesen wurde. Wurde ein Benutzer fälschlicherweise mehreren Kategorien zugewiesen,
+     * wird die grösste ID zurückgeliefert.
+     *
+     * @return int|boolean
+     */
+    public static function getKategorieId()
+    {
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
+        $query =
+            "SELECT max(id) FROM #__mgh_zb_kategorie WHERE admin_id=" . $user->id;
+
+        $db->setQuery($query);
+        $result = $db->loadResult();
+
+        if ($result == 0)
+        {
+            return false;
+        }
+        return $result;
+    }
+
     // -------------------------------------------------------------------------
     // private section
     // -------------------------------------------------------------------------

@@ -10,29 +10,13 @@ JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_
 
 /**
  * Model für die Ausführung eines Stundengeschenks.
- *
- * @author Steffen Förster
  */
 class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function getForm($data = array(), $loadData = true)
     {
-        $form = $this->loadForm('com_zeitbank.stundengeschenk', 'stundengeschenk', array(
-            'control' => 'jform',
-            'load_data' => $loadData
-        ));
-
-        if (empty($form)) {
-            return false;
-        }
-
-        return $form;
+        return $this->createForm('com_zeitbank.stundengeschenk', 'stundengeschenk', $loadData);
     }
 
     /**
@@ -69,20 +53,13 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
         return $validateResult;
     }
 
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
-
     /**
      * Es werden keine Buchungen bearbeitet, damit muss auch nichts aus der DB geladen werden.
      * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
-     *
-     * @see JModelForm::loadFormData()
      */
     protected function loadFormData()
     {
-        $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array());
-        return $data;
+        return $this->getDataFromSession();
     }
 
     // -------------------------------------------------------------------------
