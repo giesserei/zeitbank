@@ -1,9 +1,5 @@
 <?php
-/*
- * Created on 28.12.2012
- *
 
- */
 defined('_JEXEC') or die('Restricted access');
 
 class TableArbeit extends JTable
@@ -25,5 +21,3 @@ class TableArbeit extends JTable
         parent::__construct('#__mgh_zb_arbeit', 'id', $db);
     }
 }
-
-?>

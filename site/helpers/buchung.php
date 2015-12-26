@@ -12,10 +12,13 @@ class BuchungHelper
 {
 
     /**
-     * Liefert alle aktiven Bewohner und das Gewerbe mit Ausnahme des angemeldeten Benutzers,
-     * welche mit dem Like-Operator gefunden werden.
+     * Liefert alle aktiven Bewohner und das Gewerbe, welche mit dem Like-Operator gefunden werden.
+     *
+     * @param string    $search
+     * @param boolean   $includeCurrentUser
+     * @return string
      */
-    public static function getEmpfaengerLike($search)
+    public static function getEmpfaengerLike($search, $includeCurrentUser = false)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
@@ -23,8 +26,12 @@ class BuchungHelper
         $query = "SELECT m.userid, m.vorname, m.nachname
               FROM #__mgh_mitglied m
               WHERE m.typ IN (1,2,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
-                AND (m.vorname LIKE '%" . $searchMySql . "%' OR m.nachname LIKE '%" . $searchMySql . "%')
-                AND m.userid != " . $user->id;
+                AND (m.vorname LIKE '%" . $searchMySql . "%' OR m.nachname LIKE '%" . $searchMySql . "%')";
+        if (!$includeCurrentUser)
+        {
+            $query = $query . " AND m.userid != " . $user->id;
+        }
+
         $db->setQuery($query);
         return $db->loadObjectList();
     }

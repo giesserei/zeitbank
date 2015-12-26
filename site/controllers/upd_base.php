@@ -191,7 +191,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
     /**
      * Auf die Edit-View weiterleiten.
      *
-     * @param $id int ID der Buchung
+     * @param $id int ID des Objektes
      */
     protected function redirectEditView($id)
     {

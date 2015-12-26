@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+    <fieldset name="arbeitadmin">
+
+        <field name="user_id" type="text" default="-1" label="Benutzer: " filter="integer"/>
+
+        <field name="kat_id" type="hidden" default="" filter="integer"/>
+
+    </fieldset>
+</form>

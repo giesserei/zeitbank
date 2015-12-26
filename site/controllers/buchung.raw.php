@@ -25,7 +25,7 @@ class ZeitbankControllerBuchung extends JControllerLegacy
         $doc->setMimeEncoding('text/plain');
 
         $query = $this->getQuery();
-        $empfaenger = BuchungHelper::getEmpfaengerLike($this->getQuery());
+        $empfaenger = BuchungHelper::getEmpfaengerLike($this->getQuery(), $this->isIncludeCurrentUser());
 
         $json = '{"query":"' . $query . '","suggestions":[';
         foreach ($empfaenger as $e) {
@@ -47,6 +47,13 @@ class ZeitbankControllerBuchung extends JControllerLegacy
         $app = JFactory::getApplication();
         $input = $app->input;
         return $input->get("query", "", "STRING");
+    }
+
+    private function isIncludeCurrentUser()
+    {
+        $app = JFactory::getApplication();
+        $input = $app->input;
+        return $input->get("includeCurrentUser", 0, "INT") == 1;
     }
 
 }

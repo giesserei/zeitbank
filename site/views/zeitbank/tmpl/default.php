@@ -35,6 +35,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
         echo "Du kannst:";
         echo "<ul>";
         echo "<li><a href=\"" . JRoute::_("index.php?option=com_zeitbank&task=kategorie.edit&id=" . $kategorieId . "&Itemid=" . $this->menuId) . "\">Dein Kategorienbudget verwalten</a></li>";
+        echo "<li><a href=\"" . JRoute::_("index.php?option=com_zeitbank&task=arbeitadmin.edit&id=0&Itemid=" . $this->menuId) . "\">Deine Ämtli-Administratoren verwalten</a></li>";
         echo "</ul><br />";
     endif;
 
