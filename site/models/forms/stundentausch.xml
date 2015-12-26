@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-	<fieldset name="stundentausch">
+    <fieldset name="stundentausch">
 
-    <field name="empfaenger_id" type="text" filter="integer"/>
+        <field name="empfaenger_id" type="text" filter="integer"/>
 
-    <field name="empfaenger" size="60" maxlength="150" type="text" default="-1" label="Empfänger des Antrags: " />
-    
-    <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
+        <field name="empfaenger" size="60" maxlength="150" type="text" default="-1" label="Empfänger des Antrags: "/>
 
-		<field name="kommentar_antrag" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45" />
+        <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
 
-    <field name="cf_uid" type="hidden" default="" />
-    
-    <field name="datum_antrag" type="text" label="Jahr: " />
+        <field name="kommentar_antrag" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45"/>
 
-	</fieldset>
+        <field name="cf_uid" type="hidden" default=""/>
+
+        <field name="datum_antrag" type="text" label="Jahr: "/>
+
+    </fieldset>
 </form>

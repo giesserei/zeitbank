@@ -1,23 +1,23 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_BASE.'/components/com_zeitbank/models/check_user.php');
+require_once(JPATH_BASE . '/components/com_zeitbank/models/check_user.php');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 ?>
 
 <div class="component">
 
-<?php
+    <?php
 
-echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid='.MENUITEM.'">Zurück zur Übersicht</a><p/>';
+    echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . MENUITEM . '">Zurück zur Übersicht</a><p/>';
 
-if(check_user()) {
-		echo '<h1 class="zeitbank">Zeitbank: Quittierung der Stunden der von dir verwalteten Ämtli</h1>';
+    if (check_user()) {
+        echo '<h1 class="zeitbank">Zeitbank: Quittierung der Stunden der von dir verwalteten Ämtli</h1>';
 
-		// Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
-		if (!empty($this->quittierungen)) {	
-			echo '<table class="zeitbank" >';
-			echo '<tr class="head">
+        // Offene Quittungen ausgeben (Bestätigung dass Stunden beim aktuellen User ab, beim Antragsteller eingebucht werden)
+        if (!empty($this->quittierungen)) {
+            echo '<table class="zeitbank" >';
+            echo '<tr class="head">
 				      <th>Datum</th>
               <th>Antrag von</th>
               <th>Arbeitsgattung</th>
@@ -27,33 +27,33 @@ if(check_user()) {
               <th>&nbsp;</th>
             </tr>';
 
-			$k = 0;
-			foreach($this->quittierungen as $qt) {
-				$style = $k ? "zb_even" : "zb_odd";	
-				
-				echo '<tr class="'.$style.'">
-					      <td>'.JHTML::date($qt->datum_antrag,'d.m.Y').'</td>
-                <td>'.ZeitbankFrontendHelper::getEmailLink($qt->vorname, $qt->nachname, $qt->email, 
-                    'Zeitbank / Dein Antrag / '.ZeitbankFrontendHelper::cropText($qt->kurztext, 75)).'</td>
-                <td>'.$qt->kurztext.'</td>
-                <td style="text-align:right;">'.$qt->minuten.'</td>
-			          <td>'.ZeitbankFrontendHelper::cropText($qt->text, 30, true).'</td>
-				        <td style="text-align:right">'.$qt->id.'</td>
+            $k = 0;
+            foreach ($this->quittierungen as $qt) {
+                $style = $k ? "zb_even" : "zb_odd";
+
+                echo '<tr class="' . $style . '">
+					      <td>' . JHTML::date($qt->datum_antrag, 'd.m.Y') . '</td>
+                <td>' . ZeitbankFrontendHelper::getEmailLink($qt->vorname, $qt->nachname, $qt->email,
+                        'Zeitbank / Dein Antrag / ' . ZeitbankFrontendHelper::cropText($qt->kurztext, 75)) . '</td>
+                <td>' . $qt->kurztext . '</td>
+                <td style="text-align:right;">' . $qt->minuten . '</td>
+			          <td>' . ZeitbankFrontendHelper::cropText($qt->text, 30, true) . '</td>
+				        <td style="text-align:right">' . $qt->id . '</td>
 					      <td>
-				          <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id='.$qt->id.'&Itemid='.MENUITEM.'\'">
-                  <input type="button" value="ablehnen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=ablehnung.edit&id='.$qt->id.'&Itemid='.MENUITEM.'\'">
+				          <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id=' . $qt->id . '&Itemid=' . MENUITEM . '\'">
+                  <input type="button" value="ablehnen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=ablehnung.edit&id=' . $qt->id . '&Itemid=' . MENUITEM . '\'">
 			          </td>
               </tr>';
-				if ($qt->abgelehnt == 1) {
-				  echo '<tr class="'.$style.'">
-				          <td colspan="7" style="color:red">Du hast den Antrag abgelehnt: '.$qt->kommentar_ablehnung.'</td>
+                if ($qt->abgelehnt == 1) {
+                    echo '<tr class="' . $style . '">
+				          <td colspan="7" style="color:red">Du hast den Antrag abgelehnt: ' . $qt->kommentar_ablehnung . '</td>
 				        </tr>';
-				}
-				$k = 1 - $k; 
-			} 
-			echo '</table>';
-			
-			echo '
+                }
+                $k = 1 - $k;
+            }
+            echo '</table>';
+
+            echo '
 			<div style="margin-top:35px">
 			  <strong>Hinweis:</strong>
 			  <ul>
@@ -61,13 +61,11 @@ if(check_user()) {
               <br/>Ein Klick auf den Namen öffnet dein E-Mail Programm (sofern eine E-Mail Adresse bekannt ist).</li>
 			  </ul>
 			</div>';
-		}
-		else {
-			echo "Keine offenen Quittierungen";
-		}
-}
-else {
-  echo ZB_BITTE_ANMELDEN;
-}
-?>
+        } else {
+            echo "Keine offenen Quittierungen";
+        }
+    } else {
+        echo ZB_BITTE_ANMELDEN;
+    }
+    ?>
 </div>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-	<fieldset name="kategorie_budget">
+    <fieldset name="kategorie_budget">
 
-		<field name="gesamtbudget" type="text" label="Begründung: " default="" size="30" maxlength="5" filter="integer" />
-		
-		<field name="cf_uid" type="hidden" default="" />
+        <field name="gesamtbudget" type="text" label="Begründung: " default="" size="30" maxlength="5"
+               filter="integer"/>
 
-	</fieldset>
+        <field name="cf_uid" type="hidden" default=""/>
+
+    </fieldset>
 </form>

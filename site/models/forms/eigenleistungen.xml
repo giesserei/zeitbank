@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-	<fieldset name="eigenleistungen">
+    <fieldset name="eigenleistungen">
 
-    <field name="arbeit_id" type="text" default="-1" label="Arbeitsgattung: " filter="integer"/>
-    
-    <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
+        <field name="arbeit_id" type="text" default="-1" label="Arbeitsgattung: " filter="integer"/>
 
-		<field name="kommentar_antrag" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45" />
-		
-		<field name="cf_uid" type="hidden" default="" />
-		
-		<field name="datum_antrag" type="text" label="Jahr: " />
+        <field name="minuten" size="60" maxlength="5" type="text" default="" label="Minuten: " filter="integer"/>
 
-	</fieldset>
+        <field name="kommentar_antrag" type="textarea" label="Kommentar: " class="inputbox" rows="4" cols="45"/>
+
+        <field name="cf_uid" type="hidden" default=""/>
+
+        <field name="datum_antrag" type="text" label="Jahr: "/>
+
+    </fieldset>
 </form>

@@ -5,25 +5,26 @@ JLoader::register('BaseFormView', JPATH_COMPONENT . '/views/base_form_view.php')
 
 /**
  * View-Klasse für das Edit-Formular "Buchung quittieren"
- * 
- * @author Steffen Förster
  */
-class ZeitbankViewQuittung extends BaseFormView {
+class ZeitbankViewQuittung extends BaseFormView
+{
 
-  /**
-   * @var stdClass
-   */
-  protected $antrag;
+    /**
+     * @var stdClass
+     */
+    protected $antrag;
 
-  public function display($tpl = null) {
-    $this->initView();
-    $this->antrag = $this->getModel()->getAntrag($this->getId());
-    
-    return parent::display($tpl);
-  }
-  
-  protected function isJournalAemtli() {
-    return $this->getModel()->isJournalAemtli($this->antrag->id);
-  }
-  
+    public function display($tpl = null)
+    {
+        $this->initView();
+        $this->antrag = $this->getModel()->getAntrag($this->getId());
+
+        return parent::display($tpl);
+    }
+
+    protected function isJournalAemtli()
+    {
+        return $this->getModel()->isJournalAemtli($this->antrag->id);
+    }
+
 }
