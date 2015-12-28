@@ -59,6 +59,26 @@ abstract class ZeitbankControllerUpdAngebotBase extends ZeitbankControllerUpdBas
         return true;
     }
 
+    /**
+     * Im Standardfall keine besondere Prüfung gegenüber der Edit-Prüfung.
+     *
+     * @inheritdoc
+     */
+    protected function isSaveAllowed($id, $data)
+    {
+        return $this->isEditAllowed($id);
+    }
+
+    protected function isDeleteAllowed($id)
+    {
+        $model = $this->getModel();
+        if (!$model->isOwner($id)) {
+            JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu löschen.', 'warning');
+            return false;
+        }
+        return true;
+    }
+
     // -------------------------------------------------------------------------
     // private section
     // -------------------------------------------------------------------------

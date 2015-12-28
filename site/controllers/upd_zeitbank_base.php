@@ -29,24 +29,4 @@ abstract class ZeitbankControllerUpdZeitbankBase extends ZeitbankControllerUpdBa
         $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, $data);
     }
 
-    /**
-     * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
-     *
-     * @inheritdoc
-     */
-    protected function isEditAllowed($id)
-    {
-        if ($id == 0) {
-            return true;
-        }
-
-        $model = $this->getModel();
-        if (!$model->isEditAllowed($id)) {
-            JFactory::getApplication()->enqueueMessage(
-                'Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.', 'warning');
-            return false;
-        }
-        return true;
-    }
-
 }

@@ -34,6 +34,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
         echo "<h1>Zeitbank: Du bist Administrator der Kategorie <strong>" . $kategorie->bezeichnung . "</strong></h1>";
         echo "Du kannst:";
         echo "<ul>";
+        echo "<li><a href=\"" . JRoute::_("index.php?option=com_zeitbank&view=arbeiten&Itemid=" . $this->menuId) . "\">Deine Ämtli verwalten</a></li>";
         echo "<li><a href=\"" . JRoute::_("index.php?option=com_zeitbank&task=kategorie.edit&id=" . $kategorieId . "&Itemid=" . $this->menuId) . "\">Dein Kategorienbudget verwalten</a></li>";
         echo "<li><a href=\"" . JRoute::_("index.php?option=com_zeitbank&task=arbeitadmin.edit&id=0&Itemid=" . $this->menuId) . "\">Deine Ämtli-Administratoren verwalten</a></li>";
         echo "</ul><br />";
@@ -43,7 +44,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     if (check_arbeit_admin(0, $this->menuId)):
         echo "<h1>Zeitbank: Du bist Ämtli-Administrator</h1>";
         echo "Du kannst:";
-        echo "<ul><li><a href=\"/index.php?option=com_chronoforms&chronoform=Zeitbank_Amt_Manager&Itemid=" . $this->menuId . "\">Ämtli verwalten und Status (aktiv/inaktiv) ändern</a></li>";
+        echo "<ul>";
         echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=" . $this->menuId . "\">Anträge quittieren</a> (offene Anträge: " . get_anzahl_offen() . ")</li>";
         echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=" . $this->menuId . "\">Quittierte Buchungen anzeigen</a></li>";
         echo "<li><a href=\"/index.php?option=com_zeitbank&task=report.aemtliBuchungen&format=raw\">Download: Quittierte Buchungen mit Kommentaren</a>&nbsp;(Format CSV, Encoding UTF-8)</li>";

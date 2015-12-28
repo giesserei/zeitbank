@@ -2,7 +2,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-class TableArbeit extends JTable
+class ZeitbankTableArbeit extends JTable
 {
     var $id = null;
     var $kurztext = null;
@@ -16,7 +16,7 @@ class TableArbeit extends JTable
     var $admin_id = null;
     var $kommentar = null;
 
-    function TableArbeit(&$db)
+    public function ZeitbankTableArbeit(&$db)
     {
         parent::__construct('#__mgh_zb_arbeit', 'id', $db);
     }

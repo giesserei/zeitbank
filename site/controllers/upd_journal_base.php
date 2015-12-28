@@ -21,4 +21,45 @@ abstract class ZeitbankControllerUpdJournalBase extends ZeitbankControllerUpdZei
         return ZeitbankFrontendHelper::cropText($kommentar, 1000);
     }
 
+    /**
+     * Liefert true, wenn der Benutzer den Eintrag bearbeiten darf. Wenn ID=0, wird immer true geliefert.
+     *
+     * @inheritdoc
+     */
+    protected function isEditAllowed($id)
+    {
+        if ($id == 0) {
+            return true;
+        }
+
+        $model = $this->getModel();
+        if (!$model->isOwner($id)) {
+            JFactory::getApplication()->enqueueMessage(
+                'Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Im Standardfall keine besondere Prüfung gegenüber der Edit-Prüfung.
+     *
+     * @inheritdoc
+     */
+    protected function isSaveAllowed($id, $data)
+    {
+        return $this->isEditAllowed($id);
+    }
+
+    /**
+     * Ein Journal-Eintrag kann nur über das Löschenformular gelöscht werden.
+     *
+     * @inheritdoc
+     */
+    protected function isDeleteAllowed($id)
+    {
+        JFactory::getApplication()->enqueueMessage('Das Löschen ist nicht zulässig.', 'warning');
+        return false;
+    }
+
 }

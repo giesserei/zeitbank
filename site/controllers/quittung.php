@@ -46,6 +46,8 @@ class ZeitbankControllerQuittung extends ZeitbankControllerUpdJournalBase
 
     /**
      * Liefert true, wenn der Benutzer den Eintrag quittieren darf.
+     *
+     * @inheritdoc
      */
     protected function isEditAllowed($id)
     {

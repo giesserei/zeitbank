@@ -31,15 +31,29 @@ class ZeitbankControllerArbeitAdmin extends ZeitbankControllerUpdZeitbankBase
         return "arbeitadmin";
     }
 
-    /**
-     * Liefert true, wenn der Benutzer ein Kategorie-Administrator ist.
-     *
-     * @inheritdoc
-     */
     protected function isEditAllowed($id)
     {
         if (!ZeitbankAuth::getKategorieId()) {
-            JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.', 'warning');
+            JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt.', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+    protected function isSaveAllowed($id, $data)
+    {
+        if (!ZeitbankAuth::isKategorieAdmin($data['kat_id'])) {
+            JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt.', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+    protected function isDeleteAllowed($id)
+    {
+        $model = $this->getModel();
+        if (!$model->isOwner($id)) {
+            JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt.', 'warning');
             return false;
         }
         return true;

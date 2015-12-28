@@ -6,8 +6,7 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 JLoader::register('ZeitbankControllerUpdJournalBase', JPATH_COMPONENT . '/controllers/upd_journal_base.php');
 
 /**
- * Controller zum Ablehnen von Anträgen. Ein abgelehnter Antrag hat einen entsprechenden Status
- * und eine Begründung.
+ * Controller zum Ablehnen von Anträgen. Ein abgelehnter Antrag hat einen entsprechenden Status und eine Begründung.
  */
 class ZeitbankControllerAblehnung extends ZeitbankControllerUpdJournalBase
 {

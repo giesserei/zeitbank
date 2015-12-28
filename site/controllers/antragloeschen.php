@@ -45,10 +45,6 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase
         return true;
     }
 
-    // -------------------------------------------------------------------------
-    // protected section
-    // -------------------------------------------------------------------------
-
     /**
      * Zeigt die Fehlermeldungen an, wenn das Löschen nicht funktioniert hat.
      */
@@ -81,6 +77,22 @@ class ZeitbankControllerAntragLoeschen extends ZeitbankControllerUpdJournalBase
         $dataAllowed = array();
         $dataAllowed['id'] = $data['id'];
         return $dataAllowed;
+    }
+
+    /**
+     * Löschen ist möglich, wenn es der Journal-Eintrag des Benutzers ist.
+     *
+     * @inheritdoc
+     */
+    protected function isDeleteAllowed($id)
+    {
+        $model = $this->getModel();
+        if (!$model->isOwner($id)) {
+            JFactory::getApplication()->enqueueMessage(
+                'Du bist nicht berechtigt, diesen Eintrag zu löschen.', 'warning');
+            return false;
+        }
+        return true;
     }
 
     // -------------------------------------------------------------------------

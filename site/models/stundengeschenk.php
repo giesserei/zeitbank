@@ -151,7 +151,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
         $count = $this->db->loadResult();
 
         if ($count == 0) {
-            JFactory::getApplication()->enqueueMessage('Der Empfänger ist nicht zulässig.', 'warning');
+            JFactory::getApplication()->enqueueMessage('Die Auswahl des Empfängers hat nicht funktioniert. Ggf. hilft die Verwendung eines anderen Browsers.', 'warning');
             return false;
         }
 

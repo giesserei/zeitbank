@@ -1,9 +1,7 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
-JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 JLoader::register('ZeitbankModelUpdBase', JPATH_COMPONENT . '/models/upd_base.php');
@@ -68,6 +66,26 @@ class ZeitbankModelArbeitAdmin extends ZeitbankModelUpdBase
 
         $db->setQuery($query);
         return $db->loadObjectList();
+    }
+
+    /**
+     * Liefert true, wenn der Benutzer Besitzer des Ämtli-Administrators ist, er also der passende
+     * Kategorien-Admin ist.
+     *
+     * @param int   $id       ID des Ämtli-Admins
+     *
+     * @return boolean
+     */
+    public function isOwner($id)
+    {
+        $query = sprintf(
+            "SELECT count(*) AS owner
+             FROM #__mgh_zb_x_kat_arbeitadmin AS a
+             LEFT JOIN #__mgh_zb_kategorie k ON a.kat_id = k.id
+             WHERE a.id = %s AND k.admin_id = %s", mysql_real_escape_string($id), $this->user->id);
+        $this->db->setQuery($query);
+        $result = $this->db->loadObject();
+        return $result->owner == 1;
     }
 
     // -------------------------------------------------------------------------

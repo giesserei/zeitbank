@@ -32,7 +32,7 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
      *
      * @return boolean
      */
-    public function isEditAllowed($id)
+    public function isOwner($id)
     {
         $query = sprintf(
             "SELECT count(*) AS owner

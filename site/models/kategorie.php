@@ -1,9 +1,7 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
-JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 JLoader::register('ZeitbankModelUpdBase', JPATH_COMPONENT . '/models/upd_base.php');
 
 /**

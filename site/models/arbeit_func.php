@@ -1,82 +1,8 @@
 <?php
 
-/**
- * Funktionen für Management-Oberfläche Ämtli
- * 22.5.2013 jal
- */
-
 defined('_JEXEC') or die('Restricted access');
 
 require_once(JPATH_BASE . '/components/com_zeitbank/models/zeitbank.php');
-
-/**
- * Stellt die Liste aller Ämtli für den Ämtli-Administrator dar.
- */
-function get_arbeitsliste($menuitem)
-{
-    $db = JFactory::getDBO();
-    $user = JFactory::getUser();
-
-    $laufendes_jahr = intval(date('Y'));
-
-    $zb = new ZeitbankModelZeitbank();
-
-    $output = "<table class=\"zeitbank\">";
-    $query = "SELECT *,ab.id as id,kat.bezeichnung,kat.id as kat_id
-              FROM #__mgh_zb_arbeit AS ab,#__mgh_zb_kategorie AS kat
-              WHERE ab.admin_id='" . $user->id . "'
-                AND kategorie_id = kat.id
-              ORDER BY kat.ordering,ab.ordering";
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-
-    $output .= "<tr class=\"head\">
-                  <th>Kurztext</th>
-                  <th>Jahressoll</th>
-                  <th>Kadenz</th>
-                  <th>Buchungen " . $laufendes_jahr . "</th>
-                  <th>Pauschale</th>
-                  <th>Kategorie</th>
-                  <th>Aktiviert</th>
-                  <th> &nbsp; </th>
-                </tr>";
-    $k = 0;    // Zebra start
-
-    if ($db->getAffectedRows() > 0):
-        foreach ($rows as $row):
-            $style = $k ? "even" : "odd"; // Zebramuster
-
-            $summe = arbeit_summe($row->id, $laufendes_jahr);
-
-            $output .= "<tr class=\"" . $style . "\">";
-            $output .= "<td>" . $row->kurztext . "</td>";
-            $output .= "<td align=\"right\">" . $row->jahressoll . "h</td>";
-            $output .= "<td align=\"right\">" . $row->kadenz . "/Jahr</td>";
-            $output .= "<td align=\"right\">" . $zb->showTime($summe) . "h &nbsp; <span style=\"";
-            if ($row->jahressoll * 60 - $summe < 0) $output .= "color: red";
-            $output .= "\">(" . $zb->showTime(($row->jahressoll * 60 - $summe)) . "h)</span></td>";
-            if ($row->pauschale > 0):
-                $output .= "<td align=\"right\">" . $row->pauschale . " min</td>";
-            else:
-                $output .= "<td align=\"right\"> - </td>";
-            endif;
-            $output .= "<td>" . $row->bezeichnung . "</td>";
-            $output .= "<td align=\"center\">";
-            if ($row->aktiviert):
-                $output .= "<img src=\"/images/on.png\">";
-            else:
-                $output .= "<img src=\"/images/off.png\">";
-            endif;
-            $output .= "</td>";
-            $output .= "<td><input type=\"button\" value=\"bearbeiten\" onclick=\"window.location.href='/index.php?option=com_chronoforms&chronoform=Zeitbank_arbeit_edit&id=" . $row->id . "&kat_id=" . $row->kat_id . "&Itemid=" . $menuitem . "'\"/></td>";
-            $output .= "</tr>";
-
-            $k = 1 - $k;
-        endforeach;
-    endif;
-    $output .= "</table>";
-    return ($output);
-} // get_arbeitsliste
 
 
 /**
@@ -176,54 +102,6 @@ function get_anzahl_offen()
 } // get_anzahl_offen()
 
 
-// Ermittelt den User für die Gegenbuchung
-function get_gegenkonto($kategorie)
-{
-    $db = JFactory::getDBO();
-
-    $query = "SELECT user_id FROM #__mgh_zb_kategorie WHERE id='" . strval($kategorie) . "'";
-
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-
-    if (mysql_affected_rows() > 0):
-        return ($rows[0]->user_id);
-    else:
-        return (NULL);
-    endif;
-} // get_gegenkonto
-
-// Prüft ob User berechtigt ist, einen Eintrag zu quittieren
-function user_ok($token)
-{
-    $db = JFactory::getDBO();
-    $user = JFactory::getUser();
-
-    // Ist User selbst zuständig?
-    $query = "SELECT belastung_userid FROM #__mgh_zb_journal WHERE cf_uid = '" . $token . "' AND datum_quittung='0000-00-00'";
-
-    $db->setQuery($query);
-    $rows = $db->loadObjectList();
-
-    if ($rows[0]->belastung_userid == $user->id):
-        return ($rows[0]->belastung_userid);
-    else:
-        // Ist User Administrator des Ämtlis?
-        $gegenkonto = $rows[0]->belastung_userid;
-        $query = "SELECT ab.id FROM #__mgh_zb_arbeit as ab,#__mgh_zb_kategorie as kat WHERE ab.admin_id = '" . $user->id . "'
-			AND kat.user_id = '" . $gegenkonto . "' AND kat.id = ab.kategorie_id";
-
-        $db->setQuery($query);
-        $rows = $db->loadObjectList();
-
-        if (mysql_affected_rows() > 0):
-            return ($gegenkonto);
-        else:
-            return (NULL);
-        endif;
-    endif;
-
-} // user_ok()
 
 // Bestimmt den Wert für das Feld reihenfolge, damit neues Ämtli am Schluss eingefügt wird
 function get_ende_reihenfolge()

@@ -44,4 +44,15 @@ class ZeitbankControllerKategorie extends ZeitbankControllerUpdZeitbankBase
         return true;
     }
 
+    protected function isSaveAllowed($id, $data)
+    {
+        return $this->isEditAllowed($id);
+    }
+
+    protected function isDeleteAllowed($id)
+    {
+        JFactory::getApplication()->enqueueMessage('Das Löschen ist nicht zulässig.', 'warning');
+        return false;
+    }
+
 }

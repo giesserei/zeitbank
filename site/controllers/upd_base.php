@@ -50,13 +50,13 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
         $formData = $this->getFormData();
         $id = $formData['id'];
 
-        if (!$this->isEditAllowed($id)) {
-            return false;
-        }
-
         // Validierung -> Validierungsmeldungen werden direkt ausgegeben
         $validateResult = $this->validateData($formData, $id);
         if ($validateResult === false) {
+            return false;
+        }
+
+        if (!$this->isSaveAllowed($id, $validateResult)) {
             return false;
         }
 
@@ -82,7 +82,7 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
         $this->saveMenuIdInSession();
 
         $id = $this->getId();
-        if (!$this->isEditAllowed($id)) {
+        if (!$this->isDeleteAllowed($id)) {
             return false;
         }
 
@@ -138,12 +138,29 @@ abstract class ZeitbankControllerUpdBase extends JControllerForm
     }
 
     /**
-     * Liefert true, wenn der Benutzer den Eintrag editieren/löschen darf.
+     * Liefert true, wenn der Benutzer den Eintrag editieren darf.
      *
      * @param $id int ID des Objektes, welches bearbeitet/gelöscht werden soll
      * @return boolean
      */
     abstract protected function isEditAllowed($id);
+
+    /**
+     * Liefert true, wenn der Benutzer den Eintrag speichern darf.
+     *
+     * @param int $id ID des Objektes, welches gespeichert werden soll
+     * @param array Daten
+     * @return boolean
+     */
+    abstract protected function isSaveAllowed($id, $data);
+
+    /**
+     * Liefert true, wenn der Benutzer den Eintrag löschen darf.
+     *
+     * @param int $id ID des Objektes, welches gelöscht werden soll
+     * @return boolean
+     */
+    abstract protected function isDeleteAllowed($id);
 
     /**
      * Liefert ein Array mit den Formdaten zurück, die gespeichert werden dürfen.
