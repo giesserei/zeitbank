@@ -3,8 +3,6 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * Enthält die Angebote auf der Übersichtsseite.
- *
- * @author Steffen Förster
  */
 class MarketPlaceOverview
 {

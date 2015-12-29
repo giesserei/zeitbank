@@ -7,8 +7,6 @@ JLoader::register('Rules2014', JPATH_COMPONENT . '/helpers/rules_2014.php');
 
 /**
  * Klasse zum Berechnen diverser Ergebnisse in der Zeitbank.
- *
- * @author Steffen Förster
  */
 class ZeitbankCalc
 {

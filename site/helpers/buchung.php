@@ -5,8 +5,6 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 
 /**
  * Klasse stellt diverse gemeinsame Funktionalitäten für die Verbuchung von Stunden zur Verfügung.
- *
- * @author Steffen Förster
  */
 class BuchungHelper
 {

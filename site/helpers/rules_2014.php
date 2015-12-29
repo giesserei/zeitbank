@@ -4,8 +4,6 @@ JLoader::register('Rules', JPATH_COMPONENT . '/helpers/rules.php');
 
 /**
  * Liefert Regeln des Eigenleistungsreglements vom Jahr 2014.
- *
- * @author Steffen Förster
  */
 class Rules2014 implements Rules
 {

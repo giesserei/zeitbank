@@ -2,8 +2,6 @@
 
 /**
  * Liefert Regeln des geltenden Eigenleistungsreglements.
- *
- * @author Steffen Förster
  */
 interface Rules
 {

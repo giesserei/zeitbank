@@ -5,8 +5,6 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 
 /**
  * Helperklasse.
- *
- * @author Steffen Förster
  */
 class ZeitbankFrontendHelper
 {

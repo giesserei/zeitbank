@@ -3,8 +3,6 @@ defined('_JEXEC') or die;
 
 /**
  * Klasse für verwendete Konstanten.
- *
- * @author Steffen Förster
  */
 class ZeitbankConst
 {
