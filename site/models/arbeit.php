@@ -69,6 +69,110 @@ class ZeitbankModelArbeit extends ZeitbankModelUpdBase
         return $result->owner == 1;
     }
 
+    /**
+     * Liefert den Wert für die Reihenfolge, so dass ein neues Ämtli am Ende eingefügt wird.
+     *
+     * @return int
+     */
+    public function getNextOrdering()
+    {
+        $query = "SELECT MAX(ordering) FROM #__mgh_zb_arbeit";
+        $this->db->setQuery($query);
+        $result = $this->db->loadResult();
+
+        return $result + 1;
+    }
+
+    /**
+     * Verschiebt die übergebene Arbeit in der Reihenfolge einen Schritt nach oben.
+     *
+     * @param int  $id      ID der Arbeit
+     * @return boolean
+     */
+    public function orderUp($id)
+    {
+        $idEsc = mysql_real_escape_string($id);
+
+        $query =
+            "SELECT a.* FROM #__mgh_zb_arbeit a
+             WHERE a.id = " . $idEsc;
+        $this->db->setQuery($query);
+        $arbeit = $this->db->loadObject();
+
+        // Die Arbeit selektieren, welche in der Reihenfolge direkt oberhalb steht
+        // Die Zahlen im Feld ordering müssen nicht zwangsläufig eine lückenlose Folge sein
+        $query =
+            "SELECT a.* FROM #__mgh_zb_arbeit a
+             WHERE a.ordering < " . $arbeit->ordering . "
+                 AND a.kategorie_id = " . $arbeit->kategorie_id . "
+                 AND a.ordering = (
+                     SELECT MAX(a2.ordering) FROM #__mgh_zb_arbeit a2
+                     WHERE a2.ordering < " . $arbeit->ordering . "
+                         AND a2.kategorie_id = " . $arbeit->kategorie_id . "
+               )";
+        $this->db->setQuery($query);
+        $arbeitPre = $this->db->loadObject();
+
+        if ($this->db->getAffectedRows() == 0) {
+            return false;
+        }
+
+        $query = "UPDATE #__mgh_zb_arbeit SET ordering = " . $arbeit->ordering . " WHERE id = " . $arbeitPre->id;
+        $this->db->setQuery($query);
+        $this->db->execute();
+
+        $query = "UPDATE #__mgh_zb_arbeit SET ordering = " . $arbeitPre->ordering . " WHERE id = " . $arbeit->id;
+        $this->db->setQuery($query);
+        $this->db->execute();
+
+        return true;
+    }
+
+    /**
+     * Verschiebt die übergebene Arbeit in der Reihenfolge einen Schritt nach unten.
+     *
+     * @param int  $id      ID der Arbeit
+     * @return boolean
+     */
+    public function orderDown($id)
+    {
+        $idEsc = mysql_real_escape_string($id);
+
+        $query =
+            "SELECT a.* FROM #__mgh_zb_arbeit a
+             WHERE a.id = " . $idEsc;
+        $this->db->setQuery($query);
+        $arbeit = $this->db->loadObject();
+
+        // Die Arbeit selektieren, welche in der Reihenfolge direkt unterhalb steht
+        // Die Zahlen im Feld ordering müssen nicht zwangsläufig eine lückenlose Folge sein
+        $query =
+            "SELECT a.* FROM #__mgh_zb_arbeit a
+             WHERE a.ordering > " . $arbeit->ordering . "
+                 AND a.kategorie_id = " . $arbeit->kategorie_id . "
+                 AND a.ordering = (
+                     SELECT MIN(a2.ordering) FROM #__mgh_zb_arbeit a2
+                     WHERE a2.ordering > " . $arbeit->ordering . "
+                         AND a2.kategorie_id = " . $arbeit->kategorie_id . "
+               )";
+        $this->db->setQuery($query);
+        $arbeitNext = $this->db->loadObject();
+
+        if ($this->db->getAffectedRows() == 0) {
+            return false;
+        }
+
+        $query = "UPDATE #__mgh_zb_arbeit SET ordering = " . $arbeit->ordering . " WHERE id = " . $arbeitNext->id;
+        $this->db->setQuery($query);
+        $this->db->execute();
+
+        $query = "UPDATE #__mgh_zb_arbeit SET ordering = " . $arbeitNext->ordering . " WHERE id = " . $arbeit->id;
+        $this->db->setQuery($query);
+        $this->db->execute();
+
+        return true;
+    }
+
     // -------------------------------------------------------------------------
     // private section
     // -------------------------------------------------------------------------

@@ -170,4 +170,23 @@ class ZeitbankModelZeitbank extends JModelLegacy
         return $db->loadObject();
     }
 
+    /**
+     * Ermittelt die Anzahl noch zu quittierenden Anträge für einen Arbeit-Admin.
+     *
+     * @param int $adminId ID des Admins
+     * @return int
+     */
+    public function getAnzahlOffeneQuittierungen($adminId)
+    {
+        $db = JFactory::getDBO();
+
+        $query =
+            "SELECT count(*) FROM #__mgh_zb_journal j
+             LEFT JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
+    		 WHERE j.datum_quittung='0000-00-00' AND j.admin_del='0'
+    		     AND a.admin_id = " . $adminId;
+        $db->setQuery($query);
+        return $db->loadResult();
+    }
+
 }

@@ -12,6 +12,30 @@ JLoader::register('ZeitbankControllerUpdZeitbankBase', JPATH_COMPONENT . '/contr
 class ZeitbankControllerArbeit extends ZeitbankControllerUpdZeitbankBase
 {
 
+    public function orderUp()
+    {
+        $id = $this->getId();
+
+        if ($this->isEditAllowed($id)) {
+            $this->getModel()->orderUp($this->getId());
+        }
+
+        $this->redirectSuccessView($id);
+        return true;
+    }
+
+    public function orderDown()
+    {
+        $id = $this->getId();
+
+        if ($this->isEditAllowed($id)) {
+            $this->getModel()->orderDown($this->getId());
+        }
+
+        $this->redirectSuccessView($id);
+        return true;
+    }
+
     protected function filterFormFields($data)
     {
         $dataAllowed = array();
@@ -23,15 +47,22 @@ class ZeitbankControllerArbeit extends ZeitbankControllerUpdZeitbankBase
         $dataAllowed['aktiviert'] = $data['aktiviert'];
         $dataAllowed['kommentar'] = $data['kommentar'];
         $dataAllowed['admin_id'] = $data['admin_id'];
+        $dataAllowed['ordering'] = $data['ordering'];
         return $dataAllowed;
     }
 
     protected function modifyDataBeforeSave($data)
     {
-        if(!isset($data['aktiviert'])) {
+        $data['kategorie_id'] = ZeitbankAuth::getKategorieId();
+
+        if (!isset($data['aktiviert'])) {
             $data['aktiviert'] = 0;
         }
-        $data['kategorie_id'] = ZeitbankAuth::getKategorieId();
+
+        if (intval($data['ordering']) == 0) {
+            $data['ordering'] = $this->getModel()->getNextOrdering();
+        }
+
         return $data;
     }
 

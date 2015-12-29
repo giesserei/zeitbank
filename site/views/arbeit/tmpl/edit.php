@@ -55,6 +55,7 @@ echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
                    onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=arbeiten&Itemid=' . $this->menuId) ?>'"/>
             <?php echo JHtml::_('form.token'); ?>
             <input type="hidden" value="<?php echo $this->getId(); ?>" name="jform[id]"/>
+            <?php echo $this->form->getInput('ordering'); ?>
         </fieldset>
     </form>
 

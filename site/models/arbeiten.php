@@ -34,7 +34,12 @@ class ZeitbankModelArbeiten extends JModelLegacy
              (COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_laufend
                                WHERE arbeit_id = a.id), 0)) ist_laufend,
              (COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr
-                               WHERE arbeit_id = a.id), 0)) ist_vorjahr
+                               WHERE arbeit_id = a.id), 0)) ist_vorjahr,
+             CASE
+                 WHEN a.ordering = (SELECT MIN(ordering) FROM #__mgh_zb_arbeit WHERE kategorie_id = " . $katId . ") THEN 'min'
+                 WHEN a.ordering = (SELECT MAX(ordering) FROM #__mgh_zb_arbeit WHERE kategorie_id = " . $katId . ") THEN 'max'
+                 ELSE '-'
+             END AS orderFlag
              FROM #__mgh_zb_arbeit a
              LEFT OUTER JOIN #__users u ON a.admin_id = u.id
              WHERE a.kategorie_id=" . $katId ."

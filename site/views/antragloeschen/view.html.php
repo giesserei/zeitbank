@@ -6,7 +6,7 @@ JLoader::register('BaseFormView', JPATH_COMPONENT . '/views/base_form_view.php')
 /**
  * View-Klasse für das Confirm-Formular.
  */
-class ZeitbankFormViewAntragLoeschen extends BaseFormView
+class ZeitbankViewAntragLoeschen extends BaseFormView
 {
 
     /**

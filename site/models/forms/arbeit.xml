@@ -21,5 +21,7 @@
                cols="75"/>
 
         <field name="admin_id" type="arbeitadmin" label="Administrator" required="true"/>
+
+        <field name="ordering" type="hidden" default="0" />
     </fieldset>
 </form>

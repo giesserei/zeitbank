@@ -5,10 +5,6 @@ defined('_JEXEC') or die('Restricted access');
 JHTML::_('behavior.framework');
 JHTML::_('behavior.modal');
 
-require_once(JPATH_COMPONENT . '/models/check_user.php');
-require_once(JPATH_COMPONENT . '/models/arbeit_func.php');
-require_once(JPATH_COMPONENT . '/models/kategorie_func.php');
-
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
@@ -41,11 +37,11 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     endif;
 
     // Ämtli-Administrator?
-    if (check_arbeit_admin(0, $this->menuId)):
+    if (ZeitbankAuth::isAemtliAdmin()):
         echo "<h1>Zeitbank: Du bist Ämtli-Administrator</h1>";
         echo "Du kannst:";
         echo "<ul>";
-        echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=" . $this->menuId . "\">Anträge quittieren</a> (offene Anträge: " . get_anzahl_offen() . ")</li>";
+        echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittung_amt&Itemid=" . $this->menuId . "\">Anträge quittieren</a> (offene Anträge: " . $this->getAnzahlOffeneQuittierungen() . ")</li>";
         echo "<li><a href=\"/index.php?option=com_zeitbank&view=quittungsliste_amt&Itemid=" . $this->menuId . "\">Quittierte Buchungen anzeigen</a></li>";
         echo "<li><a href=\"/index.php?option=com_zeitbank&task=report.aemtliBuchungen&format=raw\">Download: Quittierte Buchungen mit Kommentaren</a>&nbsp;(Format CSV, Encoding UTF-8)</li>";
         echo "</ul><br />";

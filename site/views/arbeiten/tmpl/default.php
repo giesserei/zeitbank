@@ -31,8 +31,8 @@ $lastYear = $currentYear - 1;
         <th align="right">Ist <?php echo $lastYear; ?><br/>[hh:mm]</th>
         <th align="right">Pauschale<br/>[min]</th>
         <th>Administrator</th>
-        <th>Aktiv</th>
-        <th>Reihenfolge</th>
+        <th align="center">Aktiv</th>
+        <th align="center">Reihenfolge</th>
         <th>&nbsp;</th>
     </tr>
 
@@ -62,8 +62,17 @@ $lastYear = $currentYear - 1;
                 echo "<img src='" . $image . "'/>";
                 ?>
             </td>
-            <td>
-                ...
+            <td align="center">
+                <?php if($arbeit->orderFlag != 'min'):
+                   $link = JRoute::_("index.php?option=com_zeitbank&task=arbeit.orderUp&id=" . $arbeit->id . "&Itemid=" . $this->menuId);
+                ?>
+                <a href="<?php echo $link?>">Auf</a>&nbsp;
+                <?php endif; ?>
+                <?php if($arbeit->orderFlag != 'max'):
+                   $link = JRoute::_("index.php?option=com_zeitbank&task=arbeit.orderDown&id=" . $arbeit->id . "&Itemid=" . $this->menuId);
+                ?>
+                <a href="<?php echo $link?>">Ab</a>
+                <?php endif; ?>
             </td>
             <td>
                 <?php $link = JRoute::_("index.php?option=com_zeitbank&task=arbeit.edit&id=" . $arbeit->id . "&Itemid=" . $this->menuId); ?>

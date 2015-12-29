@@ -90,4 +90,10 @@ class ZeitbankViewZeitbank extends JViewLegacy
     {
         return $this->getModel()->getKategorieItem($id);
     }
+
+    protected function getAnzahlOffeneQuittierungen()
+    {
+        $user = JFactory::getUser();
+        return $this->getModel()->getAnzahlOffeneQuittierungen($user->id);
+    }
 }

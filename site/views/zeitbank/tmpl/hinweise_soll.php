@@ -13,7 +13,7 @@ JLoader::register('Rules2014', JPATH_COMPONENT . '/helpers/rules_2014.php');
     <li>Das Stundensoll wird 'pro rata temporis' berechnet. Bei einem unterjährigeren Einzug oder Auszug reduziert sich
         damit die Anzahl der Stunden.
     </li>
-    <li>Eine Dispensierung ist berücksichtigt, wenn dies beantrag wurde.</li>
+    <li>Eine Dispensierung ist berücksichtigt, wenn dies beantragt wurde.</li>
     <li>Die 3 Monate Freistellung bei Einzug sind berücksichtigt.</li>
     <li>Die 3 Monate Freistellung bei Geburt sind berücksichtigt, wenn dies mitgeteilt wurde.</li>
     <li>Die Reduzierung des Solls auf 12 Stunden infolge der ersten Ausbildung ist berücksichtigt, wenn dies beantragt

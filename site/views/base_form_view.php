@@ -5,7 +5,7 @@ JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 
 /**
- * Basisklasse für die View-Klassen.
+ * Basisklasse für die Views, welche ein Formular darstellen.
  */
 class BaseFormView extends JViewLegacy
 {
