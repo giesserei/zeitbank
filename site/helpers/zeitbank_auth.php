@@ -92,14 +92,20 @@ class ZeitbankAuth
         $kategorie = strval($kategorie);
 
         if ($kategorie > 0) {
-            $query = sprintf("SELECT * FROM #__mgh_zb_kategorie WHERE admin_id = %s AND id = %s",
+            $query = sprintf("SELECT count(*) FROM #__mgh_zb_kategorie WHERE admin_id = %s AND id = %s",
                 $user->id, mysql_real_escape_string($kategorie));
         } else {
-            $query = sprintf("SELECT * FROM #__mgh_zb_kategorie WHERE admin_id = %s", $user->id);
+            $query = sprintf("SELECT count(*) FROM #__mgh_zb_kategorie WHERE admin_id = %s", $user->id);
         }
 
         $db->setQuery($query);
-        return $db->loadResult() > 0;
+        if ($db->loadResult() > 0) {
+            return true;
+        }
+        else {
+            JFactory::getApplication()->enqueueMessage('Du bist kein Kategorie-Admin.', 'warning');
+            return false;
+        }
     }
 
     /**

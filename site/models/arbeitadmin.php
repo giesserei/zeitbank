@@ -43,6 +43,7 @@ class ZeitbankModelArbeitAdmin extends ZeitbankModelUpdBase
 
         $valid = 1;
         $valid &= $this->validateKategorieAccess($validateResult['kat_id']);
+        $valid &= $this->validateRequiredFields($validateResult['user_id']);
 
         if (!(bool)$valid) {
             return false;
@@ -106,6 +107,23 @@ class ZeitbankModelArbeitAdmin extends ZeitbankModelUpdBase
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * Prüft die erforderlichen Werte.
+     *
+     * @param $userId int Benutzer
+     *
+     * @return boolean
+     */
+    private function validateRequiredFields($userId)
+    {
+        if ($userId == -1) {
+            JFactory::getApplication()->enqueueMessage(
+                'Bitte wähle einen Benutzer aus.', 'warning');
+            return false;
+        }
         return true;
     }
 

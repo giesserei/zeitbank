@@ -3,7 +3,7 @@
 <form>
     <fieldset name="arbeitadmin">
 
-        <field name="user_id" type="text" default="-1" label="Benutzer: " filter="integer"/>
+        <field name="user_id" type="text" default="-1" label="Benutzer: " filter="integer" required="true"/>
 
         <field name="kat_id" type="hidden" default="" filter="integer"/>
 
