@@ -91,7 +91,7 @@ foreach($giessereiStundenJeKategorie as $kat) {
 
 $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
 echo '<tr class="'.$style.'">
-        <td><strong>Zwischensumme Giessereistunden</strong></td>
+        <td><strong>Summe Giessereistunden</strong></td>
         <td><strong>'.$totalBudget_G.'</strong></td>
         <td><strong>'.$totalProRata_G.'</strong></td>
         <td><strong>'.$totalSaldo_G.'</strong></td>
@@ -113,9 +113,10 @@ foreach($sonstigeStundenJeKategorie as $kat) {
   $totalSaldo_S += $kat->saldo;
 }
 
+/*
 $style = $i % 2 == 0 ? "zb_even" : "zb_odd";
 echo '<tr class="'.$style.'">
-        <td><strong>Zwischensumme sonstige Stunden</strong></td>
+        <td><strong>Summe sonstige Stunden</strong></td>
         <td><strong>'.$totalBudget_S.'</strong></td>
         <td><strong>'.$totalProRata_S.'</strong></td>
         <td><strong>'.$totalSaldo_S.'</strong></td>
@@ -129,5 +130,6 @@ echo '<tr class="'.$style.'">
         <td><strong>'.($totalProRata_G+$totalProRata_S).'</strong></td>
         <td><strong>'.($totalSaldo_G+$totalSaldo_S).'</strong></td>
       </tr>';
+*/
 
 echo "</table>";

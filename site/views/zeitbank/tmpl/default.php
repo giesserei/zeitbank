@@ -50,10 +50,10 @@ if(check_user()):
 	endif;
 	
 	// Reports
-	if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_KEY_DATA)) {
+	if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_DOWNLOAD_SALDO)) {
     echo "<h1>Zeitbank: Du hast Zugriff auf die Zeitbank-Reports</h1>";
     echo "Du kannst:";
-    echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Kennzahlen ansehen und ggf. Reports erstellen</a></li></ul><br />';
+    echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Kennzahlen ansehen und Reports erstellen</a></li></ul><br />';
   }
 	
   // Allgemeine Funktionen
@@ -61,6 +61,7 @@ if(check_user()):
 	echo '<ul>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a></li>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid='.MENUITEM.'&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
+		      <li><a href="/index.php?option=com_zeitbank&view=report&Itemid='.MENUITEM.'">Kennzahlen ansehen</a></li>
 		    </ul><br />';
 	
 	// Offene Quittierungen und Anträge
