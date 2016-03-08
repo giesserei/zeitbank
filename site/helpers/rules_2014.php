@@ -10,7 +10,7 @@ JLoader::register('Rules', JPATH_COMPONENT . '/helpers/rules.php');
 class Rules2014 implements Rules {
   
   public function getStundenSollBewohner() {
-    return 36;
+    return 33;
   }
   
   public function getStundenSollGewerbe() {
