@@ -206,7 +206,7 @@ class ZeitbankCalc
     private static function getRules()
     {
         if (is_null(self::$rules)) {
-            self::$rules = new Rules2014();
+            self::$rules = new Rules2016();
         }
         return self::$rules;
     }
