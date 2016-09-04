@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+    <fieldset name="kategorie">
+
+        <field name="gesamtbudget" type="text" label="Budget" default="" size="30" maxlength="5"
+               filter="integer"/>
+
+    </fieldset>
+</form>

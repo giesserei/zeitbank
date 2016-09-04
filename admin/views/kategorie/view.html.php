@@ -1,37 +1,84 @@
 <?php
-/*
- * Created on 27.12.2010
- *
-*/
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
+/**
+ * The HTML Zeitbank Kategorie View.
+ */
+class ZeitbankViewKategorie extends JViewLegacy
+{
+    /**
+     * @var  JForm
+     */
+    protected $form;
 
-class KategorienViewKategorie extends JView {
-	
-	function display( $tpl = null ) {
-		$kategorie =& $this->get( 'Data' );
-		$isNew = ($kategorie->id < 1); 
-		$text = $isNew ? JText::_( 'New' ) : JText::_( 'Edit' );
-		JToolBarHelper::title( 'Zeitbank-Kategorie: <small>['.$text.']</small>');
-		JToolBarHelper::save();
-		if($isNew):
-			JToolBarHelper::cancel();
-		else:
-			JToolBarHelper::cancel( 'cancel', 'Close' );
-		endif;	
+    /**
+     * @var  object
+     */
+    protected $item;
 
-//		$whg_typen =& $this->get( 'Wohnungstypen' );
-//		$whg_optlist =& $this->get( 'Optionenliste' );
-//		$whg_opt =& $this->get( 'Optionen' );
-		
-		$this->assignRef( 'kategorie', $kategorie);
-//		$this->assignRef( 'wohnungstypen', $whg_typen);
-//		$this->assignRef( 'optionenliste', $whg_optlist);
-//		$this->assignRef( 'optionen', $whg_opt);
-		
-		parent::display( $tpl );
-	 }
+    /**
+     * @var  JObject
+     */
+    protected $state;
+
+    /**
+     * Display the view
+     *
+     * @param   string $tpl The name of the template file to parse; automatically searches through the template paths.
+     *
+     * @return  void
+     */
+    public function display($tpl = null)
+    {
+        $this->form = $this->get('Form');
+        $this->item = $this->get('Item');
+        $this->state = $this->get('State');
+        $this->canDo = JHelperContent::getActions('com_zeitbank');
+
+        // Check for errors.
+        if (count($errors = $this->get('Errors'))) {
+            JError::raiseError(500, implode("\n", $errors));
+
+            return false;
+        }
+
+        parent::display($tpl);
+        $this->addToolbar();
+    }
+
+    /**
+     * Add the page title and toolbar.
+     *
+     * @return  void
+     */
+    protected function addToolbar()
+    {
+        $input = JFactory::getApplication()->input;
+        $input->set('hidemainmenu', true);
+
+        $isNew = ($this->item->id == 0);
+        $canDo = $this->canDo;
+
+        JToolbarHelper::title(JText::_($isNew ? 'Kategorie anlegen' : 'Kategorie bearbeiten'));
+
+        // If a new item, can save the item.  Allow users with edit permissions to apply changes to prevent returning to grid.
+        if ($isNew && $canDo->get('core.create')) {
+            if ($canDo->get('core.edit')) {
+                JToolbarHelper::apply('kategorie.apply');
+            }
+
+            JToolbarHelper::save('kategorie.save');
+        }
+
+        if (!$isNew && $canDo->get('core.edit')) {
+            JToolbarHelper::apply('kategorie.apply');
+            JToolbarHelper::save('kategorie.save');
+        }
+
+        if ($isNew) {
+            JToolbarHelper::cancel('kategorie.cancel');
+        } else {
+            JToolbarHelper::cancel('kategorie.cancel', 'JTOOLBAR_CLOSE');
+        }
+    }
 }
-
-?>

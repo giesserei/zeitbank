@@ -2,23 +2,25 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controller');
-class ZeitbankController extends JController {
+class ZeitbankController extends JControllerLegacy
+{
 
-  public function execute($task) {
-    return parent::execute($task);
-  }
-  
-  function display() {
-    parent::display();
-  }
+    public function execute($task)
+    {
+        return parent::execute($task);
+    }
 
-  function detail() {
-	  global $mainframe;
-	  JRequest::setVar('view','detail');
-    parent::display();
-	  $mainframe->close();
-  }
+    function display($cachable = false, $urlparams = Array())
+    {
+        parent::display();
+    }
+
+    function detail()
+    {
+        global $mainframe;
+        JRequest::setVar('view', 'detail');
+        parent::display();
+        $mainframe->close();
+    }
 
 }
-?>

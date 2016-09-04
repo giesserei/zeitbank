@@ -1,22 +1,19 @@
 <?php
-/*
- * Created on 28.12.2012
- *
-
- */
 defined('_JEXEC') or die('Restricted access');
 
-class TableKategorie extends JTable {
-	var $id = null;
-	var $ordering = null;
-	var $bezeichnung = null;
-	var $gesamtbudget = null;
-	var $nachtrag = null;
-	var $user_id = null;
-	var $admin_id = null;
-	
-	function TableKategorie( &$db ) {
-		parent::__construct('#__mgh_zb_kategorie','id',$db);
-	}
+class ZeitbankTableKategorie extends JTable
+{
+    var $id = null;
+    var $ordering = null;
+    var $bezeichnung = null;
+    var $gesamtbudget = null;
+    var $nachtrag = null;
+    var $user_id = null;
+    var $admin_id = null;
+
+    public function ZeitbankTableKategorie(&$db)
+    {
+        parent::__construct('#__mgh_zb_kategorie', 'id', $db);
+    }
 }
-?>
+

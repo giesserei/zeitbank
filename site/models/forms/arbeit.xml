@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+    <fieldset name="arbeit">
+
+        <field name="kurztext" type="text" label="Kurztext" default="" size="30" maxlength="35"
+               required="true"/>
+
+        <field name="beschreibung" type="textarea" class="inputbox" label="Beschreibung" default="" maxlength="200"
+               rows="5" cols="75"/>
+
+        <field name="jahressoll" type="text" label="Jahressoll [h]" default="0" size="5"
+               filter="integer"/>
+
+        <field name="pauschale" type="text" label="Pauschale [min]" default="0" size="5"
+               filter="integer"/>
+
+        <field name="aktiviert" type="checkbox" label="Aktiviert" value="1"/>
+
+        <field name="kommentar" type="textarea" label="Kommentar" default="" maxlength="250" rows="5"
+               cols="75"/>
+
+        <field name="admin_id" type="arbeitadmin" label="Administrator" required="true"/>
+
+        <field name="ordering" type="hidden" default="0" />
+    </fieldset>
+</form>

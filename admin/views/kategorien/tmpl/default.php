@@ -1,79 +1,143 @@
 <?php
-/*
- * Created on 28.12.2012
- *
- */
+
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.html.pagination');
+JHtml::_('bootstrap.tooltip');
+JHtml::_('behavior.multiselect');
+JHtml::_('formbehavior.chosen', 'select');
 
-$filter_order = JRequest::getVar('filter_order','reihenfolge');
-$filter_order_Dir = JRequest::getVar('filter_order_Dir','asc');
+$user = JFactory::getUser();
+$app = JFactory::getApplication();
+$userId = $user->get('id');
+$listOrder = $this->escape($this->state->get('list.ordering'));
+$listDirn = $this->escape($this->state->get('list.direction'));
+$ordering = ($listOrder == 'a.ordering');
+$canOrder = $user->authorise('core.edit.state', 'com_zeitbank');
+$saveOrder = ($listOrder == 'a.ordering' && strtolower($listDirn) == 'asc');
 
+if ($saveOrder) {
+    $saveOrderingUrl = 'index.php?option=com_zeitbank&task=kategorien.saveOrderAjax&tmpl=component';
+    JHtml::_('sortablelist.sortable', 'itemList', 'adminForm', strtolower($listDirn), $saveOrderingUrl, false, true);
+}
 
-$db =& JFactory::getDBO();
+?>
 
-$this->pagination = new JPagination(count( $this->items ), 0, $this->items );
+<form action="<?php echo JRoute::_('index.php?option=com_zeitbank&view=kategorien'); ?>" method="post" name="adminForm"
+      id="adminForm">
 
-?>	
+    <?php if (!empty($this->sidebar)) : ?>
+    <div id="j-sidebar-container" class="span2">
+        <?php echo $this->sidebar; ?>
+    </div>
+    <div id="j-main-container" class="span10">
+    <?php else : ?>
+        <div id="j-main-container">
+    <?php endif; ?>
 
-<form action="index.php" method="POST" name="adminForm">
-<div id="editcell">
-    <table class="adminlist">
-    <thead>
-        <tr>
-            <th width="20">
-				<input type="checkbox" name="toggle" value=""
-				       onclick="checkAll(<?php echo count( $this->items ); ?>);" />
-
-
-			</th>
-			<th width="25">ID</th>
-			<th>Bezeichnung</th>
-			<th>Gesamtbudget [h/Jahr]</th>
-			<th>Gegenkonto</th>
-            <th width="70">
-			  <?php echo JText::_( 'ORDERING' ); ?>
-           	  <?php echo JHTML::_('grid.order',  $this->items ); ?>                   
-        </tr>
-    </thead>
     <?php
-    $k = 0;
-    for ($i=0, $n=count( $this->items ); $i < $n; $i++) {
-        $row =& $this->items[$i];
-		$checked    = JHTML::_( 'grid.id', $i, $row->id );
-		$link = JRoute::_(
-		    'index.php?option=com_zeitbank'
-			.'&controller=kategorien'
-			.'&task=edit&cid[]='. $row->id );			
-        ?>
-        <tr class="<?php echo "row$k"; ?>">
-            <td><?php echo $checked; ?></td>
-			<td align="right">
-				<?php echo $row->id; ?></td>
-            <td><a href="<?php echo $link; ?>"><?php echo $row->bezeichnung; ?></a></td>
-            <td><?php echo $row->gesamtbudget; ?></td>		
-            <td><?php echo $row->user_id; ?></td>	    
-            <td class="order"><span><?php echo $this->pagination->orderUpIcon( $i, ($i > 0), 'orderup', 'Auf',$row->ordering); ?></span>
-				<span><?php echo $this->pagination->orderDownIcon( $i, $n, ($i < $n ), 'orderdown', 'Ab',$row->ordering); ?></span>
-				<input type="text" name="ordering[]" size="5" value="<?php echo $row->ordering; ?>" class="text_area" style="text-align: center" />
-			    
-			    <!--  echo $row->reihenfolge; --> 
-			    </td>
-        </tr>
-        <?php
-        $k = 1 - $k;
-    }
+        // Search tools bar
+        echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this), null, array('debug' => false));
     ?>
-    </table>
+    <?php if (empty($this->items)) : ?>
+        <div class="alert alert-no-items">
+            <?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+        </div>
+    <?php else : ?>
+        <table class="table table-striped" id="kategorienList">
+            <thead>
+            <tr>
+                <th width="1%">
+                    <?php echo JHtml::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+                </th>
+                <th width="1%" class="center">
+                    <?php echo JHtml::_('grid.checkall'); ?>
+                </th>
+                <th width="1%" class="center">
+                    <?php echo JHtml::_('searchtools.sort', 'ID', 'a.id', $listDirn, $listOrder); ?>
+                </th>
+                <th width="20%" class="title">
+                    <?php echo JHtml::_('searchtools.sort', 'Bezeichnung', 'a.bezeichnung', $listDirn, $listOrder); ?>
+                </th>
+                <th width="10%" class="nowrap">
+                    Gesamtbudget [h/Jahr]
+                </th>
+                <th width="10%">
+                    Zeitbankkonto
+                </th>
+                <th width="10%">
+                    Administrator
+                </th>
+                <th width="1%">
+                    Reihenfolge
+                </th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="8">
+                    <?php echo $this->pagination->getListFooter(); ?>
+                </td>
+            </tr>
+            </tfoot>
 
-	</div>
+            <tbody>
+            <?php foreach ($this->items as $i => $item) {
+                $canEdit = $user->authorise('core.edit', 'com_zeitbank');
+                ?>
+                <tr class="row<?php echo $i % 2; ?>">
+                    <td class="order nowrap center">
+                        <?php
+                        $iconClass = '';
 
-	<input type="hidden" name="option" value="com_zeitbank" />
-	<input type="hidden" name="filter_order" value="<?php echo $filter_order; ?>" />
-	<input type="hidden" name="filter_order_Dir" value="<?php echo $filter_order_Dir; ?>" />
-	<input type="hidden" name="view" value="kategorien" />
-	<input type="hidden" name="boxchecked" value="0" />
-	<input type="hidden" name="controller" value="kategorien" />
-	<input type="hidden" name="task" value="" />
-	</form>
+                        if (!$saveOrder) {
+                            $iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+                        }
+                        ?>
+                        <span class="sortable-handler<?php echo $iconClass ?>">
+								<span class="icon-menu"></span>
+							</span>
+                        <?php if ($saveOrder) : ?>
+                            <input type="text" style="display:none" name="order[]" size="5"
+                                   value="<?php echo $orderkey + 1; ?>"/>
+                        <?php endif; ?>
+                    </td>
+                    <td class="center">
+                        <?php echo JHtml::_('grid.id', $i, $item->id); ?>
+                    </td>
+                    <td class="center">
+                        <?php echo $item->id; ?>
+                    </td>
+                    <td class="nowrap">
+                        <?php if ($canEdit) : ?>
+                            <a href="<?php echo JRoute::_('index.php?option=com_zeitbank&task=kategorie.edit&id=' . (int)$item->id); ?>">
+                                <?php echo $this->escape($item->bezeichnung); ?></a>
+                        <?php else : ?>
+                            <?php echo $this->escape($item->bezeichnung); ?>
+                        <?php endif; ?>
+                    </td>
+                    <td class="nowrap">
+                        <?php echo $item->gesamtbudget; ?>
+                    </td>
+                    <td>
+                        <?php echo $item->user_id; ?>
+                    </td>
+                    <td>
+                        <?php echo $item->admin_name; ?>
+                    </td>
+                    <td>
+                        <?php echo $item->ordering; ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+    </div>
+    <input type="hidden" name="task" value=""/>
+    <input type="hidden" name="boxchecked" value="0"/>
+    <?php echo JHtml::_('form.token'); ?>
+
+</form>
+
+

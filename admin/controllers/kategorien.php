@@ -1,131 +1,54 @@
 <?php
-/*
- * Created on 27.12.2010
- *
- */
 
 defined('_JEXEC') or die('Restricted access');
 
-jimport ('joomla.application.component.controller');
-JLoader::register('ZeitbankHelper', JPATH_COMPONENT.'/helpers/zeitbank.php');
-
-class KategorienController extends JController {
-	function display() {
-		$input = JFactory::getApplication()->input;
-		$view = $input->get('view', $this->default_view);
-		ZeitbankHelper::addSubmenu($view);
-		
-		parent::display();
-	}
-
-	function __construct() {
-		parent::__construct();
-		JRequest::setVar('view', 'kategorien');
-		
-		$this->registerTask( 'add','edit' );
-		$this->registerTask('orderup','order');
-    	$this->registerTask('orderdown','order');
-	}
-
-	function edit() {
-		JRequest::setVar( 'view', 'kategorie');
-		JRequest::setVar( 'layout', 'form');
-		JRequest::setVar( 'hidemainmenu', 1);
-		parent::display();
-	}	
-
-	function save() {
-		$model = $this->getModel('kategorie');
-
-		if( $model->store() ):
-			$msg = 'Speichern war erfolgreich';
-		else:
-			$msg = 'Fehler beim Speichern der Kategorie';
-		endif;
-		
-		$this->setRedirect('index.php?option=com_zeitbank&controller=kategorien',$msg);
-		$this->redirect();
-	}
-	
-	function remove() {
-		$model = $this->getModel('journal');
-		if( $model->delete() ):
-			$msg = 'Löschen war erfolgreich';
-		else:
-			$msg = 'Fehler beim Löschen';
-		endif;
-		$this->setRedirect('index.php?option=com_zeitbank&controller=kategorien',$msg);
-		$this->redirect();
-	}
-
-	function cancel() {
-		$msg = 'Aktion abgebrochen';
-		$this->setRedirect( 'index.php?option=com_zeitbank&controller=kategorien',$msg,'message' );
-		$this->redirect();
-	}
-
-
-  function order()
-  {
-    $cid = JRequest::getVar('cid', array(), 'post', 'array');
-
-    // Direction
-    $dir  = 1;
-    $task = JRequest::getCmd('task');
-    if($task == 'orderup')
+class ZeitbankControllerKategorien extends JControllerAdmin
+{
+    /**
+     * Constructor
+     *
+     * @param   array $config Optional configuration array
+     */
+    public function __construct($config = array())
     {
-      $dir = -1;
+        parent::__construct($config);
     }
 
-    if(isset($cid[0]))
+    /**
+     * Proxy for getModel.
+     *
+     * @param   string $name The model name. Optional.
+     * @param   string $prefix The class prefix. Optional.
+     * @param   array $config Configuration array for model. Optional.
+     *
+     * @return  object  The model.
+     */
+    public function getModel($name = 'Kategorien', $prefix = 'ZeitbankModel', $config = array())
     {
-	  $path = JPATH_ADMINISTRATOR.DS."components".DS."com_zeitbank".DS."tables";
-	  JTable::addIncludePath($path);
-      $tabelle = & JTable::getInstance('kategorien','Table');
-      
-      $tabelle->load((int)$cid[0]);
-//      $row->move($dir, 'parent ='.$row->parent);
-//      $row->reorder('parent = '.$row->parent);
-      $tabelle->move($dir,0);
-      $tabelle->reorder(0);
+        return parent::getModel($name, $prefix, array('ignore_request' => true));
     }
-	$msg = 'Reihenfolge geändert';
-    $this->setRedirect('index.php?option=com_zeitbank&controller=kategorien',$msg,'message');
-  } // order
-  
-   	
-  function saveOrder()
-  {
-    $cid    = JRequest::getVar('cid', array(0), 'post', 'array');
-    $ordering  = JRequest::getVar('ordering', array (0), 'post', 'array');
 
-    // Create and load the categories table object
-	$path = JPATH_ADMINISTRATOR.DS."components".DS."com_zeitbank".DS."tables";
-	JTable::addIncludePath($path);
-    $row = & JTable::getInstance('kategorien', 'Table');
-
-    // Update the ordering for items in the cid array
-    for($i = 0; $i < count($cid); $i ++)
+    /**
+     * Save the manual order inputs from the menu items list view
+     *
+     * @return boolean
+     */
+    public function saveorder()
     {
-      $row->load((int)$cid[$i]);
-      if($row->ordering != $ordering[$i])
-      {
-        $row->ordering = $ordering[$i];
-        if(!$row->store())
-        {
-          JError::raiseError( 500, $this->_db->getErrorMsg() );
-          return false;
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+        // Get the arrays from the Request
+        $order = $this->input->post->get('order', null, 'array');
+        $originalOrder = explode(',', $this->input->getString('original_order_values'));
+
+        // Make sure something has changed
+        if (!($order === $originalOrder)) {
+            return parent::saveorder();
+        } else {
+            // Nothing to reorder
+            $this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
+
+            return true;
         }
-      }
     }
-
-    // $row->reorderAll();
-    $row->reorder(0);
-    
-	$msg = 'Reihenfolge geändert';
-    $this->setRedirect('index.php?option=com_zeitbank&controller=kategorien',$msg,'message');
-      } // saveOrder	
 }
-
-
-?>

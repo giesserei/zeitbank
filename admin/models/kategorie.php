@@ -1,72 +1,111 @@
 <?php
-/*
- * Created on 27.12.2010
- *
+
+defined('_JEXEC') or die;
+
+/**
+ * Kategorie Model.
  */
+class ZeitbankModelKategorie extends JModelAdmin
+{
+    /**
+     * The type alias for this content type.
+     *
+     * @var      string
+     */
+    public $typeAlias = 'com_zeitbank.kategorie';
 
-defined('_JEXEC') or die('Restricted access');
+    /**
+     * Kategorien können nicht gelöscht werden => bestehende Ämtli wären dann keiner Kategorie mehr zugeordnet
+     *
+     * @param object $record A record object.
+     *
+     * @return boolean
+     */
+    protected function canDelete($record)
+    {
+        return false;
+    }
 
-jimport('joomla.application.component.model');
+    /**
+     * Method to check if you can save a record.
+     *
+     * @param   array $data An array of input data.
+     * @param   string $key The name of the key for the primary key.
+     *
+     * @return  boolean
+     */
+    protected function canSave($data = array(), $key = 'id')
+    {
+        return JFactory::getUser()->authorise('core.edit', $this->option);
+    }
 
-class KategorienModelKategorie extends JModel {
-	var $_data;
+    /**
+     * Method to get the row form.
+     *
+     * @param   array $data Data for the form.
+     * @param   boolean $loadData True if the form is to load its own data (default case), false if not.
+     *
+     * @return  mixed  A JForm object on success, false on failure
+     */
+    public function getForm($data = array(), $loadData = true)
+    {
+        $options = array(
+            'control' => 'jform',
+            'load_data' => $loadData
+        );
+        $form = $this->loadForm('com_zeitbank.kategorie', 'kategorie', $options);
 
-	function __construct() {
-		parent::__construct();
-		$array = JRequest::getVar('cid', 0, '', 'array');
-		$this->setId($array[0]);
-	}
+        if (empty($form)) {
+            return false;
+        }
 
-	function setId($id) {
-		$this->_id = $id;
-		$this->_data = null;
-	}  // end setId()
-	
-	function getData() {
-		if(empty($this->_data)):
-				$query = 'SELECT * FROM #__mgh_zb_kategorie WHERE id='.$this->_id;
-				$this->_db->setQuery( $query );
-				$this->_data = $this->_db->loadObject();
-		endif;
+        return $form;
+    }
 
-		if(!$this->_data):
-			$this->_data = new stdClass();
-			$this->_data->_id = 0;
-		endif;
-		
-		return $this->_data;
-	} // getData()
+    /**
+     * Method to get the data that should be injected in the form.
+     *
+     * @return  mixed  The data for the form.
+     */
+    protected function loadFormData()
+    {
+        $app = JFactory::getApplication();
+        $data = $app->getUserState('com_zeitbank.edit.kategorie.data', array());
 
-	function store() {
-		global $mainframe;			// für Fehlerausgabe
+        if (empty($data)) {
+            $data = $this->getItem();
+        }
 
-		// Datenbankhandle für "fremde" Tabellen
-		$db =& JFactory::getDBO();
-		
-		$row =& $this->getTable();
-		$data = JRequest::get( 'post' );
-			
-		// Kategoriedaten schreiben in Tabelle
-	    if(!$row->bind( $data )):
-			$this->setError($this->_db->getErrorMsg());
-			return false;
-		endif;
-		
-		if(!$row->check()):
-			$this->setError($this->_db->getErrorMsg());
-			return false;
-		endif;
-		
-		if(!$row->store()):
-			$this->setError( $this->_db->getErrorMsg() );
-			return false;
-		endif;
-		
-		return true;
-	} // end store()
-	
-	function delete() {
-		return(false);
-	}
+        $this->preprocessData('com_zeitbank.kategorie', $data);
+        return $data;
+    }
+
+    /**
+     * Method to get a kategorie.
+     *
+     * @param   integer $pk An optional id of the object to get, otherwise the id from the model state is used.
+     *
+     * @return  mixed  Kategorie data object on success, false on failure.
+     */
+    public function getItem($pk = null)
+    {
+        return parent::getItem($pk);
+    }
+
+    /**
+     * Returns a Table object, always creating it
+     *
+     * @param   string $type The table type to instantiate.
+     * @param   string $prefix A prefix for the table class name. Optional.
+     * @param   array $config Configuration array for model. Optional.
+     *
+     * @return  JTable    A database object.
+     *
+     * @since   1.6
+     */
+    public function getTable($type = 'Kategorie', $prefix = 'ZeitbankTable', $config = array())
+    {
+        return JTable::getInstance($type, $prefix, $config);
+    }
+
 }
-?>

@@ -8,160 +8,154 @@ JLoader::register('BuchungHelper', JPATH_COMPONENT . '/helpers/buchung.php');
 
 JLoader::register('ZeitbankModelUpdJournalBase', JPATH_COMPONENT . '/models/upd_journal_base.php');
 
-jimport('joomla.log.log');
-
 /**
  * Model für die Ausführung eines Stundengeschenks.
- * 
- * @author Steffen Förster
  */
-class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase {
-  
-  public function __construct() {
-    parent::__construct();
-  }
-  
-  /**
-   * @see JModelForm::getForm()
-   */
-  public function getForm($data = array(), $loadData = true) {
-    $form = $this->loadForm('com_zeitbank.stundengeschenk', 'stundengeschenk', array (
-        'control' => 'jform',
-        'load_data' => $loadData 
-    ));
-    
-    if (empty($form)) {
-      return false;
-    }
-    
-    return $form;
-  }
-  
-  /**
-   * Prüft, ob die Eingaben korrekt sind.
-   * 
-   * Validierungsmeldungen werden im Model gespeichert.
-   * 
-   * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
-   * 
-   * @see JModelForm::validate()
-   */
-  public function validate($form, $data) {
-    $validateResult = parent::validate($form, $data);
-    if ($validateResult === false) {
-      return false;
-    }
-    
-    $valid = 1;
-    $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
-    
-    if ((bool) $valid) {
-      $valid &= $this->validateDatumAntrag($validateResult['datum_antrag']);
-    }
-    if ((bool) $valid) {
-      $year = substr($validateResult['datum_antrag'], 0, 4);
-      $lastYear = strcmp($year, date('Y')) != 0;
-      $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id'], $lastYear);
-    }
-    
-    if (!(bool) $valid) {
-      return false;
-    }
-    return $validateResult;
-  }
-  
-  // -------------------------------------------------------------------------
-  // protected section
-  // -------------------------------------------------------------------------
+class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
+{
 
-  /**
-   * Es werden keine Buchungen bearbeitet, damit muss auch nichts aus der DB geladen werden.
-   * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
-   * 
-   * @see JModelForm::loadFormData()
-   */
-  protected function loadFormData() {
-    $data = JFactory::getApplication()->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_DATA, array ());
-    return $data;
-  }
-  
-  // -------------------------------------------------------------------------
-  // private section
-  // -------------------------------------------------------------------------
-  
-  /**
-   * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
-   * Es kann Zeit maximal bis zur Erreichung des Stundensolls des Empfängers verschenkt werden.
-   * 
-   * 2014-09-21 Es wird berücksichtigt, dass einige Tage nach dem Jahreswechsel auch noch auf das letzte Jahr gebucht werden darf.    
-   */
-  private function validateMinuten($minuten, $empfaengerId, $lastYear) {
-    if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
-      $this->setError('Bitte die Zeit eingeben, die du verschenken möchtest.');
-      return false;
+    public function getForm($data = array(), $loadData = true)
+    {
+        return $this->createForm('com_zeitbank.stundengeschenk', 'stundengeschenk', $loadData);
     }
-    if (!is_numeric($minuten)) {
-      $this->setError('Im Feld Minuten sind nur Zahlen zulässig.');
-      return false;
+
+    /**
+     * Prüft, ob die Eingaben korrekt sind.
+     *
+     * Validierungsmeldungen werden im Model gespeichert.
+     *
+     * @return mixed  Array mit gefilterten Daten, wenn alle Daten korrekt sind; sonst false
+     *
+     * @inheritdoc
+     */
+    public function validate($form, $data, $group = NULL)
+    {
+        $validateResult = parent::validate($form, $data, $group);
+        if ($validateResult === false) {
+            return false;
+        }
+
+        $valid = 1;
+        $valid &= $this->validateEmpfaenger($validateResult['empfaenger_id']);
+
+        if ((bool)$valid) {
+            $valid &= $this->validateDatumAntrag($validateResult['datum_antrag']);
+        }
+        if ((bool)$valid) {
+            $year = substr($validateResult['datum_antrag'], 0, 4);
+            $lastYear = strcmp($year, date('Y')) != 0;
+            $valid &= $this->validateMinuten($validateResult['minuten'], $validateResult['empfaenger_id'], $lastYear);
+        }
+
+        if (!(bool)$valid) {
+            return false;
+        }
+        return $validateResult;
     }
-    $minutenInt = intval($minuten);
-    if ($minutenInt <= 0) {
-      $this->setError('Die Anzahl der Minuten muss grösser 0 sein.');
-      return false;
+
+    /**
+     * Es werden keine Buchungen bearbeitet, damit muss auch nichts aus der DB geladen werden.
+     * Im Falle einer fehlgeschlagenen Validierung werden die Eingabe-Daten aus der Session geholt.
+     */
+    protected function loadFormData()
+    {
+        return $this->getDataFromSession();
     }
-    
-    $saldo = $lastYear ? ZeitbankCalc::getSaldoVorjahr($this->user->id) : ZeitbankCalc::getSaldo($this->user->id);
-    
-    if ($minutenInt > $saldo) {
-      $this->setError('Du kannst maximal dein aktuelles Guthaben verschenken ('.$saldo.' Minuten).');
-      return false;
+
+    // -------------------------------------------------------------------------
+    // private section
+    // -------------------------------------------------------------------------
+
+    /**
+     * Die verschenkte Zeit darf das vorhandene Guthaben nicht übersteigen.
+     * Es kann Zeit maximal bis zur Erreichung des Stundensolls des Empfängers verschenkt werden.
+     *
+     * 2014-09-21 Es wird berücksichtigt, dass einige Tage nach dem Jahreswechsel auch noch auf das letzte Jahr gebucht werden darf.
+     */
+    private function validateMinuten($minuten, $empfaengerId, $lastYear)
+    {
+        if (!isset($minuten) || ZeitbankFrontendHelper::isBlank($minuten)) {
+            JFactory::getApplication()->enqueueMessage(
+                'Bitte die Zeit eingeben, die du verschenken möchtest.', 'warning');
+            return false;
+        }
+        if (!is_numeric($minuten)) {
+            JFactory::getApplication()->enqueueMessage(
+                'Im Feld Minuten sind nur Zahlen zulässig.', 'warning');
+            return false;
+        }
+        $minutenInt = intval($minuten);
+        if ($minutenInt <= 0) {
+            JFactory::getApplication()->enqueueMessage(
+                'Die Anzahl der Minuten muss grösser 0 sein.', 'warning');
+            return false;
+        }
+
+        $saldo = $lastYear ? ZeitbankCalc::getSaldoVorjahr($this->user->id) : ZeitbankCalc::getSaldo($this->user->id);
+
+        if ($minutenInt > $saldo) {
+            JFactory::getApplication()->enqueueMessage(
+                'Du kannst maximal dein aktuelles Guthaben verschenken (' . $saldo . ' Minuten).', 'warning');
+            return false;
+        }
+
+        // Prüfung des Empfängersolls nicht bei Stundenfonds nötig - beim Gewerbe wird zur Vereinfachung bisher auf die
+        // Prüfung verzichtet
+        if (!BuchungHelper::isStundenfonds($empfaengerId) && !BuchungHelper::isGewerbe($empfaengerId)) {
+            $saldoEmpfaenger = $lastYear
+                ? ZeitbankCalc::getSaldoVorjahr($empfaengerId)
+                : ZeitbankCalc::getSaldo($empfaengerId);
+
+            // Dispensation wird nicht berücksichtigt (geschenkte Stunden können so eine Zahlung der
+            // Hauswartspauschale verhindern) => kleine Unschärfe: Jugendliche in Erstausbildung sind dispensiert, zahlen
+            // jedoch keine Hauswartentschädigung
+            $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId, false);
+
+            if ($saldoEmpfaenger >= $sollEmpfaenger) {
+                JFactory::getApplication()->enqueueMessage(
+                    'Der Empfänger benötigt keine Stunden mehr.', 'warning');
+                return false;
+            } else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
+                JFactory::getApplication()->enqueueMessage(
+                    'Der Empfänger benötigt nur noch ' . ($sollEmpfaenger - $saldoEmpfaenger)
+                    . ' Minuten zur Erreichung des Stundensolls.', 'warning');
+                return false;
+            }
+        }
+
+        return true;
     }
-    
-    // Prüfung des Empfängersolls nicht bei Stundenfonds nötig - beim Gewerbe wird zur Vereinfachung bisher auf die Prüfung verzichtet
-    if (!BuchungHelper::isStundenfonds($empfaengerId) && !BuchungHelper::isGewerbe($empfaengerId)) {
-      $saldoEmpfaenger = $lastYear ? ZeitbankCalc::getSaldoVorjahr($empfaengerId) : ZeitbankCalc::getSaldo($empfaengerId);
-      
-      // Dispensation wird nicht berücksichtigt (geschenkte Stunden können so eine Zahlung der Hauswartspauschale verhindern)
-      $sollEmpfaenger = ZeitbankCalc::getSollBewohner($empfaengerId, false);
-      
-      if ($saldoEmpfaenger >= $sollEmpfaenger) {
-        $this->setError('Der Empfänger benötigt keine Stunden mehr.');
-        return false;
-      }
-      else if ($saldoEmpfaenger + $minutenInt > $sollEmpfaenger) {
-        $this->setError('Der Empfänger benötigt nur noch '.($sollEmpfaenger - $saldoEmpfaenger).' Minuten zur Erreichung des Stundensolls.');
-        return false;
-      }
-    }
-    
-    return true;
-  }
-  
-  /**
-   * Liefert true, wenn der Empfänger ein aktiver Bewohner oder der Stundenfonds ist; sonst false.
-   * Auch darf dies nicht der angemeldete Benutzer sein.
-   */
-  private function validateEmpfaenger($empfaengerId) {
-    if (!isset($empfaengerId)) {
-      $this->setError('Bitte Empfänger auswählen');
-      return false;
-    }
-  
-    $query = "SELECT userid, vorname, nachname
+
+    /**
+     * Liefert true, wenn der Empfänger ein aktiver Bewohner oder der Stundenfonds ist; sonst false.
+     * Auch darf dies nicht der angemeldete Benutzer sein.
+     *
+     * @param $empfaengerId int User-ID, des Empfängers
+     *
+     * @return boolean
+     */
+    private function validateEmpfaenger($empfaengerId)
+    {
+        if (!isset($empfaengerId)) {
+            JFactory::getApplication()->enqueueMessage('Bitte Empfänger auswählen', 'warning');
+            return false;
+        }
+
+        $query = "SELECT userid, vorname, nachname
               FROM #__mgh_mitglied m
               WHERE m.typ IN (1,2,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
-                AND userid = ".mysql_real_escape_string($empfaengerId)."
-                AND userid != ".$this->user->id;
-  
-    $this->db->setQuery($query);
-    $count = $this->db->loadResult();
-  
-    if ($count == 0) {
-      $this->setError('Der Empfänger ist nicht zulässig.');
-      return false;
+                AND userid = " . mysql_real_escape_string($empfaengerId) . "
+                AND userid != " . $this->user->id;
+
+        $this->db->setQuery($query);
+        $count = $this->db->loadResult();
+
+        if ($count == 0) {
+            JFactory::getApplication()->enqueueMessage('Die Auswahl des Empfängers hat nicht funktioniert. Ggf. hilft die Verwendung eines anderen Browsers.', 'warning');
+            return false;
+        }
+
+        return true;
     }
-  
-    return true;
-  }
-  
+
 }

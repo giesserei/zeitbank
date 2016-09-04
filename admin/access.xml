@@ -12,16 +12,17 @@
 		        description="Download des Reports mit dem Saldo aller Mitglieder - Zugriff nur für Zeitbankkommission" />
 		<action name="report.key.data" title="Report: Kennzahlen" 
 		        description="Übersichtsseite mit Kennzahlen" />
-	</section>
-	<section name="category">
-		<action name="core.create" title="JACTION_CREATE" description="COM_CATEGORIES_ACCESS_CREATE_DESC" />
-		<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />
-		<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />
-		<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />
-		<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />
-	</section>
-	<section name="zeitbank">
-		<action name="zeitbank.delete" title="JACTION_DELETE" description="COM_CONTENT_ACCESS_DELETE_DESC" />
-		<action name="zeitbank.edit" title="JACTION_EDIT" description="COM_CONTENT_ACCESS_EDIT_DESC" />
+		<action name="view.journal" title="Tabelle Journal ansehen"
+				description="Daten in der Journaltabelle ansehen" />
+		<action name="edit.journal" title="Tabelle Journal bearbeiten"
+				description="Daten in der Tabelle Journal bearbeiten" />
+		<action name="view.arbeit" title="Tabelle Arbeit ansehen"
+				description="Daten in der Tabelle Arbeit ansehen" />
+		<action name="edit.arbeit" title="Tabelle Arbeit bearbeiten"
+				description="Daten in der Tabelle Arbeit bearbeiten" />
+		<action name="view.kategorie" title="Tabelle Kategorie ansehen"
+				description="Daten in der Tabelle Kategorie ansehen" />
+		<action name="edit.kategorie" title="Tabelle Kategorie bearbeiten"
+				description="Daten in der Tabelle Kategorie bearbeiten" />
 	</section>
 </access>

@@ -1,56 +1,30 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
-JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
-
-jimport('joomla.application.component.view');
+JLoader::register('BaseFormView', JPATH_COMPONENT . '/views/base_form_view.php');
 
 /**
  * View-Klasse für das Edit-Formular.
- * 
- * @author Steffen Förster
  */
-class ZeitbankViewAblehnung extends JView {
+class ZeitbankViewAblehnung extends BaseFormView
+{
 
-  protected $menuId;
-  
-  protected $state;
-  
-  protected $antrag;
-  
-  protected $form;
+    /**
+     * @var stdClass
+     */
+    protected $antrag;
 
-  /**
-   * @see JView::display()
-   */
-  public function display($tpl = null) {
-    $app = JFactory::getApplication();
-    
-    $this->state = $this->get('State');
-    
-    $this->form	= $this->get('Form');
+    public function display($tpl = null)
+    {
+        $this->initView();
+        $this->antrag = $this->getModel()->getAntrag($this->getId());
 
-    if (count($errors = $this->get('Errors'))) {
-      throw new Exception(implode('\n', $errors));
+        return parent::display($tpl);
     }
-    
-    ZeitbankFrontendHelper::addComponentStylesheet();
 
-    // Menü-Id wird in View im Form-Action gesetzt
-    $this->menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
-    
-    $this->antrag = $this->getModel()->getAntrag($this->getId());
-    
-    parent::display($tpl);
-  }
-  
-  protected function getId() {
-    return (int) $this->state->get($this->getModel()->getName().'.id');
-  }
+    protected function isJournalAemtli()
+    {
+        return $this->getModel()->isJournalAemtli($this->antrag->id);
+    }
 
-  protected function isJournalAemtli() {
-    return $this->getModel()->isJournalAemtli($this->antrag->id);
-  }
-  
 }

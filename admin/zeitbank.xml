@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
-	<name>Zeitbank</name>
-	<author>Jürg Altwegg, Hausverein Giesserei</author>
-	<creationDate>2013</creationDate>
-	<version>2.0.0</version>
-	
-	<administration>
-		<menu controller="zeitbank" view="journal" img="components/com_zeitbank/assets/zeitbank.png">Zeitbank</menu>
-		<submenu>
-            <menu controller="arbeiten" view="arbeit" img="components/com_kunena/media/icons/favicons/kunena-logo-white.png">COM_KUNENA_DASHBOARD</menu>
-        </submenu>
-	</administration>
-	
+    <name>Zeitbank</name>
+    <author>Hausverein Giesserei</author>
+    <creationDate>2016</creationDate>
+    <version>3.0.0</version>
+    <license>GNU GPL version 2 or later</license>
+
+    <description>Zeitbank des Hausvereins Giesserei</description>
+
+    <files folder="site">
+        <filename>zeitbank.php</filename>
+        <filename>controller.php</filename>
+        <filename>index.php</filename>
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+        <folder>models</folder>
+        <folder>template</folder>
+        <folder>views</folder>
+    </files>
+
+    <!-- Bisher kein Install-Skript vorhanden
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.sql</file>
+        </sql>
+    </install>
+    -->
+
+    <uninstall>
+    </uninstall>
+
+    <administration>
+        <menu controller="zeitbank" view="welcome" img="components/com_zeitbank/assets/zeitbank.png">
+            Zeitbank Administration
+        </menu>
+        <files folder="admin">
+            <filename>zeitbank.php</filename>
+            <filename>controller.php</filename>
+            <filename>index.php</filename>
+            <folder>assets</folder>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>languages</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+        </files>
+
+        <!-- Wird nur für Backend-Menü benötigt -->
+        <languages folder="admin">
+            <language tag="de-DE">languages/de-DE/de-DE.com_zeitbank.ini</language>
+            <language tag="de-DE">languages/de-DE/de-DE.com_zeitbank.sys.ini</language>
+        </languages>
+    </administration>
+
 </extension>
