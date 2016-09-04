@@ -3,7 +3,7 @@ defined('_JEXEC') or die;
 
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('Rules', JPATH_COMPONENT . '/helpers/rules.php');
-JLoader::register('Rules2014', JPATH_COMPONENT . '/helpers/rules_2014.php');
+JLoader::register('Rules2016', JPATH_COMPONENT . '/helpers/rules_2016.php');
 
 /**
  * Klasse zum Berechnen diverser Ergebnisse in der Zeitbank.

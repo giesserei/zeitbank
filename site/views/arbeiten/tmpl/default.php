@@ -58,7 +58,7 @@ $lastYear = $currentYear - 1;
             </td>
             <td align="center">
                 <?php
-                $image = $arbeit->aktiviert == 1 ? JRoute::_("images/on.png") : JRoute::_("images/off.png");
+                $image = $arbeit->aktiviert == 1 ? JRoute::_("/images/on.png") : JRoute::_("/images/off.png");
                 echo "<img src='" . $image . "'/>";
                 ?>
             </td>
