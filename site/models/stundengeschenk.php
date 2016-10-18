@@ -137,7 +137,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
     private function validateEmpfaenger($empfaengerId)
     {
         if (!isset($empfaengerId)) {
-            JFactory::getApplication()->enqueueMessage('Bitte Empfänger auswählen', 'warning');
+            JFactory::getApplication()->enqueueMessage('Bitte Empfänger auswählen. Der Empfänger muss aus der Liste gewählt werden, nachdem mindestens 3 Buchstaben vom Namen eingegeben wurden.', 'warning');
             return false;
         }
 
@@ -151,7 +151,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
         $count = $this->db->loadResult();
 
         if ($count == 0) {
-            JFactory::getApplication()->enqueueMessage('Die Auswahl des Empfängers hat nicht funktioniert. Ggf. hilft die Verwendung eines anderen Browsers.', 'warning');
+            JFactory::getApplication()->enqueueMessage('Die Auswahl des Empfängers hat nicht funktioniert. Der Empfänger muss aus der Liste gewählt werden, nachdem mindestens 3 Buchstaben vom Namen eingegeben wurden. Ggf. hilft die Verwendung eines anderen Browsers.', 'warning');
             return false;
         }
 
