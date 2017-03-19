@@ -10,7 +10,7 @@ class Rules2016 implements Rules
 
     public function getStundenSollBewohner()
     {
-        return 30;
+        return 28;
     }
 
     public function getStundenSollGewerbe()
