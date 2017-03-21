@@ -1,6 +1,6 @@
 <?php
 
-JLoader::register('Rules2014', JPATH_COMPONENT . '/helpers/rules_2014.php');
+JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 
 ?>
 
@@ -10,7 +10,7 @@ JLoader::register('Rules2014', JPATH_COMPONENT . '/helpers/rules_2014.php');
                  der Mitgliederversammlung bzgl. dem Stundensoll.</div>
 
 <ul>
-    <li>Das Stundensoll für einen Bewohner oder eine Bewohnerin beträgt pro Jahr 30 Stunden (Regelung für 2016).</li>
+    <li>Das Stundensoll für einen Bewohner oder eine Bewohnerin beträgt pro Jahr <?php echo ZeitbankCalc::getSollBasis() ?> Stunden.</li>
     <li>Das Stundensoll wird 'pro rata temporis' berechnet. Bei einem unterjährigeren Einzug oder Auszug reduziert sich
         damit die Anzahl der Stunden.
     </li>

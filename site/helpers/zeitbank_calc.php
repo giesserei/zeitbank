@@ -13,6 +13,13 @@ class ZeitbankCalc
 
     private static $rules;
 
+    public static function getSollBasis()
+    {
+        $rules = self::getRules();
+
+        return $rules->getStundenSollBewohner();
+    }
+
     /**
      * Liefert den Saldo (Minuten) des laufenden Jahres für das übergebene Mitglied.
      *
