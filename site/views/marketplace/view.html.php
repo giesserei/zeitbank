@@ -123,7 +123,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 				    <td><input type="button" value="Bearbeiten" 
 				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id=' . $angebot->id . '&Itemid=' . $this->menuId . '\'" />
 				        <input type="button" value="Löschen"
-				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.delete&id=' . $angebot->id . '\'&Itemid=' . $this->menuId . '\'" />
+				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.delete&id=' . $angebot->id . '&Itemid=' . $this->menuId . '\'" />
 				    </td>
 				  </tr>';
                 $i++;
