@@ -85,14 +85,13 @@ class ZeitbankModelMarketPlace extends JModelLegacy
     {
         $details = new MarketPlaceDetails();
 
-        $query = sprintf(
-            "SELECT m.*,
+        $query = "SELECT m.*,
            (SELECT CONCAT(k.bezeichnung, ' / ', a.kurztext) 
             FROM #__mgh_zb_kategorie k 
               JOIN #__mgh_zb_arbeit a ON k.id = a.kategorie_id
             WHERE a.id = m.arbeit_id) AS konto
          FROM #__mgh_zb_market_place as m
-		     WHERE m.id = %s", mysql_real_escape_string($id));
+		     WHERE m.id = " . $this->db->quote($id);
         $this->db->setQuery($query);
         $details->item = $this->db->loadObject();
 

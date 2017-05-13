@@ -60,7 +60,7 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase
     {
         $query = "SELECT pauschale
               FROM #__mgh_zb_arbeit a
-              WHERE a.id = " . mysql_real_escape_string($arbeitId);
+              WHERE a.id = " . $this->db->quote($arbeitId);
         $this->db->setQuery($query);
         $pauschale = $this->db->loadResult();
 
@@ -78,7 +78,7 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase
     {
         $query = "SELECT k.user_id
               FROM #__mgh_zb_arbeit a, #__mgh_zb_kategorie k
-              WHERE a.id = " . mysql_real_escape_string($arbeitId) . "
+              WHERE a.id = " . $this->db->quote($arbeitId) . "
                 AND a.kategorie_id = k.id";
         $this->db->setQuery($query);
         return $this->db->loadResult();
@@ -157,7 +157,7 @@ class ZeitbankModelEigenleistungen extends ZeitbankModelUpdJournalBase
 
         $query = "SELECT count(*)
               FROM #__mgh_zb_arbeit
-              WHERE id = " . mysql_real_escape_string($arbeitId) . "
+              WHERE id = " . $this->db->quote($arbeitId) . "
                 AND aktiviert = 1
                 AND kategorie_id != " . ZeitbankConst::KATEGORIE_ID_FREIWILLIG . "
                 AND id NOT IN (" . ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK . "," . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . ")";

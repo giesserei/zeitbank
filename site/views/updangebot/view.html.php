@@ -18,6 +18,13 @@ class ZeitbankViewUpdAngebot extends BaseFormView
     {
         $this->initView();
         $this->setArt();
+
+        $model = $this->getModel();
+        if (!$model->isOwner($this->getId())) {
+            JFactory::getApplication()->enqueueMessage('Du bist nicht berechtigt, diesen Eintrag zu bearbeiten.', 'warning');
+            return false;
+        }
+
         return parent::display($tpl);
     }
 

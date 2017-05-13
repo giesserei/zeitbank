@@ -80,10 +80,10 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
      */
     public function isOwner($id)
     {
-        $query = sprintf(
+        $query =
             "SELECT count(*) as owner
-         FROM #__mgh_zb_market_place as m
-		     WHERE m.id = %s AND m.userid", mysql_real_escape_string($id), $this->user->id);
+             FROM #__mgh_zb_market_place as m
+		     WHERE m.id = " . $this->db->quote($id) . " AND m.userid = " . $this->user->id;
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->owner == 1;
@@ -185,11 +185,10 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
                 'Bitte wähle eine Arbeitsgattung aus', 'warning');
             return false;
         } else if ($art == 1) {
-            $query = sprintf(
-                "SELECT count(*)
+            $query = "SELECT count(*)
            FROM #__mgh_zb_x_kat_arbeitadmin ka
              JOIN #__mgh_zb_arbeit a ON ka.kat_id = a.kategorie_id
-           WHERE a.id = %s AND ka.user_id = %s", mysql_real_escape_string($arbeitId), $this->user->id);
+           WHERE a.id = " . $this->db->quote($arbeitId) . " AND ka.user_id = " . $this->user->id;
             $this->db->setQuery($query);
             $count = $this->db->loadResult();
             if ($count == 0) {

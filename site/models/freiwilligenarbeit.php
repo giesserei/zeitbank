@@ -125,7 +125,7 @@ class ZeitbankModelFreiwilligenarbeit extends ZeitbankModelUpdJournalBase
 
         $query = "SELECT count(*)
               FROM #__mgh_zb_arbeit
-              WHERE id = " . mysql_real_escape_string($arbeitId) . "
+              WHERE id = " . $this->db->quote($arbeitId) . "
                 AND aktiviert = 1
                 AND kategorie_id = " . ZeitbankConst::KATEGORIE_ID_FREIWILLIG;
         $this->db->setQuery($query);

@@ -92,10 +92,10 @@ class ZeitbankAuth
         $kategorie = strval($kategorie);
 
         if ($kategorie > 0) {
-            $query = sprintf("SELECT count(*) FROM #__mgh_zb_kategorie WHERE admin_id = %s AND id = %s",
-                $user->id, mysql_real_escape_string($kategorie));
+            $query = "SELECT count(*) FROM #__mgh_zb_kategorie 
+                      WHERE admin_id = " . $user->id . " AND id = " . $db->quote($kategorie);
         } else {
-            $query = sprintf("SELECT count(*) FROM #__mgh_zb_kategorie WHERE admin_id = %s", $user->id);
+            $query = "SELECT count(*) FROM #__mgh_zb_kategorie WHERE admin_id = " . $user->id;
         }
 
         $db->setQuery($query);

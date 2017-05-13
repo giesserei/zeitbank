@@ -34,12 +34,11 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
      */
     public function isOwner($id)
     {
-        $query = sprintf(
-            "SELECT count(*) AS owner
+        $query = "SELECT count(*) AS owner
          FROM #__mgh_zb_journal AS j
-         WHERE j.id = %s AND j.gutschrift_userid = %s
+         WHERE j.id = " . $this->db->quote($id) . " AND j.gutschrift_userid = " . $this->user->id . "
            AND j.admin_del = 0
-           AND j.datum_quittung = '0000-00-00'", mysql_real_escape_string($id), $this->user->id);
+           AND j.datum_quittung = '0000-00-00'";
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->owner == 1;
@@ -56,11 +55,11 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
      */
     public function isArbeitAdmin($id)
     {
-        $query = sprintf(
-            "SELECT count(*) AS admin
+        $query = "SELECT count(*) AS admin
          FROM #__mgh_zb_journal AS j JOIN #__mgh_zb_arbeit AS a ON j.arbeit_id = a.id
-         WHERE j.id = %s AND (a.admin_id = %s OR (j.belastung_userid = %s AND a.id = %s))",
-            mysql_real_escape_string($id), $this->user->id, $this->user->id, ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
+         WHERE j.id = " . $this->db->quote($id) . " 
+            AND (a.admin_id = " . $this->user->id . " 
+            OR (j.belastung_userid = " . $this->user->id . " AND a.id = " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . "))";
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->admin == 1;
@@ -75,11 +74,9 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
      */
     public function isJournalAemtli($id)
     {
-        $query = sprintf(
-            "SELECT count(*) AS aemtli
-         FROM #__mgh_zb_journal j
-         WHERE j.id = %s AND j.arbeit_id != %s",
-            mysql_real_escape_string($id), ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
+        $query = "SELECT count(*) AS aemtli
+          FROM #__mgh_zb_journal j
+          WHERE j.id = " . $this->db->quote($id) . " AND j.arbeit_id != " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH;
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->aemtli == 1;
@@ -94,12 +91,11 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
      */
     public function getAntrag($id)
     {
-        $query = sprintf(
-            "SELECT journal.id, minuten, datum_antrag, kurztext, journal.kommentar_antrag AS text, journal.arbeit_id,
+        $query = "SELECT journal.id, minuten, datum_antrag, kurztext, journal.kommentar_antrag AS text, journal.arbeit_id,
            (SELECT u.name FROM #__users u WHERE u.id = journal.belastung_userid) konto_belastung, 
            (SELECT u.name FROM #__users u WHERE u.id = journal.gutschrift_userid) konto_gutschrift 
     		 FROM #__mgh_zb_arbeit AS arbeit JOIN #__mgh_zb_journal AS journal ON journal.arbeit_id = arbeit.id
-    		 WHERE journal.id = %s", mysql_real_escape_string($id));
+    		 WHERE journal.id = " . $this->db->quote($id);
         $this->db->setQuery($query);
         return $this->db->loadObject();
     }

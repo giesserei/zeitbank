@@ -59,11 +59,10 @@ class ZeitbankModelArbeit extends ZeitbankModelUpdBase
      */
     public function isOwner($id)
     {
-        $query = sprintf(
-            "SELECT count(*) AS owner
+        $query = "SELECT count(*) AS owner
              FROM #__mgh_zb_arbeit AS a
              LEFT JOIN #__mgh_zb_kategorie k ON a.kategorie_id = k.id
-             WHERE a.id = %s AND k.admin_id = %s", mysql_real_escape_string($id), $this->user->id);
+             WHERE a.id = " . $this->db->quote($id) . " AND k.admin_id = " . $this->user->id;
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->owner == 1;
@@ -91,7 +90,7 @@ class ZeitbankModelArbeit extends ZeitbankModelUpdBase
      */
     public function orderUp($id)
     {
-        $idEsc = mysql_real_escape_string($id);
+        $idEsc = $this->db->quote($id);
 
         $query =
             "SELECT a.* FROM #__mgh_zb_arbeit a
@@ -136,7 +135,7 @@ class ZeitbankModelArbeit extends ZeitbankModelUpdBase
      */
     public function orderDown($id)
     {
-        $idEsc = mysql_real_escape_string($id);
+        $idEsc = $this->db->quote($id);
 
         $query =
             "SELECT a.* FROM #__mgh_zb_arbeit a
@@ -185,9 +184,8 @@ class ZeitbankModelArbeit extends ZeitbankModelUpdBase
             return false;
         }
 
-        $query = sprintf(
-            "SELECT count(*) FROM #__users u
-             WHERE u.id = %s", mysql_real_escape_string($adminId));
+        $query = "SELECT count(*) FROM #__users u
+             WHERE u.id = " . $this->db->quote($adminId);
         $this->db->setQuery($query);
         $result = $this->db->loadResult();
 

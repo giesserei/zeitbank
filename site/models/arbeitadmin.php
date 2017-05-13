@@ -79,11 +79,10 @@ class ZeitbankModelArbeitAdmin extends ZeitbankModelUpdBase
      */
     public function isOwner($id)
     {
-        $query = sprintf(
-            "SELECT count(*) AS owner
+        $query = "SELECT count(*) AS owner
              FROM #__mgh_zb_x_kat_arbeitadmin AS a
              LEFT JOIN #__mgh_zb_kategorie k ON a.kat_id = k.id
-             WHERE a.id = %s AND k.admin_id = %s", mysql_real_escape_string($id), $this->user->id);
+             WHERE a.id = " . $this->db->quote($id) . " AND k.admin_id = " . $this->user->id;
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->owner == 1;

@@ -100,7 +100,7 @@ class ZeitbankModelStundentausch extends ZeitbankModelUpdJournalBase
         $query = "SELECT userid, vorname, nachname
               FROM #__mgh_mitglied m
               WHERE m.typ IN (1,2) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
-                AND userid = " . mysql_real_escape_string($empfaengerId) . "
+                AND userid = " . $this->db->quote($empfaengerId) . "
                 AND userid != " . $this->user->id;
 
         $this->db->setQuery($query);
