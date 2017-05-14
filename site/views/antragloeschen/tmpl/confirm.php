@@ -3,7 +3,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
-echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
+//echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 
 ?>
 

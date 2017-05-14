@@ -6,7 +6,7 @@ JHtml::_('behavior.keepalive');
 JHtml::_('behavior.formvalidation');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
-echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
+//echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 
 $isNew = $this->isNew();
 $titelArbeit = $isNew ? "Arbeitsangebot erstellen" : "Arbeitsangebot bearbeiten";

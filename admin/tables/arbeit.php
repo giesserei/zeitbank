@@ -16,7 +16,7 @@ class ZeitbankTableArbeit extends JTable
     var $admin_id = null;
     var $kommentar = null;
 
-    public function ZeitbankTableArbeit(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__mgh_zb_arbeit', 'id', $db);
     }

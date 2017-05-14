@@ -25,7 +25,7 @@ class ZeitbankTableMarketplace extends JTable
     public $zeit = null;
     public $aufwand = null;
 
-    function ZeitbankTableMarketplace($db)
+    function __construct($db)
     {
         parent::__construct('#__mgh_zb_market_place', 'id', $db);
     }

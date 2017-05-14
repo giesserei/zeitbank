@@ -6,7 +6,11 @@ defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
-echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
+//echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
+
+JHtml::_('jquery.framework');
+$base = JURI::base(true);
+JHtml::script("components/com_zeitbank/template/js/jquery.autocomplete.js");
 
 ?>
 

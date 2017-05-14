@@ -17,7 +17,7 @@ class TableStatus extends JTable
     var $admin_id = null;
     var $status = null;
 
-    function TableStatus(&$db)
+    function __construct(&$db)
     {
         parent::__construct('#__mgh_zb_kategorie', 'id', $db);
     }

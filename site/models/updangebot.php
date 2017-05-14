@@ -80,6 +80,9 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
      */
     public function isOwner($id)
     {
+        if ($id == 0) {
+            return true;
+        }
         $query =
             "SELECT count(*) as owner
              FROM #__mgh_zb_market_place as m

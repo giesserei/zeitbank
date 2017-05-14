@@ -7,7 +7,7 @@ class ZeitbankTableArbeitAdmin extends JTable
     var $user_id = null;
     var $kat_id = null;
 
-    public function ZeitbankTableArbeitAdmin(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__mgh_zb_x_kat_arbeitadmin', 'id', $db);
     }

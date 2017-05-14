@@ -22,7 +22,7 @@ class TableArbeiten extends JTable
     // Hilfsvariablen
     var $_gebuchte_zeit = 0;
 
-    function TableArbeiten(&$db)
+    function __construct(&$db)
     {
         parent::__construct('#__mgh_zb_arbeit', 'id', $db);
     }

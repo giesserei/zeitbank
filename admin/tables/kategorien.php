@@ -12,7 +12,7 @@ class TableKategorien extends JTable
     var $ordering = null;
     var $bezeichnung = null;
 
-    function TableKategorien(&$db)
+    function __construct(&$db)
     {
         parent::__construct('#__mgh_zb_kategorie', 'id', $db);
     }

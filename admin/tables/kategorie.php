@@ -11,7 +11,7 @@ class ZeitbankTableKategorie extends JTable
     var $user_id = null;
     var $admin_id = null;
 
-    public function ZeitbankTableKategorie(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__mgh_zb_kategorie', 'id', $db);
     }

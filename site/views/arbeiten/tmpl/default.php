@@ -6,7 +6,7 @@ JHTML::_('behavior.framework');
 JHTML::_('behavior.modal');
 
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
-echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
+//echo ZeitbankFrontendHelper::getScriptToHideHeaderImage();
 
 $currentYear = intval(date('Y'));
 $lastYear = $currentYear - 1;

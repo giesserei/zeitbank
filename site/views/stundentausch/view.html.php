@@ -13,11 +13,6 @@ class ZeitbankViewStundentausch extends BaseFormView
     {
         $this->initView();
 
-        $document = JFactory::getDocument();
-        $base = JURI::base(true);
-        $document->addScript($base . '/components/com_zeitbank/template/js/jquery-1.8.2.min.js');
-        $document->addScript($base . '/components/com_zeitbank/template/js/jquery.autocomplete.js');
-
         return parent::display($tpl);
     }
 
