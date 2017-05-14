@@ -20,9 +20,9 @@ echo '<div class="component">';
 
 if (ZeitbankAuth::checkAuthZeitbank()):
 
-    echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
-    echo 'Aktuell funktionieren die Funktionen Stundengeschenk und Stundentausch nicht.';
-    echo '</div>';
+    //echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';
+    //echo 'Aktuell funktionieren die Funktionen Stundengeschenk und Stundentausch nicht.';
+    //echo '</div>';
 
     // Kategorien-Administrator?
     if ($kategorieId = ZeitbankAuth::getKategorieId()):

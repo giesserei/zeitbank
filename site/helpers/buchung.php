@@ -24,7 +24,8 @@ class BuchungHelper
             "SELECT m.userid, m.vorname, m.nachname
              FROM #__mgh_mitglied m
              WHERE m.typ IN (1,2,7) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
-               AND (m.vorname LIKE '%" . $db->quote($search) . "%' OR m.nachname LIKE '%" . $db->quote($search) . "%')";
+               AND (m.vorname LIKE " . $db->quote("%" . $search . "%") . " 
+                 OR m.nachname LIKE " . $db->quote("%" . $search . "%") . ")";
         if (!$includeCurrentUser)
         {
             $query = $query . " AND m.userid != " . $user->id;

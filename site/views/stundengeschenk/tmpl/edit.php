@@ -31,7 +31,7 @@ JHtml::script("components/com_zeitbank/template/js/jquery.autocomplete.js");
                     <input type="text" name="jform[empfaenger]" id="autocomplete" size="60"/>
                     <script type="text/javascript">
                         window.addEventListener("DOMContentLoaded", function () {
-                            $('#autocomplete').autocomplete({
+                            jQuery('#autocomplete').autocomplete({
                                 serviceUrl: '/index.php?option=com_zeitbank&task=buchung.users&format=raw',
                                 minChars: 3,
                                 paramName: 'query',
