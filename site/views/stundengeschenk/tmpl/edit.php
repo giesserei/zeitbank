@@ -36,7 +36,7 @@ JHtml::script("components/com_zeitbank/template/js/jquery.autocomplete.js");
                                 minChars: 3,
                                 paramName: 'query',
                                 onSelect: function (suggestion) {
-                                    $('#empfaenger_id').val(suggestion.data);
+                                    jQuery('#empfaenger_id').val(suggestion.data);
                                 }
                             });
                         }, false);
