@@ -101,9 +101,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
 
         // Prüfung des Empfängersolls nicht bei Stundenfonds nötig - beim Gewerbe wird zur Vereinfachung bisher auf die
         // Prüfung verzichtet
-        // Silvester 2017 => Al Capone kann auch Stunden über dem Soll erhalten
-        if (!BuchungHelper::isStundenfonds($empfaengerId) && !BuchungHelper::isGewerbe($empfaengerId) 
-              && $empfaengerId != 890) {
+        if (!BuchungHelper::isStundenfonds($empfaengerId) && !BuchungHelper::isGewerbe($empfaengerId)) {
             $saldoEmpfaenger = $lastYear
                 ? ZeitbankCalc::getSaldoVorjahr($empfaengerId)
                 : ZeitbankCalc::getSaldo($empfaengerId);
