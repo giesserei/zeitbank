@@ -249,7 +249,7 @@ class ZeitbankModelReport extends JModelLegacy
           ) h
         ) s
       ) r RIGHT OUTER JOIN #__mgh_aktiv_mitglied m ON r.userid = m.userid
-      WHERE m.typ IN (1,2)
+      WHERE m.typ IN (1,2,11)
       ORDER BY m.nachname     
     ";
 

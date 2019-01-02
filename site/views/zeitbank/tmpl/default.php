@@ -310,8 +310,6 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     $saldoStundenfondsVorjahr = $this->getSaldoStundenfondsVorjahr();
     echo "Stunden im Giessereistundenfonds für " . $lastYear . ":&nbsp;&nbsp;&nbsp;<strong>" . ZeitbankFrontendHelper::formatTime($saldoStundenfondsVorjahr) . " h</strong><br /><br />";
 
-else:
-    echo ZB_BITTE_ANMELDEN;
 endif;    // Userprüfung
 
 echo '<div style="color:#888888;margin-top:10px;text-align:right">Release: ' . ZeitbankConst::RELEASE . '</div>';
