@@ -7,7 +7,7 @@ defined('_JEXEC') or die;
 class ZeitbankConst
 {
 
-    const RELEASE = '2.0.0 - 2016-09-03';
+    const RELEASE = '2.0.1 - 2019-01-02';
 
     /**
      * Unter diesem Key werden die Formulardaten des Marktplatzes gespeichert werden, wenn eine Validierung fehlschlägt.
