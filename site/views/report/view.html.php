@@ -35,55 +35,55 @@ class ZeitbankViewReport extends JViewLegacy
     /**
      * Liefert die Summe der verbuchten Arbeitstunden ohne den Stundentausch.
      */
-    public function getSummeArbeitStunden()
+    public function getSummeArbeitStunden($vorjahr = false)
     {
         $model = $this->getModel();
-        return $model->getSummeArbeitStunden();
+        return $model->getSummeArbeitStunden($vorjahr);
     }
 
     /**
      * Liefert die Summe der nicht quittierten Arbeitstunden ohne den Stundentausch.
      */
-    public function getSummeNichtQuittierteStunden()
+    public function getSummeNichtQuittierteStunden($vorjahr = false)
     {
         $model = $this->getModel();
-        return $model->getSummeNichtQuittierteStunden();
+        return $model->getSummeNichtQuittierteStunden($vorjahr);
     }
 
     /**
      * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen.
      */
-    public function getWartezeitUnquittierteBuchungen()
+    public function getWartezeitUnquittierteBuchungen($vorjahr = false)
     {
         $model = $this->getModel();
-        return $model->getWartezeitUnquittierteBuchungen();
+        return $model->getWartezeitUnquittierteBuchungen($vorjahr);
     }
 
     /**
      * Liefert die Summen der verbuchten Giesserei-Stunden je Arbeitskategorie.
      */
-    protected function getSummeGiessereiStundenNachKategorie()
+    protected function getSummeGiessereiStundenNachKategorie($vorjahr = false)
     {
         $model = $this->getModel();
-        return $model->getSummeGiessereiStundenNachKategorie();
+        return $model->getSummeGiessereiStundenNachKategorie($vorjahr);
     }
 
     /**
      * Liefert die Summen der verbuchten Sonstigen-Stunden (freiwillig, privater Stundentausch, Geschenke) je Arbeitskategorie.
      */
-    protected function getSummeSonstigeStundenNachKategorie()
+    protected function getSummeSonstigeStundenNachKategorie($vorjahr = false)
     {
         $model = $this->getModel();
-        return $model->getSummeSonstigeStundenNachKategorie();
+        return $model->getSummeSonstigeStundenNachKategorie($vorjahr);
     }
 
     /**
      * Liefert die maximale und die durchschnittliche Dauer zwischen einer Buchung und der Quittierung.
      */
-    public function getQuittungDauer()
+    public function getQuittungDauer($vorjahr = false)
     {
         $model = $this->getModel();
-        return $model->getQuittungDauer();
+        return $model->getQuittungDauer($vorjahr);
     }
 
     // -------------------------------------------------------------------------
@@ -105,4 +105,6 @@ class ZeitbankViewReport extends JViewLegacy
         $this->menuId = $jinput->get("Itemid", "0", "INT");
         $app->setUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID, $this->menuId);
     }
+
+
 }

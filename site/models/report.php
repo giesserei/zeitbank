@@ -96,15 +96,17 @@ class ZeitbankModelReport extends JModelLegacy
     }
 
     /**
-     * Liefert die Summe der verbuchten Arbeitstunden (ohne freiwilligenarbeit) ohne den Stundentausch und die Geschenke.
+     * Liefert die Summe der verbuchten Arbeitstunden (ohne Freiwilligenarbeit) ohne den Stundentausch und
+     * die Geschenke.
      */
-    public function getSummeArbeitStunden()
+    public function getSummeArbeitStunden($vorjahr = false)
     {
         $db = $this->getDBO();
+        $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
 
         $query = sprintf("
         SELECT ROUND((sum(j.minuten) / 60), 0) stunden_verbucht
-        FROM #__mgh_zb_journal_quittiert_laufend j
+        FROM " . $view . " j
         WHERE arbeit_id NOT IN (%s, %s)",
             ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
             ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
@@ -113,21 +115,24 @@ class ZeitbankModelReport extends JModelLegacy
     }
 
     /**
-     * Liefert die Summe der nicht quittierten Arbeitstunden (ohne Freiwilligenarbeit) ohne den Stundentausch und die Geschenke.
+     * Liefert die Summe der nicht quittierten Arbeitstunden (ohne Freiwilligenarbeit) ohne den Stundentausch und
+     * die Geschenke.
      */
-    public function getSummeNichtQuittierteStunden()
+    public function getSummeNichtQuittierteStunden($vorjahr = false)
     {
         $db = $this->getDBO();
+        $offset = $vorjahr ? 1 : 0;
 
         $query = sprintf("
-      SELECT ROUND((sum(j.minuten) / 60), 0) stunden_unquittiert
-      FROM joomghjos_mgh_zb_journal j
-      WHERE arbeit_id NOT IN (%s, %s)
-        AND datum_quittung = '0000-00-00'
-        AND admin_del = 0
-        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')",
-            ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
-            ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
+        SELECT ROUND((sum(j.minuten) / 60), 0) stunden_unquittiert
+        FROM joomghjos_mgh_zb_journal j
+        WHERE arbeit_id NOT IN (%s, %s)
+          AND datum_quittung = '0000-00-00'
+          AND admin_del = 0
+          AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01') 
+              AND CONCAT(YEAR(NOW()) - " . $offset . ", '-12-31')",
+              ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
+              ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -136,19 +141,23 @@ class ZeitbankModelReport extends JModelLegacy
      * Liefert die Summen der verbuchten und quittierten Stunden je Arbeitskategorie
      * (ohne Geschenke, Stundentausch und Freiwilligenarbeit).
      */
-    public function getSummeGiessereiStundenNachKategorie()
+    public function getSummeGiessereiStundenNachKategorie($vorjahr = false)
     {
         $db = $this->getDBO();
+        $sqlBudgetProRata = $vorjahr
+            ? "k.gesamtbudget"
+            : "ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01')))))";
+        $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
 
         $query = "
-      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget, 
-        ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01'))))) budget_pro_rata
-      FROM #__mgh_zb_journal_quittiert_laufend j 
-        JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
-        JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
-      WHERE k.id NOT IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . "," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . ")
-      GROUP BY k.bezeichnung
-      ORDER BY k.bezeichnung";
+        SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget, 
+          " . $sqlBudgetProRata . " budget_pro_rata
+        FROM " . $view . " j 
+          JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
+          JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
+        WHERE k.id NOT IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . " ," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . ")
+        GROUP BY k.bezeichnung
+        ORDER BY k.bezeichnung";
         $db->setQuery($query);
         return $db->loadObjectList();
     }
@@ -157,19 +166,23 @@ class ZeitbankModelReport extends JModelLegacy
      * Liefert die Summen der verbuchten und quittierten Stunden je Arbeitskategorie
      * Geschenke, Stundentausch und Freiwilligenarbeit.
      */
-    public function getSummeSonstigeStundenNachKategorie()
+    public function getSummeSonstigeStundenNachKategorie($vorjahr = false)
     {
         $db = $this->getDBO();
+        $sqlBudgetProRata = $vorjahr
+            ? "k.gesamtbudget"
+            : "ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01')))))";
+        $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr_inkl_freiw" : "#__mgh_zb_journal_quittiert_laufend_inkl_freiw";
 
         $query = "
-      SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget,
-        ROUND(((k.gesamtbudget / 365) * (DATEDIFF(NOW(), CONCAT(YEAR(NOW()), '-01-01'))))) budget_pro_rata
-      FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw j
-        JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
-        JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
-      WHERE k.id IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . "," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . "," . ZeitbankConst::KATEGORIE_ID_FREIWILLIG . ")
-      GROUP BY k.bezeichnung
-      ORDER BY k.bezeichnung";
+        SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget,
+          " . $sqlBudgetProRata . " budget_pro_rata
+        FROM " . $view . " j
+          JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
+          JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
+        WHERE k.id IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . "," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . "," . ZeitbankConst::KATEGORIE_ID_FREIWILLIG . ")
+        GROUP BY k.bezeichnung
+        ORDER BY k.bezeichnung";
         $db->setQuery($query);
         return $db->loadObjectList();
     }
@@ -178,26 +191,28 @@ class ZeitbankModelReport extends JModelLegacy
      * Liefert die maximale und die durchschnittliche Dauer zwischen einer Buchung und der Quittierung
      * (ohne Freiwilligenarbeit).
      */
-    public function getQuittungDauer()
+    public function getQuittungDauer($vorjahr = false)
     {
         $db = $this->getDBO();
+        $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
 
         $query = sprintf("
-      SELECT MAX(DATEDIFF(datum_quittung, datum_antrag)) max_dauer, ROUND(AVG(DATEDIFF(datum_quittung, datum_antrag)), 0) avg_dauer
-      FROM #__mgh_zb_journal_quittiert_laufend j
-      WHERE arbeit_id NOT IN (%s, %s)",
-            ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
-            ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
+        SELECT MAX(DATEDIFF(datum_quittung, datum_antrag)) max_dauer, ROUND(AVG(DATEDIFF(datum_quittung, datum_antrag)), 0) avg_dauer
+        FROM " . $view . " j
+        WHERE arbeit_id NOT IN (%s, %s)",
+              ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
+              ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
         $db->setQuery($query);
         return $db->loadObject();
     }
 
     /**
-     * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen des laufenden Jahres (ohne Freiwilligenarbeit).
+     * Liefert die durchschnittliche Wartezeit der noch unquittierten Buchungen (ohne Freiwilligenarbeit).
      */
-    public function getWartezeitUnquittierteBuchungen()
+    public function getWartezeitUnquittierteBuchungen($vorjahr = false)
     {
         $db = $this->getDBO();
+        $offset = $vorjahr ? 1 : 0;
 
         $query = sprintf("
       SELECT ROUND(AVG(DATEDIFF(NOW(), datum_antrag)), 0) 
@@ -205,7 +220,8 @@ class ZeitbankModelReport extends JModelLegacy
       WHERE arbeit_id NOT IN (%s, %s)
         AND datum_quittung = '0000-00-00'
         AND admin_del = 0
-        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()), '-01-01') AND CONCAT(YEAR(NOW()), '-12-31')
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01') 
+          AND CONCAT(YEAR(NOW()) - " . $offset . ", '-12-31')
         AND arbeit_id NOT IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = %s)",
             ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
             ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH,

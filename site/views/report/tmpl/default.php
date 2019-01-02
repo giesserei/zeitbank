@@ -8,7 +8,10 @@ JHTML::_('behavior.modal');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
+JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 
+$useLastYear = !ZeitbankCalc::isCurrentYearAllowed();
+$year = $useCurrentYear ? intval(date('Y')) : intval(date('Y')) - 1;
 
 echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Zeitbank</a><p/>';
 
@@ -25,7 +28,7 @@ echo '  </ul>';
 echo '</div>';
 
 // Kennzahlen
-echo '<h3 style="margin-bottom:10px">Kennzahlen</h3>';
+echo '<h3 style="margin-bottom:10px">Kennzahlen ' . $year . '</h3>';
 
 echo '<table class="zeitbank" style="width:700px">';
 echo '<tr class="head">
@@ -34,25 +37,25 @@ echo '<tr class="head">
       </tr>';
 echo '<tr class="zb_odd">
         <td>Summe der verbuchten Arbeitsstunden (ohne privaten Stundentausch)</td>
-        <td>' . $this->getSummeArbeitStunden() . ' Stunden</td>
+        <td>' . $this->getSummeArbeitStunden($useLastYear) . ' Stunden</td>
 		  </tr>';
 echo '<tr class="zb_even">
         <td>Summe der nicht quittierten Arbeitsstunden (ohne privaten Stundentausch)</td>
-        <td>' . $this->getSummeNichtQuittierteStunden() . ' Stunden</td>
+        <td>' . $this->getSummeNichtQuittierteStunden($useLastYear) . ' Stunden</td>
 		  </tr>';
 echo '<tr class="zb_odd">
         <td>Durchschnittliche Dauer bis zur Quittierung</td>
-        <td>' . $this->getQuittungDauer()->avg_dauer . ' Tage</td>
+        <td>' . $this->getQuittungDauer($useLastYear)->avg_dauer . ' Tage</td>
 		  </tr>';
 echo '<tr class="zb_even">
         <td>Durchschnittliche Wartezeit der bis heute nicht quittierten Buchungen</td>
-        <td>' . $this->getWartezeitUnquittierteBuchungen() . ' Tage</td>
+        <td>' . $this->getWartezeitUnquittierteBuchungen($useLastYear) . ' Tage</td>
 		  </tr>';
 echo "</table>";
 
 echo '<p/>';
 
-echo '<h3 style="margin-bottom:10px">Verbuchte Stunden je Kategorie</h3>';
+echo '<h3 style="margin-bottom:10px">Verbuchte Stunden je Kategorie ' . $year . '</h3>';
 
 echo '<table class="zeitbank" style="width:700px">';
 echo '<tr class="head">
@@ -64,12 +67,12 @@ echo '<tr class="head">
 
 $i = 0;
 
-$giessereiStundenJeKategorie = $this->getSummeGiessereiStundenNachKategorie();
+$giessereiStundenJeKategorie = $this->getSummeGiessereiStundenNachKategorie($useLastYear);
 $totalBudget_G = 0;
 $totalProRata_G = 0;
 $totalSaldo_G = 0;
 
-$sonstigeStundenJeKategorie = $this->getSummeSonstigeStundenNachKategorie();
+$sonstigeStundenJeKategorie = $this->getSummeSonstigeStundenNachKategorie($useLastYear);
 $totalBudget_S = 0;
 $totalProRata_S = 0;
 $totalSaldo_S = 0;
