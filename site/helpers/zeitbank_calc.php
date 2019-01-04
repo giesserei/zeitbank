@@ -110,9 +110,10 @@ class ZeitbankCalc
      *
      * @param $userId int
      * @param $inklDispensation boolean
+     * @param $vorjahr boolean
      * @return int
      */
-    public static function getSollBewohner($userId, $inklDispensation = true)
+    public static function getSollBewohner($userId, $inklDispensation = true, $vorjahr = false)
     {
         $db = JFactory::getDBO();
         $query = "SELECT einzug, dispension_grad, zb_freistellung, typ
@@ -126,7 +127,7 @@ class ZeitbankCalc
             return 0;
         }
 
-        $monate = self::computeMonate($props->einzug, $props->zb_freistellung);
+        $monate = self::computeMonate($props->einzug, $props->zb_freistellung, $vorjahr);
 
         $rules = self::getRules();
 
@@ -194,11 +195,12 @@ class ZeitbankCalc
      * Berechnet die Anzahl der Monate, für die ein Mitglied Stunden zu leisten hat.
      * Gerundet wird auf einen halben Monat.
      */
-    private static function computeMonate($einzug, $freistellung)
+    private static function computeMonate($einzug, $freistellung, $vorjahr = false)
     {
         $dateEinzug = new DateTime($einzug);
-        $dateYearStart = new DateTime(date('Y') . '-01-01');
-        $dateYearEnd = new DateTime(date('Y') . '-12-31');
+        $offset = $vorjahr ? 1 : 0;
+        $dateYearStart = new DateTime(intval(date('Y')) - $offset . '-01-01');
+        $dateYearEnd = new DateTime(intval(date('Y')) - $offset . '-12-31');
 
         $monate = 12.0;
 

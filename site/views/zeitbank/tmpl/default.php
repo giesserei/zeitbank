@@ -194,7 +194,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     $saldo = $this->getSaldo($useLastYear);
     $saldoVorjahr = $this->getSaldoVorjahr();
     $saldoFreiwilligenarbeit = $this->getSaldoFreiwilligenarbeit($useLastYear);
-    $soll = $this->getSoll();
+    $soll = $this->getSoll($useLastYear);
 
     echo '<div style="margin-bottom:10px">
 	        <table class="stunden">

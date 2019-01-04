@@ -42,10 +42,10 @@ class ZeitbankViewZeitbank extends JViewLegacy
     /**
      * Liefert das Soll für den Bewohner.
      */
-    protected function getSoll()
+    protected function getSoll($vorjahr = false)
     {
         $user = JFactory::getUser();
-        return ZeitbankCalc::getSollBewohner($user->id);
+        return ZeitbankCalc::getSollBewohner($user->id, true, $vorjahr);
     }
 
     /**
