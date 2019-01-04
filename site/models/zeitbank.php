@@ -99,10 +99,12 @@ class ZeitbankModelZeitbank extends JModelLegacy
     /**
      * Liefert alle Buchungen des angemeldeten Benutzers für das laufende Jahr.
      */
-    public function getUserJournal()
+    public function getUserJournal($vorjahr)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
+        $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr_inkl_freiw" : "#__mgh_zb_journal_quittiert_laufend_inkl_freiw";
+
         $query = "SELECT journal.id AS id, journal.cf_uid, minuten, belastung_userid, gutschrift_userid, datum_antrag,
                 arbeit.kurztext, journal.arbeit_id, 
                 CASE WHEN (journal.arbeit_id IN (SELECT id FROM #__mgh_zb_arbeit WHERE kategorie_id = -1)) THEN
@@ -110,7 +112,7 @@ class ZeitbankModelZeitbank extends JModelLegacy
                 ELSE
                   'eigenleistung'
                 END AS art
-    		      FROM #__mgh_zb_journal_quittiert_laufend_inkl_freiw AS journal, #__mgh_zb_arbeit AS arbeit
+    		      FROM " . $view . " AS journal, #__mgh_zb_arbeit AS arbeit
     	       	WHERE arbeit_id = arbeit.id 	
     		        AND (gutschrift_userid = " . $user->id . " OR belastung_userid = " . $user->id . ")
     		      ORDER BY datum_antrag DESC, journal.id DESC";

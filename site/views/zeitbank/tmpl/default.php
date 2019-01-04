@@ -16,6 +16,9 @@ $user = JFactory::getUser();
 $model = $this->getModel();
 $lastYear = intval(date('Y')) - 1;
 
+$useLastYear = !ZeitbankCalc::isCurrentYearAllowed();
+$year = $useCurrentYear ? intval(date('Y')) : intval(date('Y')) - 1;
+
 echo '<div class="component">';
 
 if (ZeitbankAuth::checkAuthZeitbank()):
@@ -168,6 +171,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
         }
     } else {
         echo "Keine offenen Anträge";
+        echo "<br />";
     };
 
     if (ZeitbankCalc::isBuchungGesperrt()) {
@@ -187,26 +191,26 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     echo "<h1>Zeitbank: Dein Journal</h1>";
 
 
-    $saldo = $this->getSaldo();
+    $saldo = $this->getSaldo($useLastYear);
     $saldoVorjahr = $this->getSaldoVorjahr();
-    $SaldoFreiwilligenarbeit = $this->getSaldoFreiwilligenarbeit();
+    $saldoFreiwilligenarbeit = $this->getSaldoFreiwilligenarbeit($useLastYear);
     $soll = $this->getSoll();
 
     echo '<div style="margin-bottom:10px">
 	        <table class="stunden">
 		        <tr>
-		          <td class="description">Dein Jahressaldo der Giessereistunden für ' . date('Y') . '</td>
+		          <td class="description">Dein Jahressaldo der Giessereistunden für ' . $year . '</td>
 		          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($saldo) . ' h</strong></td>
 		          <td></td>
 		        </tr>
 		        <tr>
-		          <td class="description">Dein Jahressaldo der Freiwilligenstunden für ' . date('Y') . '</td>
-		          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($SaldoFreiwilligenarbeit) . ' h</strong></td>
+		          <td class="description">Dein Jahressaldo der Freiwilligenstunden für ' . $year . '</td>
+		          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($saldoFreiwilligenarbeit) . ' h</strong></td>
 		          <td></td> 
 		        </tr>';
     if (!$this->isGewerbe()) {
         echo '<tr>
-		          <td class="description">Dein Stundensoll für ' . date('Y') . '</td>
+		          <td class="description">Dein Stundensoll für ' . $year . '</td>
 		          <td class="time">
 		            <strong>' . ZeitbankFrontendHelper::formatTime($soll) . ' h</strong>
 		          </td>
@@ -217,16 +221,18 @@ if (ZeitbankAuth::checkAuthZeitbank()):
 		          </td>
 		        </tr>';
     }
-    echo '<tr>
+    if (!$useLastYear) {
+        echo '<tr>
 		          <td class="description">Dein Jahressaldo des Vorjahres ' . $lastYear . '</td>
 		          <td class="time">' . ZeitbankFrontendHelper::formatTime($saldoVorjahr) . ' h</td>
 		          <td></td>
 		       </tr>';
+    }
     echo '</table></div>';
 
     // Alle verbuchten Posten aus dem Journal
     // TODO (SF) Code benötigt dringend Refactoring -> Für jede Buchung gibt es eine DB-Anfrage, um den Namen des Benutzers zu holen
-    echo "<h4>Bestätigte Buchungen des <span style=\"color:#9C2215\">laufenden</span> Jahres</h4><br />";
+    echo "<h4>Bestätigte Buchungen des Jahres <span style=\"color:#9C2215\">" . $year . "</span></h4><br />";
 
     if (count($this->journal) > 0) {
         echo "<table class=\"zeitbank\" >";
@@ -293,8 +299,8 @@ if (ZeitbankAuth::checkAuthZeitbank()):
         }
         echo "</table>";
     } else {
-        // Noch keine Buchungen dieses Jahr
-        echo "<p>Noch keine Buchungen für " . date('Y') . " vorhanden.</p>";
+        // Noch keine Buchungen
+        echo "<p>Noch keine Buchungen für " . $year . " vorhanden.</p>";
     }
 
     //echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/><br/><br/>";
@@ -305,10 +311,12 @@ if (ZeitbankAuth::checkAuthZeitbank()):
 
     // Giessereifonds
     echo "<h1>Zeitbank: Giessereistundenfonds</h1>";
-    $saldoStundenfonds = $this->getSaldoStundenfonds();
-    echo "Stunden im Giessereistundenfonds für " . date('Y') . ":&nbsp;&nbsp;&nbsp;<strong>" . ZeitbankFrontendHelper::formatTime($saldoStundenfonds) . " h</strong><br />";
-    $saldoStundenfondsVorjahr = $this->getSaldoStundenfondsVorjahr();
-    echo "Stunden im Giessereistundenfonds für " . $lastYear . ":&nbsp;&nbsp;&nbsp;<strong>" . ZeitbankFrontendHelper::formatTime($saldoStundenfondsVorjahr) . " h</strong><br /><br />";
+    $saldoStundenfonds = $this->getSaldoStundenfonds($useLastYear);
+    echo "Stunden im Giessereistundenfonds für " . $year . ":&nbsp;&nbsp;&nbsp;<strong>" . ZeitbankFrontendHelper::formatTime($saldoStundenfonds) . " h</strong><br />";
+    if (!$useLastYear) {
+        $saldoStundenfondsVorjahr = $this->getSaldoStundenfondsVorjahr();
+        echo "Stunden im Giessereistundenfonds für " . $lastYear . ":&nbsp;&nbsp;&nbsp;<strong>" . ZeitbankFrontendHelper::formatTime($saldoStundenfondsVorjahr) . " h</strong><br /><br />";
+    }
 
 endif;    // Userprüfung
 

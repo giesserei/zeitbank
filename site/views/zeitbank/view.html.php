@@ -30,7 +30,9 @@ class ZeitbankViewZeitbank extends JViewLegacy
         $model = $this->getModel();
         $this->quittierungen = $model->getOffeneQuittierungen();
         $this->antraege = $model->getOffeneAntraege();
-        $this->journal = $model->getUserJournal();
+
+        $useLastYear = !ZeitbankCalc::isCurrentYearAllowed();
+        $this->journal = $model->getUserJournal($useLastYear);
 
         ZeitbankFrontendHelper::addComponentStylesheet();
 
@@ -49,16 +51,21 @@ class ZeitbankViewZeitbank extends JViewLegacy
     /**
      * Liefert den Saldo für den Bewohner/das Gewerbe.
      */
-    protected function getSaldo()
+    protected function getSaldo($vorjahr = false)
     {
+        if ($vorjahr) {
+            return $this->getSaldoVorjahr();
+        }
         $user = JFactory::getUser();
         return ZeitbankCalc::getSaldo($user->id);
     }
 
-    protected function getSaldoFreiwilligenarbeit()
+    protected function getSaldoFreiwilligenarbeit($vorjahr = false)
     {
         $user = JFactory::getUser();
-        return ZeitbankCalc::getSaldoFreiwilligenarbeit($user->id);
+        return $vorjahr
+            ? ZeitbankCalc::getSaldoFreiwilligenarbeitVorjahr($user->id)
+            : ZeitbankCalc::getSaldoFreiwilligenarbeit($user->id);
     }
 
     protected function getSaldoVorjahr()
@@ -67,8 +74,11 @@ class ZeitbankViewZeitbank extends JViewLegacy
         return ZeitbankCalc::getSaldoVorjahr($user->id);
     }
 
-    protected function getSaldoStundenfonds()
+    protected function getSaldoStundenfonds($vorjahr = false)
     {
+        if ($vorjahr) {
+            return $this->getSaldoStundenfondsVorjahr();
+        }
         $userId = BuchungHelper::getStundenfondsUserId();
         return ZeitbankCalc::getSaldo($userId);
     }

@@ -80,6 +80,27 @@ class ZeitbankCalc
     }
 
     /**
+     * Liefert den Saldo der Freiwilligenarbeit des  Vorjahres für das übergebene Mitglied.
+     *
+     * @param $userId int
+     * @return int
+     */
+    public static function getSaldoFreiwilligenarbeitVorjahr($userId)
+    {
+        $db = JFactory::getDBO();
+        $query = "SELECT COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr_inkl_freiw
+                               WHERE gutschrift_userid = " . $userId . "
+                                 AND arbeit_id IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = -1)), 0) -
+                     COALESCE((SELECT SUM(minuten) FROM #__mgh_zb_journal_quittiert_vorjahr_inkl_freiw
+                               WHERE belastung_userid = " . $userId . "
+                                 AND arbeit_id IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = -1)), 0)";
+        $db->setQuery($query);
+        $saldo = $db->loadResult();
+        $saldoInt = intval($saldo);
+        return $saldoInt;
+    }
+
+    /**
      * Berechnet das persönliche Soll an Eigenleistungen (Minuten) für das übergebene Mitglied.
      * Mit dem Parameter $inklDispensation kann definiert werden, ob eine Dispensation berücksichtigt werden soll.
      *
