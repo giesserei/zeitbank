@@ -17,7 +17,7 @@ $model = $this->getModel();
 $lastYear = intval(date('Y')) - 1;
 
 $useLastYear = !ZeitbankCalc::isCurrentYearAllowed();
-$year = $useCurrentYear ? intval(date('Y')) : intval(date('Y')) - 1;
+$year = $useLastYear ? intval(date('Y')) - 1 : intval(date('Y'));
 
 echo '<div class="component">';
 

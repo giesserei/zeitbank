@@ -11,7 +11,7 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php');
 
 $useLastYear = !ZeitbankCalc::isCurrentYearAllowed();
-$year = $useCurrentYear ? intval(date('Y')) : intval(date('Y')) - 1;
+$year = $useLastYear ? intval(date('Y')) - 1 : intval(date('Y'));
 
 echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Zeitbank</a><p/>';
 
