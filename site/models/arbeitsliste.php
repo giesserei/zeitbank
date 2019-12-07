@@ -36,7 +36,7 @@ class ZeitbankModelArbeitsliste extends JModelLegacy
                     $output .= "<tr class=\"head\">
 	    		              <th width=\"300\">Kurztext</th>
 	    		              <th width=\"150\">Zuständig</th>
-	    					        <th width=\"70\" align=\"right\">Jahressoll</th>
+	    					        <th width=\"70\" align=\"right\">Budget</th>
 	    					        <th width=\"100\" align=\"right\">Buchungen " . $laufendes_jahr . "</th>
 	    					        <th width=\"100\" align=\"right\">Buchungen " . $lastYear . "</th>
 	    					        <th width=\"70\" align=\"right\">Pauschale</th>

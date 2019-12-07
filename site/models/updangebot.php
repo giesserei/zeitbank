@@ -47,7 +47,7 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
         $validateResult['anforderung'] = JComponentHelper::filterText($validateResult['anforderung']);
 
         // Anforderung darf nur 255 Zeichen haben
-        $validateResult['anforderung'] = ZeitbankFrontendHelper::cropText($validateResult['anforderung'], 255, false);
+        //$validateResult['anforderung'] = ZeitbankFrontendHelper::cropText($validateResult['anforderung'], 255, false);
 
         $valid = 1;
         $valid &= $this->validateArtRichtung($validateResult['art'], $validateResult['richtung']);
