@@ -100,6 +100,20 @@ class ZeitbankCalc
         return $saldoInt;
     }
 
+    public static function getDebugValue($userId)
+    {
+        $db = JFactory::getDBO();
+        $query = "SELECT einzug, dispension_grad, zb_freistellung, typ, zb_ausbildung_bis
+              FROM #__mgh_mitglied 
+              WHERE userid = " . $userId;
+        $db->setQuery($query);
+        $props = $db->loadObject();
+
+        return self::computeMonateAusbildung(12, $props->zb_ausbildung_bis, false);
+
+        //return $props->zb_ausbildung_bis;
+    }
+
     /**
      * Berechnet das persönliche Soll an Eigenleistungen (Minuten) für das übergebene Mitglied.
      * Mit dem Parameter $inklDispensation kann definiert werden, ob eine Dispensation berücksichtigt werden soll.
@@ -116,7 +130,7 @@ class ZeitbankCalc
     public static function getSollBewohner($userId, $inklDispensation = true, $vorjahr = false)
     {
         $db = JFactory::getDBO();
-        $query = "SELECT einzug, dispension_grad, zb_freistellung, typ
+        $query = "SELECT einzug, dispension_grad, zb_freistellung, typ, zb_ausbildung_bis
               FROM #__mgh_mitglied 
               WHERE userid = " . $userId;
         $db->setQuery($query);
@@ -129,9 +143,17 @@ class ZeitbankCalc
 
         $monate = self::computeMonate($props->einzug, $props->zb_freistellung, $vorjahr);
 
+        // Ausbildung berücksichtigen
+        $monateAusbildung = 0.0;
+        if ($props->zb_ausbildung_bis != '0000-00-00') {
+            $monateAusbildung = self::computeMonateAusbildung($monate, $props->zb_ausbildung_bis, $vorjahr);
+        }
+        $monateOhneAusbildung = $monate - $monateAusbildung;
+
         $rules = self::getRules();
 
-        $stundenSoll = $monate * ($rules->getStundenSollBewohner() / 12);
+        $stundenSoll = $monateOhneAusbildung * ($rules->getStundenSollBewohner() / 12)
+            + $monateAusbildung * ($rules->getStundenSollAusbildung() / 12);
 
         // Dispensionsgrad berücksichtigen
         if ($inklDispensation && $props->dispension_grad > 0) {
@@ -231,6 +253,36 @@ class ZeitbankCalc
         }
 
         return $monate;
+    }
+
+    /**
+     * Berechnet die Anzahl der Monate, für die ein Mitglied nur die reduzierten Stunden wegen
+     * Erstausbildung zu leisten hat.
+     */
+    private static function computeMonateAusbildung($monate, $ausbildungBis, $vorjahr = false)
+    {
+        $dateAusbildungBis = new DateTime($ausbildungBis);
+        $offset = $vorjahr ? 1 : 0;
+        $dateYearStart = new DateTime(intval(date('Y')) - $offset . '-01-01');
+        $dateYearEnd = new DateTime(intval(date('Y')) - $offset . '-12-31');
+
+        $monateAusbildung = 0.0;
+
+        // Ausbildungsende ist später als das aktuelle Jahr
+        if ($dateAusbildungBis > $dateYearStart && $dateAusbildungBis > $dateYearEnd) {
+            $monateAusbildung = $monate;
+        // Ausbildungsende liegt im aktuellen Jahr
+        } else if ($dateAusbildungBis > $dateYearStart && $dateAusbildungBis <= $dateYearEnd) {
+            $diff = $dateYearEnd->diff($dateAusbildungBis, true);
+            $monateAusbildung = $monate - $diff->m;
+        }
+
+        // keine negativen Werte zulässig
+        if ($monateAusbildung < 0) {
+            $monateAusbildung = 0;
+        }
+
+        return $monateAusbildung;
     }
 
     private static function getRules()

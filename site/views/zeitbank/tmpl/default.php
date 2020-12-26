@@ -21,6 +21,9 @@ $year = $useLastYear ? intval(date('Y')) - 1 : intval(date('Y'));
 
 echo '<div class="component">';
 
+//$user = JFactory::getUser();
+//echo '<h1>Value: ' . ZeitbankCalc::getDebugValue($user->id) . '/' . (ZeitbankCalc::getDebugValue($user->id) == null) . '</h1>';
+
 if (ZeitbankAuth::checkAuthZeitbank()):
 
     //echo '<div style="color:red;font-size:14pt;margin-bottom:20px;border-width:1px; border-color:red; border-style:solid;padding:5px">';

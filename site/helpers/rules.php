@@ -22,6 +22,11 @@ interface Rules
     public function getStundenSollMinBewohner();
 
     /**
+     * Liefert die Stunden, die ein Bewohner in Ausbildung im Jahr leisten muss.
+     */
+    public function getStundenSollAusbildung();
+
+    /**
      * Liefert die Höhe der Ersatzabgabe.
      */
     public function getErsatzabgabe();

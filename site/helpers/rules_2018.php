@@ -23,6 +23,11 @@ class Rules2018 implements Rules
         return 0;
     }
 
+    public function getStundenSollAusbildung()
+    {
+        return 12;
+    }
+
     public function getErsatzabgabe()
     {
         return 20;
