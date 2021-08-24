@@ -57,15 +57,15 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_DOWNLOAD_SALDO)) {
         echo "<h1>Zeitbank: Du hast Zugriff auf die Zeitbank-Reports</h1>";
         echo "Du kannst:";
-        echo '<ul><li><a href="index.php?option=com_zeitbank&view=report&Itemid=' . $this->menuId . '">Kennzahlen ansehen und Reports erstellen</a></li></ul><br />';
+        echo '<ul><li><a href="/index.php?option=com_zeitbank&view=report&Itemid=' . $this->menuId . '">Kennzahlen ansehen und Reports erstellen</a></li></ul><br />';
     }
 
     // Allgemeine Funktionen
     echo "<h1>Zeitbank: Allgemeine Funktionen</h1>";
     echo '<ul>
-		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
-		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=report">Kennzahlen ansehen</a></li>
-		  </ul><br />';
+                      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
+                      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=report">Kennzahlen ansehen</a></li>
+                  </ul><br />';
 
     // Offene Quittierungen und Anträge
     echo "<h1>Zeitbank: Quittierungen und Anträge</h1>";
@@ -73,7 +73,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     /* Liste der persönlichen Zeitbankauszüge ausgeben */
     /*
 
-    echo "<h1><a href=\"index2.php?option=com_zeitbank&Itemid=".MENUITEM."&view=zeitbank\"	target=\"_blank\">
+    echo "<h1><a href=\"index2.php?option=com_zeitbank&Itemid=".MENUITEM."&view=zeitbank\"      target=\"_blank\">
             <img src=\"/images/M_images/printButton.png\" style=\"float: right;\"></a>Zeitbank: Dein Konto</h1>";
     */
 
@@ -84,30 +84,30 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     if (count($this->quittierungen) > 0) {
         echo '<table class="zeitbank" >';
         echo '<tr class="head">
-				    <th>Datum</th>
-			        <th>Antrag von</th>
-			        <th>Arbeitsgattung</th>
-			        <th>Zeit<br />[min]</th>
-			        <th>Kommentar</th>
-			        <th style="text-align:right">B-Nr.</th>
-			        <th>&nbsp;</th>
-			      </tr>';
+                                    <th>Datum</th>
+                                <th>Antrag von</th>
+                                <th>Arbeitsgattung</th>
+                                <th>Zeit<br />[min]</th>
+                                <th>Kommentar</th>
+                                <th style="text-align:right">B-Nr.</th>
+                                <th>&nbsp;</th>
+                              </tr>';
 
         $k = 0;
         foreach ($this->quittierungen as $qt) {
             $style = $k ? "zb_even" : "zb_odd";
             $ktext = ZeitbankFrontendHelper::cropText($qt->text, 35);
             echo '<tr class="' . $style . '">
-					      <td>' . JHTML::date($qt->datum_antrag, 'd.m.Y') . '</td>
-					      <td>' . ZeitbankFrontendHelper::getEmailLink($qt->vorname, $qt->nachname, $qt->email, "Antrag privater Stundentausch") . '</td>
-					      <td>' . $qt->kurztext . '</td>
-					      <td style="text-align:right;">' . $qt->minuten . '</td>
-					      <td>' . $ktext . '</td>
-					      <td style="text-align:right">' . $qt->id . '</td>
-					      <td>
-					        <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id=' . $qt->id . '&Itemid=' . $this->menuId . '\'">
-					      </td>
-					    </tr>';
+                                              <td>' . JHTML::date($qt->datum_antrag, 'd.m.Y') . '</td>
+                                              <td>' . ZeitbankFrontendHelper::getEmailLink($qt->vorname, $qt->nachname, $qt->email, "Antrag privater Stundentausch") . '</td>
+                                              <td>' . $qt->kurztext . '</td>
+                                              <td style="text-align:right;">' . $qt->minuten . '</td>
+                                              <td>' . $ktext . '</td>
+                                              <td style="text-align:right">' . $qt->id . '</td>
+                                              <td>
+                                                <input type="button" value="bestätigen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=quittung.edit&id=' . $qt->id . '&Itemid=' . $this->menuId . '\'">
+                                              </td>
+                                            </tr>';
             $k = 1 - $k;
         }
         echo '</table>';
@@ -121,14 +121,14 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     if (count($this->antraege) > 0) {
         echo "<table class=\"zeitbank\" >";
         echo "<tr class=\"head\">
-				      <th>Datum</th>
-			        <th>Antrag an</th>
-			        <th>Arbeitsgattung<br/>Ämtli-VerantwortlicheR</th>
-			        <th>Zeit<br />[min]</th>
-			        <th>Kommentar</th>
-			        <th>B-Nr.</th>
-			        <th>&nbsp;</th>
-			      </tr>";
+                                      <th>Datum</th>
+                                <th>Antrag an</th>
+                                <th>Arbeitsgattung<br/>Ämtli-VerantwortlicheR</th>
+                                <th>Zeit<br />[min]</th>
+                                <th>Kommentar</th>
+                                <th>B-Nr.</th>
+                                <th>&nbsp;</th>
+                              </tr>";
 
         $k = 0;
         $countAbgelehnt = 0;
@@ -136,9 +136,9 @@ if (ZeitbankAuth::checkAuthZeitbank()):
             $style = $k ? "zb_even" : "zb_odd";
             $ktext = ZeitbankFrontendHelper::cropText($at->text, 35);
             echo '<tr class="' . $style . '">
-				        <td>' . JHTML::date($at->datum_antrag, 'd.m.Y') . '</td>
-				        <td>' . $at->name . '</td>
-				        <td>' . $at->kurztext;
+                                        <td>' . JHTML::date($at->datum_antrag, 'd.m.Y') . '</td>
+                                        <td>' . $at->name . '</td>
+                                        <td>' . $at->kurztext;
             // Ämtli-Verantwortlichen anzeigen, wenn kein privater Stundentausch
             if ($at->arbeit_id != ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH) {
                 echo '<br/>' . ZeitbankFrontendHelper::getEmailLink($at->vorname, $at->nachname, $at->email,
@@ -146,22 +146,22 @@ if (ZeitbankAuth::checkAuthZeitbank()):
             }
 
             echo '</td>
-				        <td style="text-align:right;">' . $at->minuten . '</td>
-				        <td>' . $ktext . '</td>
-				        <td style="text-align:right">' . $at->id . '</td>
-					      <td>';
+                                        <td style="text-align:right;">' . $at->minuten . '</td>
+                                        <td>' . $ktext . '</td>
+                                        <td style="text-align:right">' . $at->id . '</td>
+                                              <td>';
 
             if (!ZeitbankCalc::isBuchungGesperrt()) {
                 echo '<input type="button" value="ändern" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=' . $at->task . '&id=' . $at->id . '&Itemid=' . $this->menuId . '\'"/>';
             }
 
             echo '<input type="button" value="löschen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=antragloeschen.confirmDelete&id=' . $at->id . '&Itemid=' . $this->menuId . '\'"/>
-				        </td>
-					    </tr>';
+                                        </td>
+                                            </tr>';
             if ($at->abgelehnt == 1) {
                 echo '<tr class="' . $style . '">
-				          <td colspan="7" style="color:red">Antrag abgelehnt: ' . $at->kommentar_ablehnung . '</td>
-				        </tr>';
+                                          <td colspan="7" style="color:red">Antrag abgelehnt: ' . $at->kommentar_ablehnung . '</td>
+                                        </tr>';
                 $countAbgelehnt++;
             }
             $k = 1 - $k;
@@ -169,7 +169,7 @@ if (ZeitbankAuth::checkAuthZeitbank()):
         echo "</table>";
         if ($countAbgelehnt > 0) {
             echo '<br/><strong>Achtung:</strong> Es ' . ($countAbgelehnt == 1 ? 'wurde ein Antrag' : 'wurden ' . $countAbgelehnt . ' Anträge') . ' abgelehnt.
-			        Bitte ändere ' . ($countAbgelehnt == 1 ? 'den betroffenen Antrag' : 'die betroffenen Anträge') . '.';
+                                Bitte ändere ' . ($countAbgelehnt == 1 ? 'den betroffenen Antrag' : 'die betroffenen Anträge') . '.';
         }
     } else {
         echo "Keine offenen Anträge";
@@ -184,8 +184,8 @@ if (ZeitbankAuth::checkAuthZeitbank()):
               <input type="button" value="Antrag Eigenleistungen" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=eigenleistungen.edit&Itemid=' . $this->menuId . '\'" />&nbsp;&nbsp;
               <input type="button" value="Antrag privater Stundentausch" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundentausch.edit&Itemid=' . $this->menuId . '\'" />&nbsp;&nbsp;
               <input type="button" value="Antrag Freiwilligenarbeit" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=freiwilligenarbeit.edit&Itemid=' . $this->menuId . '\'" />&nbsp;&nbsp;
-  		        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid=' . $this->menuId . '\'" />
-  		      </fieldset>';
+                        <input type="button" value="Stunden verschenken" onclick="window.location.href=\'/index.php?option=com_zeitbank&task=stundengeschenk.edit&Itemid=' . $this->menuId . '\'" />
+                      </fieldset>';
     }
 
     // Journal
@@ -199,36 +199,36 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     $soll = $this->getSoll($useLastYear);
 
     echo '<div style="margin-bottom:10px">
-	        <table class="stunden">
-		        <tr>
-		          <td class="description">Dein Jahressaldo der Giessereistunden für ' . $year . '</td>
-		          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($saldo) . ' h</strong></td>
-		          <td></td>
-		        </tr>
-		        <tr>
-		          <td class="description">Dein Jahressaldo der Freiwilligenstunden für ' . $year . '</td>
-		          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($saldoFreiwilligenarbeit) . ' h</strong></td>
-		          <td></td> 
-		        </tr>';
+                <table class="stunden">
+                        <tr>
+                          <td class="description">Dein Jahressaldo der Giessereistunden für ' . $year . '</td>
+                          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($saldo) . ' h</strong></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td class="description">Dein Jahressaldo der Freiwilligenstunden für ' . $year . '</td>
+                          <td class="time"><strong>' . ZeitbankFrontendHelper::formatTime($saldoFreiwilligenarbeit) . ' h</strong></td>
+                          <td></td>
+                        </tr>';
     if (!$this->isGewerbe()) {
         echo '<tr>
-		          <td class="description">Dein Stundensoll für ' . $year . '</td>
-		          <td class="time">
-		            <strong>' . ZeitbankFrontendHelper::formatTime($soll) . ' h</strong>
-		          </td>
-		          <td class="description">
-		            <a class="modal"
-                  href="index.php?option=com_zeitbank&tmpl=component&view=zeitbank&layout=hinweise_soll"
+                          <td class="description">Dein Stundensoll für ' . $year . '</td>
+                          <td class="time">
+                            <strong>' . ZeitbankFrontendHelper::formatTime($soll) . ' h</strong>
+                          </td>
+                          <td class="description">
+                            <a class="modal"
+                  href="/index.php?option=com_zeitbank&tmpl=component&view=zeitbank&layout=hinweise_soll"
                   rel="{handler: \'iframe\', size: {x: 700, y: 480}}"><strong>Hinweise zur Berechnung</strong></a>
-		          </td>
-		        </tr>';
+                          </td>
+                        </tr>';
     }
     if (!$useLastYear) {
         echo '<tr>
-		          <td class="description">Dein Jahressaldo des Vorjahres ' . $lastYear . '</td>
-		          <td class="time">' . ZeitbankFrontendHelper::formatTime($saldoVorjahr) . ' h</td>
-		          <td></td>
-		       </tr>';
+                          <td class="description">Dein Jahressaldo des Vorjahres ' . $lastYear . '</td>
+                          <td class="time">' . ZeitbankFrontendHelper::formatTime($saldoVorjahr) . ' h</td>
+                          <td></td>
+                       </tr>';
     }
     echo '</table></div>';
 
@@ -239,14 +239,14 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     if (count($this->journal) > 0) {
         echo "<table class=\"zeitbank\" >";
         echo '<tr style="background-color: #7BB72B; color:white;">
-				      <th>Datum</th>
-		          <th>bekommen von</th>
-		          <th>übergeben an</th>
-		          <th>Arbeitsgattung</th>
-		          <th style="text-align:right">Zeit<br />[min]</th>
-		          <th style="text-align:right">Saldo<br />[h:m]</th>
-		          <th style="text-align:right">B-Nr.</th>
-		        </tr>';
+                                      <th>Datum</th>
+                          <th>bekommen von</th>
+                          <th>übergeben an</th>
+                          <th>Arbeitsgattung</th>
+                          <th style="text-align:right">Zeit<br />[min]</th>
+                          <th style="text-align:right">Saldo<br />[h:m]</th>
+                          <th style="text-align:right">B-Nr.</th>
+                        </tr>';
 
         $k = 0;    // Zebra start
         $zaehler = 0;
@@ -279,14 +279,14 @@ if (ZeitbankAuth::checkAuthZeitbank()):
                 $styleMinuten = $isFreiwillig ? "color:#888888" : "";
                 $styleSaldo = $saldo < 0 ? 'color:red;' : '';
                 echo '<tr style="vertical-align:top; background-color: #' . $style . '">
-						      <td>' . ZeitbankFrontendHelper::getLinkBuchung($jn->id, JHTML::date($jn->datum_antrag, 'd.m.Y')) . '</td>
-		              <td>' . $geber_name . '</td>
-		              <td>' . $empf_name . '</td>
-		              <td>' . $jn->kurztext . '</td>
-			            <td style="text-align:right;' . $styleMinuten . '">' . ($isFreiwillig ? "(" : "") . $op_sign . $jn->minuten . ($isFreiwillig ? ")" : "") . '</td>
-						      <td style="text-align:right;' . $styleSaldo . '">' . ZeitbankFrontendHelper::formatTime($saldo) . '</td>
-			            <td style="text-align:right;">' . $jn->id . '</td>
-				        </tr>';
+                                                      <td>' . ZeitbankFrontendHelper::getLinkBuchung($jn->id, JHTML::date($jn->datum_antrag, 'd.m.Y')) . '</td>
+                              <td>' . $geber_name . '</td>
+                              <td>' . $empf_name . '</td>
+                              <td>' . $jn->kurztext . '</td>
+                                    <td style="text-align:right;' . $styleMinuten . '">' . ($isFreiwillig ? "(" : "") . $op_sign . $jn->minuten . ($isFreiwillig ? ")" : "") . '</td>
+                                                      <td style="text-align:right;' . $styleSaldo . '">' . ZeitbankFrontendHelper::formatTime($saldo) . '</td>
+                                    <td style="text-align:right;">' . $jn->id . '</td>
+                                        </tr>';
                 $k = 1 - $k;
 
                 // Saldo ändert sich nicht bei Freiwilligenarbeit
@@ -307,9 +307,9 @@ if (ZeitbankAuth::checkAuthZeitbank()):
 
     //echo "<br /><br /><input type=\"button\" value=\"Alle Buchungen anzeigen\" onclick=\"window.location.href='index.php?option=com_zeitbank&view=userJournal&Itemid=".MENUITEM."'\"/><br/><br/>";
     echo '<br /><br /><ul>
-		        <li><a href="/index.php?option=com_zeitbank&view=userJournal&Itemid=' . $this->menuId . '">Alle Buchungen anzeigen</a></li>
-		        <li><a href="/index.php?option=com_zeitbank&task=report.kontoauszug&format=raw">Download: Kontoauszug</a>&nbsp;(Format CSV, Encoding UTF-8)</li>
-		      </ul>';
+                        <li><a href="/index.php?option=com_zeitbank&view=userJournal&Itemid=' . $this->menuId . '">Alle Buchungen anzeigen</a></li>
+                        <li><a href="/index.php?option=com_zeitbank&task=report.kontoauszug&format=raw">Download: Kontoauszug</a>&nbsp;(Format CSV, Encoding UTF-8)</li>
+                      </ul>';
 
     // Giessereifonds
     echo "<h1>Zeitbank: Giessereistundenfonds</h1>";

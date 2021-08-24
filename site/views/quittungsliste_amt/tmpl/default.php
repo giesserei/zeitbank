@@ -10,7 +10,7 @@ JHTML::_('behavior.modal');
 
     <?php
 
-    echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a><p/>';
+    echo '<a href="/index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a><p/>';
 
     echo "<h1>Zeitbank: Liste der bestätigten Ämtli-Buchungen der letzten " . $this->getTage() . " Tage</h1>";
 

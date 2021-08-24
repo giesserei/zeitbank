@@ -127,7 +127,7 @@ class ZeitbankFrontendHelper
     public static function getLinkBuchung($id, $text)
     {
         return '<a class="modal"
-             href="index.php?option=com_zeitbank&tmpl=component&view=buchung&id=' . $id . '"
+             href="/index.php?option=com_zeitbank&tmpl=component&view=buchung&id=' . $id . '"
              rel="{handler: \'iframe\', size: {x: 550, y: 450}}"><strong>' . $text . '</strong></a>';
     }
 

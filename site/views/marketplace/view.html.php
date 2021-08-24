@@ -52,7 +52,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
      */
     protected function getLinkOverview()
     {
-        return '<a href="index.php?option=com_zeitbank&view=marketplace&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a>';
+        return '<a href="/index.php?option=com_zeitbank&view=marketplace&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a>';
     }
 
     /**
@@ -60,7 +60,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
      */
     protected function getLinkZeitbank()
     {
-        return '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a>';
+        return '<a href="/index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a>';
     }
 
     /**
@@ -75,7 +75,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
     protected function getLink($id, $text)
     {
         return '<a class="modal"
-             href="index.php?option=com_zeitbank&tmpl=component&view=marketplace&layout=details&id=' . $id . '"
+             href="/index.php?option=com_zeitbank&tmpl=component&view=marketplace&layout=details&id=' . $id . '"
              rel="{handler: \'iframe\', size: {x: 640, y: 480}}"><strong>' . $text . '</strong></a>';
     }
 
@@ -132,7 +132,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
             if (count($this->overview->meineAngebote) < $this->overview->meineAngeboteTotal) {
                 echo '<div style="margin-top:10px">
-                <a href="index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid=' . $this->menuId . '">Alle Einträge</a>
+                <a href="/index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid=' . $this->menuId . '">Alle Einträge</a>
               </div>';
             }
         } else {
@@ -177,7 +177,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
             if (count($this->overview->angeboteArbeiten) < $this->overview->angeboteArbeitenTotal) {
                 echo '<div style="margin-top:10px">
-                <a href="index.php?option=com_zeitbank&view=marketplace&layout=arbeiten&Itemid=' . $this->menuId . '">Alle Angebote</a>
+                <a href="/index.php?option=com_zeitbank&view=marketplace&layout=arbeiten&Itemid=' . $this->menuId . '">Alle Angebote</a>
               </div>';
             }
         } else {
@@ -222,7 +222,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
             if (count($this->overview->angeboteTauschen) < $this->overview->angeboteTauschenTotal) {
                 echo '<div style="margin-top:10px">
-                <a href="index.php?option=com_zeitbank&view=marketplace&layout=tauschen&Itemid=' . $this->menuId . '">Alle Tauschangebote</a>
+                <a href="/index.php?option=com_zeitbank&view=marketplace&layout=tauschen&Itemid=' . $this->menuId . '">Alle Tauschangebote</a>
               </div>';
             }
         } else {

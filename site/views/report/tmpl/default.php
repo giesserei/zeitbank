@@ -13,7 +13,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
 $useLastYear = !ZeitbankCalc::isCurrentYearAllowed();
 $year = $useLastYear ? intval(date('Y')) - 1 : intval(date('Y'));
 
-echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Zeitbank</a><p/>';
+echo '<a href="/index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Zeitbank</a><p/>';
 
 echo '<h1>Zeitbank: Kennzahlen und Reports</h1><p/>';
 
@@ -21,8 +21,8 @@ echo '<h1>Zeitbank: Kennzahlen und Reports</h1><p/>';
 echo '<div style="margin-top:10px">';
 echo '  <ul>';
 if (ZeitbankAuth::hasAccess(ZeitbankAuth::ACTION_REPORT_DOWNLOAD_SALDO)) {
-    echo '    <li><a href="index.php?option=com_zeitbank&task=report.kontosaldo&format=raw">Download: Aktuelle Saldos aller Mitglieder</a></li>';
-    echo '    <li><a href="index.php?option=com_zeitbank&task=report.kontosaldoVorjahr&format=raw">Download: Saldos aller Mitglieder des Vorjahres</a></li>';
+    echo '    <li><a href="/index.php?option=com_zeitbank&task=report.kontosaldo&format=raw">Download: Aktuelle Saldos aller Mitglieder</a></li>';
+    echo '    <li><a href="/index.php?option=com_zeitbank&task=report.kontosaldoVorjahr&format=raw">Download: Saldos aller Mitglieder des Vorjahres</a></li>';
 }
 echo '  </ul>';
 echo '</div>';
@@ -32,25 +32,25 @@ echo '<h3 style="margin-bottom:10px">Kennzahlen ' . $year . '</h3>';
 
 echo '<table class="zeitbank" style="width:700px">';
 echo '<tr class="head">
-				<th>Kennzahl</th>
+                                <th>Kennzahl</th>
         <th>Wert</th>
       </tr>';
 echo '<tr class="zb_odd">
         <td>Summe der verbuchten Arbeitsstunden (ohne privaten Stundentausch)</td>
         <td>' . $this->getSummeArbeitStunden($useLastYear) . ' Stunden</td>
-		  </tr>';
+                  </tr>';
 echo '<tr class="zb_even">
         <td>Summe der nicht quittierten Arbeitsstunden (ohne privaten Stundentausch)</td>
         <td>' . $this->getSummeNichtQuittierteStunden($useLastYear) . ' Stunden</td>
-		  </tr>';
+                  </tr>';
 echo '<tr class="zb_odd">
         <td>Durchschnittliche Dauer bis zur Quittierung</td>
         <td>' . $this->getQuittungDauer($useLastYear)->avg_dauer . ' Tage</td>
-		  </tr>';
+                  </tr>';
 echo '<tr class="zb_even">
         <td>Durchschnittliche Wartezeit der bis heute nicht quittierten Buchungen</td>
         <td>' . $this->getWartezeitUnquittierteBuchungen($useLastYear) . ' Tage</td>
-		  </tr>';
+                  </tr>';
 echo "</table>";
 
 echo '<p/>';
@@ -59,10 +59,10 @@ echo '<h3 style="margin-bottom:10px">Verbuchte Stunden je Kategorie ' . $year . 
 
 echo '<table class="zeitbank" style="width:700px">';
 echo '<tr class="head">
-				<th>Kategorie</th>
-        <th>Jahresbudget</th>  
-        <th>Budget pro rata temporis</th>  
-        <th>Stunden verbucht</th>    
+                                <th>Kategorie</th>
+        <th>Jahresbudget</th>
+        <th>Budget pro rata temporis</th>
+        <th>Stunden verbucht</th>
       </tr>';
 
 $i = 0;
@@ -84,7 +84,7 @@ foreach ($giessereiStundenJeKategorie as $kat) {
           <td>' . $kat->gesamtbudget . '</td>
           <td>' . $kat->budget_pro_rata . '</td>
           <td>' . $kat->saldo . '</td>
-				</tr>';
+                                </tr>';
     $i++;
 
     $totalBudget_G += $kat->gesamtbudget;
@@ -108,7 +108,7 @@ foreach ($sonstigeStundenJeKategorie as $kat) {
           <td>' . $kat->gesamtbudget . '</td>
           <td>' . $kat->budget_pro_rata . '</td>
           <td>' . $kat->saldo . '</td>
-				</tr>';
+                                </tr>';
     $i++;
 
     $totalBudget_S += $kat->gesamtbudget;

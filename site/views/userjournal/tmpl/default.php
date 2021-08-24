@@ -14,7 +14,7 @@ $user = JFactory::getUser();
 <div class="component">
     <?php
 
-    echo '<a href="index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a>';
+    echo '<a href="/index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId . '">Zurück zur Übersicht</a>';
 
     echo "<h1>Zeitbank: Alle bestätigten Buchungen</h1>";
 
