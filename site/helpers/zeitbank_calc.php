@@ -275,6 +275,13 @@ class ZeitbankCalc
         } else if ($dateAusbildungBis > $dateYearStart && $dateAusbildungBis <= $dateYearEnd) {
             $diff = $dateYearEnd->diff($dateAusbildungBis, true);
             $monateAusbildung = $monate - $diff->m;
+
+//            $day = date('d', $dateAusbildungBis->getTimestamp());
+
+            // Einen Monat hinzuzählen, da z.B. 31.01. - 01.01. = 0 Monate
+//            if ($diff->d > 0 && $day > 2) {
+//                $monateAusbildung += 1;
+//            }
         }
 
         // keine negativen Werte zulässig

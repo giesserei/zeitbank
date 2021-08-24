@@ -63,7 +63,6 @@ if (ZeitbankAuth::checkAuthZeitbank()):
     // Allgemeine Funktionen
     echo "<h1>Zeitbank: Allgemeine Funktionen</h1>";
     echo '<ul>
-		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=marketplace">Arbeitsangebote und Angebote zum Stundentausch</a></li>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=arbeitsliste">Liste mit allen Ämtli und Zuständigkeiten</a></li>
 		      <li><a href="/index.php?option=com_zeitbank&Itemid=' . $this->menuId . '&view=report">Kennzahlen ansehen</a></li>
 		  </ul><br />';

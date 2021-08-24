@@ -27,7 +27,7 @@ class ZeitbankModelMarketPlace extends JModelLegacy
      *
      * @return MarketPlaceOverview
      */
-    public function getOverview($limit = 5)
+    public function getOverview($limit = 20)
     {
         $overview = new MarketPlaceOverview();
 

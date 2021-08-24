@@ -98,7 +98,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
             echo '<table class="market_overview" >';
             echo '<tr class="head">
-				  <th>Titel</th>
+                                  <th>Titel</th>
           <th>Art</th>
           <th>Erstellt</th>
           <th>Ablauf</th>
@@ -117,15 +117,15 @@ class ZeitbankViewMarketPlace extends JViewLegacy
                 echo '<tr class="' . $style . '">
             <td>' . $this->getLink($angebot->id, ZeitbankFrontendHelper::cropText($angebot->titel, 25)) . '</td>
             <td>' . ($angebot->art == 1 ? "Arbeitsangebot" : "Tauschen") . '</td>
-				    <td>' . JHTML::date($angebot->erstellt, "d.m.Y") . '</td>
-				    <td ' . $styleAblauf . '>' . JHTML::date($angebot->ablauf, "d.m.Y") . '</td>
-				    <td>' . ($angebot->status == 1 ? "aktiv" : "inaktiv") . '</td>
-				    <td><input type="button" value="Bearbeiten" 
-				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.edit&id=' . $angebot->id . '&Itemid=' . $this->menuId . '\'" />
-				        <input type="button" value="Löschen"
-				               onclick="window.location.href=\'index.php?option=com_zeitbank&task=updangebot.delete&id=' . $angebot->id . '&Itemid=' . $this->menuId . '\'" />
-				    </td>
-				  </tr>';
+                                    <td>' . JHTML::date($angebot->erstellt, "d.m.Y") . '</td>
+                                    <td ' . $styleAblauf . '>' . JHTML::date($angebot->ablauf, "d.m.Y") . '</td>
+                                    <td>' . ($angebot->status == 1 ? "aktiv" : "inaktiv") . '</td>
+                                    <td><input type="button" value="Bearbeiten"
+                                               onclick="window.location.href=\'/index.php?option=com_zeitbank&task=updangebot.edit&id=' . $angebot->id . '&Itemid=' . $this->menuId . '\'" />
+                                        <input type="button" value="Löschen"
+                                               onclick="window.location.href=\'/index.php?option=com_zeitbank&task=updangebot.delete&id=' . $angebot->id . '&Itemid=' . $this->menuId . '\'" />
+                                    </td>
+                                  </tr>';
                 $i++;
             }
             echo "</table>";
@@ -154,7 +154,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
             echo '<table class="market_overview" >';
             echo '<tr class="head">
-				  <th>Titel</th>
+                                  <th>Titel</th>
           <th>Arbeitsgattung</th>
           <th>Ansprechpartner</th>
           <th>Erstellt</th>
@@ -169,8 +169,8 @@ class ZeitbankViewMarketPlace extends JViewLegacy
             <td>' . ZeitbankFrontendHelper::cropText($angebot->konto, 50) . '</td>
             <td>' . ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email,
                         'Marktplatz / ' . ZeitbankFrontendHelper::cropText($angebot->titel, 75)) . '</td>
-				    <td>' . JHTML::date($angebot->erstellt, "d.m.Y") . '</td>
-				  </tr>';
+                                    <td>' . JHTML::date($angebot->erstellt, "d.m.Y") . '</td>
+                                  </tr>';
                 $i++;
             }
             echo "</table>";
@@ -199,7 +199,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
             echo '<table class="market_overview" >';
             echo '<tr class="head">
-				  <th>Titel</th>
+                                  <th>Titel</th>
           <th>Suche / Angebot</th>
           <th>Ansprechpartner</th>
           <th>Erstellt</th>
@@ -214,8 +214,8 @@ class ZeitbankViewMarketPlace extends JViewLegacy
             <td>' . ($angebot->richtung == 1 ? 'Suche Stunden' : 'Biete Stunden') . '</td>
             <td>' . ZeitbankFrontendHelper::getEmailLink($angebot->vorname, $angebot->nachname, $angebot->email,
                         'Marktplatz / ' . ZeitbankFrontendHelper::cropText($angebot->titel, 75)) . '</td>
-				    <td>' . JHTML::date($angebot->erstellt, "d.m.Y") . '</td>
-				  </tr>';
+                                    <td>' . JHTML::date($angebot->erstellt, "d.m.Y") . '</td>
+                                  </tr>';
                 $i++;
             }
             echo "</table>";
@@ -255,7 +255,7 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
         // Marktplatz aus Model laden
         $model = $this->getModel();
-        $this->overview = $model->getOverview(5);
+        $this->overview = $model->getOverview(20);
 
         ZeitbankFrontendHelper::addComponentStylesheet();
 
@@ -310,4 +310,4 @@ class ZeitbankViewMarketPlace extends JViewLegacy
 
         $this->menuId = $app->getUserState(ZeitbankConst::SESSION_KEY_ZEITBANK_MENU_ID);
     }
-} 
+}

@@ -8,9 +8,9 @@ JHTML::_('behavior.modal');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
-echo $this->getLinkZeitbank();
+// echo $this->getLinkZeitbank();
 
-echo '<h1>Arbeitsangebote und Marktplatz für den Stundentausch</h1>';
+// echo '<h1>Arbeitsangebote und Marktplatz für den Stundentausch</h1>';
 
 echo '<div style="margin-top:10px">';
 echo 'Du kannst:';
