@@ -32,7 +32,7 @@
 
     <administration>
         <menu controller="zeitbank" view="welcome" img="components/com_zeitbank/assets/zeitbank.png">
-            Zeitbank Administration
+            Giesserei Zeitbank
         </menu>
         <files folder="admin">
             <filename>zeitbank.php</filename>

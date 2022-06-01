@@ -20,7 +20,7 @@ if ($this->hasEntries()) {
     echo '    <li><a href="/index.php?option=com_zeitbank&view=marketplace&layout=meine&Itemid=' . $this->menuId . '">Deine Einträge verwalten</a></li>';
 }
 
-if (ZeitbankAuth::isAemtliAdmin()) {
+if (ZeitbankAuth::isAemtliAdmin() || ZeitbankAuth::hasAccess('edit.arbeitsangebot')) {
     echo '  <li><a href="/index.php?option=com_zeitbank&task=updangebot.edit&id=0&art=1&Itemid=' . $this->menuId . '">Ein neues Arbeitsangebot erstellen</a></li>';
 }
 

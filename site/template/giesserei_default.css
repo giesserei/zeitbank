@@ -149,6 +149,12 @@ table.market_form td.value {
     width: 500px;
 }
 
+/* Popup, z.B. fuer Arbeitsangebot */
+
+body.contentpane.modal {
+   margin: 20px;
+   padding: 0; }
+
 /* ##########################  Autocompleter  ########################### */
 
 .autocomplete-suggestions {

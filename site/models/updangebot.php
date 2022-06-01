@@ -4,6 +4,7 @@ defined('_JEXEC') or die('Restricted access');
 JLoader::register('ZeitbankFrontendHelper', JPATH_COMPONENT . '/helpers/zeitbank_frontend.php');
 JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.php');
 JLoader::register('ZeitbankModelUpdBase', JPATH_COMPONENT . '/models/upd_base.php');
+JLoader::register('ZeitbankAuth', JPATH_COMPONENT . '/helpers/zeitbank_auth.php');
 
 /**
  * Model zum Editieren eines Angebots.
@@ -86,7 +87,7 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
         $query =
             "SELECT count(*) as owner
              FROM #__mgh_zb_market_place as m
-		     WHERE m.id = " . $this->db->quote($id) . " AND m.userid = " . $this->user->id;
+                     WHERE m.id = " . $this->db->quote($id) . " AND m.userid = " . $this->user->id;
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->owner == 1;
@@ -114,11 +115,14 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
      */
     public function getArbeitsgattungen()
     {
+        $alleKategorien = ZeitbankAuth::hasAccess('edit.arbeitsangebot');      // mit dieser Spezial-Berechtigung stehen alle Arbeitskategorien zur Auswahl
+
         // Zunächst alle relevanten Arbeitskategorien selektieren
         $query = "SELECT k.*
-              FROM #__mgh_zb_kategorie as k
-              WHERE k.id IN (SELECT a.kat_id FROM #__mgh_zb_x_kat_arbeitadmin AS a WHERE a.user_id = " . $this->user->id . ")
-              ORDER BY k.bezeichnung";
+              FROM #__mgh_zb_kategorie as k " .
+              ($alleKategorien ? "" :
+                 "WHERE k.id IN (SELECT a.kat_id FROM #__mgh_zb_x_kat_arbeitadmin AS a WHERE a.user_id = " . $this->user->id . ") ") .
+              "ORDER BY k.bezeichnung";
         $this->db->setQuery($query);
         $kategorien = $this->db->loadObjectList();
 
@@ -188,10 +192,13 @@ class ZeitbankModelUpdAngebot extends ZeitbankModelUpdBase
                 'Bitte wähle eine Arbeitsgattung aus', 'warning');
             return false;
         } else if ($art == 1) {
+            if (ZeitbankAuth::hasAccess('edit.arbeitsangebot')) {    // mit dieser Spezial-Berechtigung sind alle Arbeitskategorien erlaubt
+               return true;
+            }
             $query = "SELECT count(*)
-           FROM #__mgh_zb_x_kat_arbeitadmin ka
-             JOIN #__mgh_zb_arbeit a ON ka.kat_id = a.kategorie_id
-           WHERE a.id = " . $this->db->quote($arbeitId) . " AND ka.user_id = " . $this->user->id;
+               FROM #__mgh_zb_x_kat_arbeitadmin ka
+                  JOIN #__mgh_zb_arbeit a ON ka.kat_id = a.kategorie_id
+               WHERE a.id = " . $this->db->quote($arbeitId) . " AND ka.user_id = " . $this->user->id;
             $this->db->setQuery($query);
             $count = $this->db->loadResult();
             if ($count == 0) {

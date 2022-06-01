@@ -8,7 +8,7 @@ JLoader::register('ZeitbankConst', JPATH_COMPONENT . '/helpers/zeitbank_const.ph
 
 ?>
 
-<div class="component" style="margin-left:25px">
+<div class="component">
     <?php
     echo '<h1 style="color: #7BA428">Zeitbank: Buchungsdetails</h1>';
 

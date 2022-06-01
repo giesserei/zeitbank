@@ -105,7 +105,7 @@ JHtml::script("components/com_zeitbank/template/js/jquery.autocomplete.js");
             </li>
             <li>Der/die EmpfängerIn kann nicht sehen, wer die Stunden verschenkt hat.</li>
             <li>Das Verschenken der Stunden kann nicht rückgängig gemacht werden.</li>
-            <li>Hier könnt ihr auch Stunden an den <strong>Giessereistundenfonds</strong> verschenken.</li>
+            <li>Hier könnt ihr auch Stunden an den <strong>Giessereistundenfonds</strong> verschenken (Zeitkonto Giessereistundenfonds).</li>
             <li>Nach dem Jahreswechsel kannst du noch bis zum <strong>05.01.</strong> Stunden für das vergangene Jahr
                 verschenken.
             </li>
