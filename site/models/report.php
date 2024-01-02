@@ -129,7 +129,7 @@ class ZeitbankModelReport extends JModelLegacy
         WHERE arbeit_id NOT IN (%s, %s)
           AND datum_quittung = '0000-00-00'
           AND admin_del = 0
-          AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01') 
+          AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01')
               AND CONCAT(YEAR(NOW()) - " . $offset . ", '-12-31')",
               ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
               ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH);
@@ -150,9 +150,9 @@ class ZeitbankModelReport extends JModelLegacy
         $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
 
         $query = "
-        SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget, 
+        SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget,
           " . $sqlBudgetProRata . " budget_pro_rata
-        FROM " . $view . " j 
+        FROM " . $view . " j
           JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
           JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
         WHERE k.id NOT IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . " ," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . ")
@@ -215,12 +215,12 @@ class ZeitbankModelReport extends JModelLegacy
         $offset = $vorjahr ? 1 : 0;
 
         $query = sprintf("
-      SELECT ROUND(AVG(DATEDIFF(NOW(), datum_antrag)), 0) 
+      SELECT ROUND(AVG(DATEDIFF(NOW(), datum_antrag)), 0)
       FROM joomghjos_mgh_zb_journal j
       WHERE arbeit_id NOT IN (%s, %s)
         AND datum_quittung = '0000-00-00'
         AND admin_del = 0
-        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01') 
+        AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01')
           AND CONCAT(YEAR(NOW()) - " . $offset . ", '-12-31')
         AND arbeit_id NOT IN (SELECT id FROM joomghjos_mgh_zb_arbeit WHERE kategorie_id = %s)",
             ZeitbankConst::ARBEIT_ID_STUNDENGESCHENK,
@@ -246,11 +246,11 @@ class ZeitbankModelReport extends JModelLegacy
         $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
 
         $query = "
-      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid, 
+      SELECT m.vorname, m.nachname, m.einzug, m.austritt, m.dispension_grad, COALESCE(r.saldo, 0) saldo, m.userid,
              m.email, m.telefon, m.handy,
          (SELECT GROUP_CONCAT(DISTINCT objektid ORDER BY objektid DESC SEPARATOR ',')
           FROM #__mgh_x_mitglied_mietobjekt o
-          WHERE o.userid = m.userid) wohnung 
+          WHERE o.userid = m.userid) wohnung
       FROM (
         SELECT haben-soll saldo, userid
         FROM (
@@ -266,7 +266,7 @@ class ZeitbankModelReport extends JModelLegacy
         ) s
       ) r RIGHT OUTER JOIN #__mgh_aktiv_mitglied m ON r.userid = m.userid
       WHERE m.typ IN (1,2,11)
-      ORDER BY m.nachname     
+      ORDER BY m.nachname
     ";
 
         $db->setQuery($query);
@@ -288,8 +288,6 @@ class ZeitbankModelReport extends JModelLegacy
 
     /**
      * Erstellt eine CSV-Datei mit quittierten Buchungen für alle Ämtli, die vom angemeldeten Benutzer verwaltet werden.
-     *
-     * 2015-01-07 SF: keine Einschränkung hinsichtlich Zeitraum vornehmen
      */
     private function createAemtliBuchungenCSVFile($filepath)
     {
@@ -297,17 +295,19 @@ class ZeitbankModelReport extends JModelLegacy
         $user = JFactory::getUser();
         $csv_output = 'Buchung-Nr;Minuten;Datum;Arbeitsgattung;Empfänger;Kommentar Antrag;Kommentar Quittierung';
         $csv_output .= "\n";
+        $tage = 450;
 
         $query = "
        SELECT j.id, j.minuten, j.datum_antrag, a.kurztext,
-         (SELECT u.name FROM #__users u WHERE u.id = j.gutschrift_userid) konto_gutschrift, 
+         (SELECT u.name FROM #__users u WHERE u.id = j.gutschrift_userid) konto_gutschrift,
          CONCAT('\"', j.kommentar_antrag, '\"') kommentar_antrag,
          CONCAT('\"', j.kommentar_quittung, '\"') kommentar_quittung
-    	 FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
+         FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
        WHERE j.datum_quittung != '0000-00-00'
          AND j.admin_del = 0
+         AND ADDDATE(j.datum_quittung, " . $tage . ") > CURRENT_DATE
          AND a.admin_id = " . $user->id . "
-       ORDER BY a.kurztext, j.datum_antrag DESC, j.id DESC
+       ORDER BY j.datum_antrag DESC, j.id DESC
     ";
 
         $db->setQuery($query);
@@ -339,25 +339,25 @@ class ZeitbankModelReport extends JModelLegacy
         $csv_output .= "\n";
 
         $query = "
-       SELECT j.id buchnungs_nr, j.minuten, 
-         CASE 
+       SELECT j.id buchnungs_nr, j.minuten,
+         CASE
            WHEN a.kategorie_id = -1 THEN 0
            WHEN j.belastung_userid = " . $user->id . " THEN (-1 * j.minuten)
-	         ELSE j.minuten
-         END AS fuer_saldo_berechnung, 
+                 ELSE j.minuten
+         END AS fuer_saldo_berechnung,
          j.datum_antrag, j.datum_quittung, a.kurztext arbeitsgattung,
-         CASE 
+         CASE
            WHEN j.belastung_userid = " . $user->id . " THEN ''
-		       WHEN j.belastung_userid != " . $user->id . " AND a.id = 3 THEN 'Anonymous'
+                       WHEN j.belastung_userid != " . $user->id . " AND a.id = 3 THEN 'Anonymous'
            ELSE (SELECT u.name FROM joomghjos_users u WHERE u.id = j.belastung_userid)
          END bekommen_von,
-		     CASE 
+                     CASE
            WHEN j.gutschrift_userid = " . $user->id . " THEN ''
-		       ELSE (SELECT u.name FROM joomghjos_users u WHERE u.id = j.gutschrift_userid)
-		     END uebergeben_an,
+                       ELSE (SELECT u.name FROM joomghjos_users u WHERE u.id = j.gutschrift_userid)
+                     END uebergeben_an,
          CONCAT('\"', j.kommentar_antrag, '\"') kommentar_antrag,
          CONCAT('\"', j.kommentar_quittung, '\"') kommentar_quittung
-    	 FROM joomghjos_mgh_zb_journal j JOIN joomghjos_mgh_zb_arbeit a ON j.arbeit_id = a.id
+         FROM joomghjos_mgh_zb_journal j JOIN joomghjos_mgh_zb_arbeit a ON j.arbeit_id = a.id
        WHERE j.datum_quittung != '0000-00-00'
          AND j.admin_del = 0
          AND (j.gutschrift_userid = " . $user->id . " OR j.belastung_userid = " . $user->id . ")

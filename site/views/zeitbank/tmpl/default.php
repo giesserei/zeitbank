@@ -322,6 +322,4 @@ if (ZeitbankAuth::checkAuthZeitbank()):
 
 endif;    // Userprüfung
 
-echo '<div style="color:#888888;margin-top:10px;text-align:right">Release: ' . ZeitbankConst::RELEASE . '</div>';
-
 echo "</div>";
