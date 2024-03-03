@@ -47,15 +47,22 @@ echo "</table>";
 
 function getAnsprechpartner($person, $titel)
 {
-    $linkName = ZeitbankFrontendHelper::getEmailLink($person->vorname, $person->nachname, $person->email,
+    $html = ZeitbankFrontendHelper::getEmailLink($person->vorname, $person->nachname, $person->email,
         'Marktplatz / ' . ZeitbankFrontendHelper::cropText($titel, 75));
 
-    $telefon = "";
-    if (!empty($person->telefon) && $person->telefon_frei) {
-        $telefon = " (Telefon: " . $person->telefon . ")";
-    } else if (!empty($person->handy) && $person->handy_frei) {
-        $telefon = " (Telefon: " . $person->handy . ")";
+    $telNos = "";
+    if ($person->telefon && $person->telefon_frei) {
+       $telNos = $person->telefon;
+    }
+    if ($person->handy && $person->handy_frei) {
+       if ($telNos) {
+          $telNos .= ", ";
+       }
+       $telNos .= $person->handy;
+    }
+    if ($telNos) {
+       $html .= " (Telefon: " . $telNos . ")";
     }
 
-    return $linkName . $telefon;
+    return $html;
 }
