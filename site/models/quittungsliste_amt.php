@@ -34,8 +34,8 @@ class ZeitbankModelQuittungsliste_Amt extends JModelLegacy
         $query =
             "SELECT SQL_CALC_FOUND_ROWS j.id, j.minuten, j.datum_antrag, a.kurztext,
                (SELECT u.name FROM #__users u WHERE u.id = j.gutschrift_userid) konto_gutschrift
-    	     FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
-             WHERE j.datum_quittung != '0000-00-00'
+             FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
+             WHERE j.datum_quittung is not null
                  AND j.admin_del = '0'
                  AND ADDDATE(j.datum_quittung, " . $tage . ") > CURRENT_DATE
                  AND a.admin_id = " . $user->id . "

@@ -51,7 +51,7 @@ class ZeitbankControllerStundentausch extends ZeitbankControllerUpdJournalBase
         $buchung['belastung_userid'] = $data['belastung_userid'];
         $buchung['gutschrift_userid'] = JFactory::getUser()->id;
         $buchung['datum_antrag'] = $data['datum_antrag'];
-        $buchung['datum_quittung'] = '0000-00-00';
+        $buchung['datum_quittung'] = null;
         $buchung['admin_del'] = 0;
         $buchung['arbeit_id'] = ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH;
         $buchung['cf_uid'] = empty($data['cf_uid']) ? md5(uniqid(rand(), true)) : $data['cf_uid'];

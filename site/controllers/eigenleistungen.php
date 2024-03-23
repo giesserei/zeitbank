@@ -48,7 +48,7 @@ class ZeitbankControllerEigenleistungen extends ZeitbankControllerUpdJournalBase
         $buchung['belastung_userid'] = $this->getModel()->getZeitkonto($data['arbeit_id']);
         $buchung['gutschrift_userid'] = JFactory::getUser()->id;
         $buchung['datum_antrag'] = $data['datum_antrag'];
-        $buchung['datum_quittung'] = '0000-00-00';
+        $buchung['datum_quittung'] = null;
         $buchung['admin_del'] = 0;
         $buchung['arbeit_id'] = $data['arbeit_id'];
         $buchung['cf_uid'] = empty($data['cf_uid']) ? md5(uniqid(rand(), true)) : $data['cf_uid'];

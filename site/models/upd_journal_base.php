@@ -38,7 +38,7 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
          FROM #__mgh_zb_journal AS j
          WHERE j.id = " . $this->db->quote($id) . " AND j.gutschrift_userid = " . $this->user->id . "
            AND j.admin_del = 0
-           AND j.datum_quittung = '0000-00-00'";
+           AND j.datum_quittung is null";
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
         return $result->owner == 1;
@@ -57,8 +57,8 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
     {
         $query = "SELECT count(*) AS admin
          FROM #__mgh_zb_journal AS j JOIN #__mgh_zb_arbeit AS a ON j.arbeit_id = a.id
-         WHERE j.id = " . $this->db->quote($id) . " 
-            AND (a.admin_id = " . $this->user->id . " 
+         WHERE j.id = " . $this->db->quote($id) . "
+            AND (a.admin_id = " . $this->user->id . "
             OR (j.belastung_userid = " . $this->user->id . " AND a.id = " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . "))";
         $this->db->setQuery($query);
         $result = $this->db->loadObject();
@@ -92,10 +92,10 @@ abstract class ZeitbankModelUpdJournalBase extends ZeitbankModelUpdBase
     public function getAntrag($id)
     {
         $query = "SELECT journal.id, minuten, datum_antrag, kurztext, journal.kommentar_antrag AS text, journal.arbeit_id,
-           (SELECT u.name FROM #__users u WHERE u.id = journal.belastung_userid) konto_belastung, 
-           (SELECT u.name FROM #__users u WHERE u.id = journal.gutschrift_userid) konto_gutschrift 
-    		 FROM #__mgh_zb_arbeit AS arbeit JOIN #__mgh_zb_journal AS journal ON journal.arbeit_id = arbeit.id
-    		 WHERE journal.id = " . $this->db->quote($id);
+           (SELECT u.name FROM #__users u WHERE u.id = journal.belastung_userid) konto_belastung,
+           (SELECT u.name FROM #__users u WHERE u.id = journal.gutschrift_userid) konto_gutschrift
+                 FROM #__mgh_zb_arbeit AS arbeit JOIN #__mgh_zb_journal AS journal ON journal.arbeit_id = arbeit.id
+                 WHERE journal.id = " . $this->db->quote($id);
         $this->db->setQuery($query);
         return $this->db->loadObject();
     }

@@ -127,7 +127,7 @@ class ZeitbankModelReport extends JModelLegacy
         SELECT ROUND((sum(j.minuten) / 60), 0) stunden_unquittiert
         FROM joomghjos_mgh_zb_journal j
         WHERE arbeit_id NOT IN (%s, %s)
-          AND datum_quittung = '0000-00-00'
+          AND datum_quittung is null
           AND admin_del = 0
           AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01')
               AND CONCAT(YEAR(NOW()) - " . $offset . ", '-12-31')",
@@ -218,7 +218,7 @@ class ZeitbankModelReport extends JModelLegacy
       SELECT ROUND(AVG(DATEDIFF(NOW(), datum_antrag)), 0)
       FROM joomghjos_mgh_zb_journal j
       WHERE arbeit_id NOT IN (%s, %s)
-        AND datum_quittung = '0000-00-00'
+        AND datum_quittung is null
         AND admin_del = 0
         AND datum_antrag BETWEEN CONCAT(YEAR(NOW()) - " . $offset . ", '-01-01')
           AND CONCAT(YEAR(NOW()) - " . $offset . ", '-12-31')
@@ -303,7 +303,7 @@ class ZeitbankModelReport extends JModelLegacy
          CONCAT('\"', j.kommentar_antrag, '\"') kommentar_antrag,
          CONCAT('\"', j.kommentar_quittung, '\"') kommentar_quittung
          FROM #__mgh_zb_journal j JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
-       WHERE j.datum_quittung != '0000-00-00'
+       WHERE j.datum_quittung is not null
          AND j.admin_del = 0
          AND ADDDATE(j.datum_quittung, " . $tage . ") > CURRENT_DATE
          AND a.admin_id = " . $user->id . "
@@ -358,7 +358,7 @@ class ZeitbankModelReport extends JModelLegacy
          CONCAT('\"', j.kommentar_antrag, '\"') kommentar_antrag,
          CONCAT('\"', j.kommentar_quittung, '\"') kommentar_quittung
          FROM joomghjos_mgh_zb_journal j JOIN joomghjos_mgh_zb_arbeit a ON j.arbeit_id = a.id
-       WHERE j.datum_quittung != '0000-00-00'
+       WHERE j.datum_quittung is not null
          AND j.admin_del = 0
          AND (j.gutschrift_userid = " . $user->id . " OR j.belastung_userid = " . $user->id . ")
        ORDER BY j.datum_antrag DESC, j.id DESC

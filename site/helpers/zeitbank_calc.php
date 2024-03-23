@@ -104,7 +104,7 @@ class ZeitbankCalc
     {
         $db = JFactory::getDBO();
         $query = "SELECT einzug, dispension_grad, zb_freistellung, typ, zb_ausbildung_bis
-              FROM #__mgh_mitglied 
+              FROM #__mgh_mitglied
               WHERE userid = " . $userId;
         $db->setQuery($query);
         $props = $db->loadObject();
@@ -131,13 +131,13 @@ class ZeitbankCalc
     {
         $db = JFactory::getDBO();
         $query = "SELECT einzug, dispension_grad, zb_freistellung, typ, zb_ausbildung_bis
-              FROM #__mgh_mitglied 
+              FROM #__mgh_mitglied
               WHERE userid = " . $userId;
         $db->setQuery($query);
         $props = $db->loadObject();
 
         // Vorbedingung prüfen
-        if ($props->typ != 1 || $props->einzug == '0000-00-00') {
+        if ($props->typ != 1 || !!$props->einzug) {
             return 0;
         }
 
@@ -145,7 +145,7 @@ class ZeitbankCalc
 
         // Ausbildung berücksichtigen
         $monateAusbildung = 0.0;
-        if ($props->zb_ausbildung_bis != '0000-00-00') {
+        if ($props->zb_ausbildung_bis) {
             $monateAusbildung = self::computeMonateAusbildung($monate, $props->zb_ausbildung_bis, $vorjahr);
         }
         $monateOhneAusbildung = $monate - $monateAusbildung;

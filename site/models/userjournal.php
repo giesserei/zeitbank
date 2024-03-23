@@ -15,12 +15,12 @@ class ZeitbankModelUserjournal extends JModelLegacy
                 ELSE
                   'eigenleistung'
                 END AS art
-    		      FROM #__mgh_zb_journal AS journal, #__mgh_zb_arbeit as arbeit
-    		      WHERE datum_quittung != '0000-00-00' 
-                AND admin_del='0' 
+                      FROM #__mgh_zb_journal AS journal, #__mgh_zb_arbeit as arbeit
+                      WHERE datum_quittung is not null
+                AND admin_del='0'
                 AND arbeit_id = arbeit.id
-    		        AND (gutschrift_userid ='" . $user->id . "' OR belastung_userid ='" . $user->id . "')
-    		      ORDER BY datum_antrag DESC, journal.id DESC";
+                        AND (gutschrift_userid ='" . $user->id . "' OR belastung_userid ='" . $user->id . "')
+                      ORDER BY datum_antrag DESC, journal.id DESC";
         $db->setQuery($query);
         $rows = $db->loadObjectList();
         return $rows;

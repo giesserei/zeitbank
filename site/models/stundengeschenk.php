@@ -143,7 +143,7 @@ class ZeitbankModelStundenGeschenk extends ZeitbankModelUpdJournalBase
 
         $query = "SELECT userid, vorname, nachname
               FROM #__mgh_mitglied m
-              WHERE m.typ IN (1,2,7,11) AND (m.austritt = '0000-00-00' OR m.austritt > NOW())
+              WHERE m.typ IN (1,2,7,11) AND (m.austritt is null OR m.austritt > NOW())
                 AND userid = " . $this->db->quote($empfaengerId) . "
                 AND userid != " . $this->user->id;
 

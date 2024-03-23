@@ -50,14 +50,14 @@ class ZeitbankModelZeitbank extends JModelLegacy
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
         $query = "SELECT j.id, j.minuten, j.datum_antrag, a.kurztext, j.kommentar_antrag text, u.email, m.vorname, m.nachname
-    		      FROM #__users u, #__mgh_zb_arbeit a, #__mgh_zb_journal j, #__mgh_mitglied m
-    		      WHERE j.datum_quittung='0000-00-00' 
-                AND j.admin_del='0' 
+                      FROM #__users u, #__mgh_zb_arbeit a, #__mgh_zb_journal j, #__mgh_mitglied m
+                      WHERE j.datum_quittung is null
+                AND j.admin_del='0'
                 AND j.arbeit_id = a.id
-    		        AND u.id = j.gutschrift_userid
+                        AND u.id = j.gutschrift_userid
                 AND m.userid = j.gutschrift_userid
-    		        AND j.belastung_userid = " . $user->id . "
-    		        AND a.id = " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . "
+                        AND j.belastung_userid = " . $user->id . "
+                        AND a.id = " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . "
               ORDER BY j.datum_antrag ASC, j.id ASC";
         $db->setQuery($query);
         $rows = $db->loadObjectList();
@@ -76,19 +76,19 @@ class ZeitbankModelZeitbank extends JModelLegacy
                 IF (a.id != " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . ",
                     (SELECT vorname FROM #__mgh_mitglied m WHERE m.userid = a.admin_id),'') vorname,
                 IF (a.id != " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . ",
-                    (SELECT nachname FROM #__mgh_mitglied m WHERE m.userid = a.admin_id),'') nachname,  
+                    (SELECT nachname FROM #__mgh_mitglied m WHERE m.userid = a.admin_id),'') nachname,
                 IF (a.id != " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . ",
-                    (SELECT email FROM #__users admin WHERE admin.id = a.admin_id),'') email,    
-                CASE 
+                    (SELECT email FROM #__users admin WHERE admin.id = a.admin_id),'') email,
+                CASE
                   WHEN a.id = " . ZeitbankConst::ARBEIT_ID_STUNDENTAUSCH . " THEN 'stundentausch.edit'
                   WHEN a.kategorie_id = " . ZeitbankConst::KATEGORIE_ID_FREIWILLIG . " THEN 'freiwilligenarbeit.edit'
                   ELSE 'eigenleistungen.edit'
-                END AS task 
-    		      FROM #__users u, #__mgh_zb_arbeit a, #__mgh_zb_journal j
-    		      WHERE j.datum_quittung = '0000-00-00' 
-                AND j.admin_del = '0' 
+                END AS task
+                      FROM #__users u, #__mgh_zb_arbeit a, #__mgh_zb_journal j
+                      WHERE j.datum_quittung is null
+                AND j.admin_del = '0'
                 AND j.arbeit_id = a.id
-    		        AND u.id = j.belastung_userid      
+                        AND u.id = j.belastung_userid
                 AND j.gutschrift_userid ='" . $user->id . "'
               ORDER BY j.datum_antrag ASC, j.id ASC";
         $db->setQuery($query);
@@ -106,16 +106,16 @@ class ZeitbankModelZeitbank extends JModelLegacy
         $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr_inkl_freiw" : "#__mgh_zb_journal_quittiert_laufend_inkl_freiw";
 
         $query = "SELECT journal.id AS id, journal.cf_uid, minuten, belastung_userid, gutschrift_userid, datum_antrag,
-                arbeit.kurztext, journal.arbeit_id, 
+                arbeit.kurztext, journal.arbeit_id,
                 CASE WHEN (journal.arbeit_id IN (SELECT id FROM #__mgh_zb_arbeit WHERE kategorie_id = -1)) THEN
                   'freiwillig'
                 ELSE
                   'eigenleistung'
                 END AS art
-    		      FROM " . $view . " AS journal, #__mgh_zb_arbeit AS arbeit
-    	       	WHERE arbeit_id = arbeit.id 	
-    		        AND (gutschrift_userid = " . $user->id . " OR belastung_userid = " . $user->id . ")
-    		      ORDER BY datum_antrag DESC, journal.id DESC";
+                      FROM " . $view . " AS journal, #__mgh_zb_arbeit AS arbeit
+                WHERE arbeit_id = arbeit.id
+                        AND (gutschrift_userid = " . $user->id . " OR belastung_userid = " . $user->id . ")
+                      ORDER BY datum_antrag DESC, journal.id DESC";
         $db->setQuery($query);
         $rows = $db->loadObjectList();
         return $rows;
@@ -185,8 +185,8 @@ class ZeitbankModelZeitbank extends JModelLegacy
         $query =
             "SELECT count(*) FROM #__mgh_zb_journal j
              LEFT JOIN #__mgh_zb_arbeit a ON j.arbeit_id = a.id
-    		 WHERE j.datum_quittung='0000-00-00' AND j.admin_del='0'
-    		     AND a.admin_id = " . $adminId;
+                 WHERE j.datum_quittung is null AND j.admin_del='0'
+                     AND a.admin_id = " . $adminId;
         $db->setQuery($query);
         return $db->loadResult();
     }

@@ -34,13 +34,13 @@ class ZeitbankModelArbeitsliste extends JModelLegacy
                     $output .= "<h3>Kategorie: " . $kat->bezeichnung . "</h3>";
                     $output .= "<table class=\"zeitbank\" style=\"width: 950px;\">";
                     $output .= "<tr class=\"head\">
-	    		              <th width=\"300\">Kurztext</th>
-	    		              <th width=\"150\">Zuständig</th>
-	    					        <th width=\"70\" align=\"right\">Budget</th>
-	    					        <th width=\"100\" align=\"right\">Buchungen " . $laufendes_jahr . "</th>
-	    					        <th width=\"100\" align=\"right\">Buchungen " . $lastYear . "</th>
-	    					        <th width=\"70\" align=\"right\">Pauschale</th>
-	    					    </tr>";
+                                      <th width=\"300\">Kurztext</th>
+                                      <th width=\"150\">Zuständig</th>
+                                                        <th width=\"70\" align=\"right\">Budget</th>
+                                                        <th width=\"100\" align=\"right\">Buchungen " . $laufendes_jahr . "</th>
+                                                        <th width=\"100\" align=\"right\">Buchungen " . $lastYear . "</th>
+                                                        <th width=\"70\" align=\"right\">Pauschale</th>
+                                                    </tr>";
 
                     foreach ($arbeiten as $ab) {
                         $style = $k ? "even" : "odd"; // Zebramuster
@@ -67,10 +67,10 @@ class ZeitbankModelArbeitsliste extends JModelLegacy
         $db = JFactory::getDBO();
 
         $query = "SELECT COALESCE(sum(minuten),0) minuten FROM #__mgh_zb_journal
-	          WHERE datum_quittung != '0000-00-00' 
-	            AND (datum_antrag BETWEEN '" . $jahr . "-01-01' AND '" . $jahr . "-12-31')
-	            AND admin_del = 0 
-	            AND arbeit_id = " . $id;
+                  WHERE datum_quittung is not null
+                    AND (datum_antrag BETWEEN '" . $jahr . "-01-01' AND '" . $jahr . "-12-31')
+                    AND admin_del = 0
+                    AND arbeit_id = " . $id;
 
         $db->setQuery($query);
         return $db->loadResult();
