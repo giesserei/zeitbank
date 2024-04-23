@@ -137,7 +137,7 @@ class ZeitbankCalc
         $props = $db->loadObject();
 
         // Vorbedingung prüfen
-        if ($props->typ != 1 || !!$props->einzug) {
+        if ($props->typ != 1 || !$props->einzug) {
             return 0;
         }
 
