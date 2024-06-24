@@ -22,6 +22,10 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
 
         <table class="zb_form">
             <tr>
+                <td class="lb"><label for="filter_arbeit_gattung">Suche:</label></td>
+                <td><input id="filter_arbeit_gattung" type="text" onkeyup="filterArbeitGattungen()"/></td>
+            </tr>
+            <tr>
                 <td class="lb"><?php echo $this->form->getLabel('arbeit_id'); ?><span class="star">* </span></td>
                 <td class="value">
                     <?php
@@ -88,6 +92,48 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
             <?php echo $this->form->getInput('cf_uid'); ?>
         </fieldset>
     </form>
+
+    <script>
+        function groupHasVisibleOptions(parentNode) {
+            let nodes = parentNode.childNodes;
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].nodeName.toLowerCase() === 'option' &&
+                    nodes[i].style.display === '') {
+                    // mindestens eine sichtbare option
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        let filterElement = document.getElementById('filter_arbeit_gattung');
+        let arbeitElement = document.getElementById('jform_arbeit_id');
+        let arbeitOptions = arbeitElement.options;
+        let childNodes = arbeitElement.childNodes;
+
+        function filterArbeitGattungen() {
+            // Verstecke options welche filter kriterien nicht ensprechen
+            let filter = filterElement.value.toUpperCase();
+            for (let i = 0; i < arbeitOptions.length; i++) {
+                let node = arbeitOptions[i];
+                let optionText = node.textContent.toUpperCase();
+                // finde Eintrag: ---- Arbeitsgattung auswählen ----
+                let isSpecial = node.value < 0;
+
+                let filterMatch = optionText.indexOf(filter) > -1;
+                node.style.display = (filterMatch || isSpecial) ? '' : 'none';
+            }
+
+            // Verstecke leer optionGroups
+            for (let i = 0; i < childNodes.length; i++) {
+                let node = childNodes[i];
+                if (node instanceof HTMLOptGroupElement) {
+                    let shouldShow = groupHasVisibleOptions(node)
+                    node.style.display = shouldShow ? '' : 'none';
+                }
+            }
+        }
+    </script>
 
     <div style="margin-top:15px">
         <strong>Hinweise:</strong>
