@@ -23,7 +23,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
         <table class="zb_form">
             <tr>
                 <td class="lb"><label for="filter_arbeit_gattung">Suche:</label></td>
-                <td><input id="filter_arbeit_gattung" type="text" onkeyup="filterArbeitGattungen()"/></td>
+                <td><input id="filter_arbeit_gattung" type="text" oninput="filterArbeitGattungen()" placeholder="Arbeitsgattung suchen"/></td>
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('arbeit_id'); ?><span class="star">* </span></td>
