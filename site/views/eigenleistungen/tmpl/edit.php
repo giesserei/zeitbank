@@ -18,7 +18,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
 
     <form
         action="<?php echo JRoute::_("index.php?option=com_zeitbank&task=eigenleistungen.save&Itemid=" . $this->menuId); ?>"
-        id="eigenleistungenForm" name="eigenleistungenForm" method="post">
+        id="eigenleistungenForm" name="eigenleistungenForm" method="post" style="margin-top: 20px">
 
         <table class="zb_form">
             <tr>
@@ -26,23 +26,24 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
                 <td><input id="filter_arbeit_gattung" type="text" oninput="filterArbeitGattungen()" placeholder="Arbeitsgattung suchen"/></td>
             </tr>
             <tr>
-                <td class="lb"><?php echo $this->form->getLabel('arbeit_id'); ?><span class="star">* </span></td>
+                <td class="lb"><?php echo $this->form->getLabel('arbeit_id'); ?></td>
                 <td class="value">
                     <?php
                     $arbeiten = $this->getArbeitsgattungen();
 
                     $dropdownArbeiten = JHTML::_('select.groupedlist', $arbeiten, 'jform[arbeit_id]',
-                        array('class' => 'inputbox', 'id' => 'jform_arbeit_id]', 'group.items' => 'items',
+                        array('class' => 'inputbox', 'id' => 'jform_arbeit_id', 'group.items' => 'items',
                             'list.select' => $this->form->getValue('arbeit_id'))
                     );
 
                     echo $dropdownArbeiten;
                     ?>
+                    &nbsp; *
                 </td>
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('minuten'); ?></td>
-                <td class="value"><?php echo $this->form->getInput('minuten'); ?></td>
+                <td class="value"><?php echo $this->form->getInput('minuten'); ?> &nbsp; *</td>
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('kommentar_antrag'); ?></td>
@@ -70,20 +71,20 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
                     }
 
                     $dropdownDatumAntrag = JHTML::_('select.genericlist', $options, 'jform[datum_antrag]',
-                        array('class' => 'inputbox', 'id' => 'jform_datum_antrag'), 'value', 'text', $this->form->getValue('datum_antrag'));
+                        array('class' => 'inputbox'), 'value', 'text', $this->form->getValue('datum_antrag'), 'jform_datum_antrag');
 
                     echo $dropdownDatumAntrag;
                     ?>
+                    &nbsp; *
                 </td>
             </tr>
             <tr>
-                <td class="lb" colspan="2" style="font-weight:normal"><span class="star">* </span> Eingabe ist
-                    obligatorisch
+                <td class="lb" colspan="2" style="font-weight:normal">* Eingabe ist obligatorisch
                 </td>
             </tr>
         </table>
 
-        <fieldset>
+        <fieldset style="margin-top: 10px">
             <input type="submit" value="Speichern"/>
             <input type="button" value="Abbrechen"
                    onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_zeitbank&view=zeitbank&Itemid=' . $this->menuId) ?>'"/>
@@ -94,6 +95,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
     </form>
 
     <script>
+        "use strict";
         function groupHasVisibleOptions(parentNode) {
             let nodes = parentNode.childNodes;
             for (let i = 0; i < nodes.length; i++) {
@@ -106,14 +108,14 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
             return false;
         }
 
-        let filterElement = document.getElementById('filter_arbeit_gattung');
-        let arbeitElement = document.getElementById('jform_arbeit_id');
-        let arbeitOptions = arbeitElement.options;
-        let childNodes = arbeitElement.childNodes;
-
         function filterArbeitGattungen() {
+
+            let filterElement = document.getElementById('filter_arbeit_gattung');
+            let arbeitElement = document.getElementById('jform_arbeit_id');
+
             // Verstecke options welche filter kriterien nicht ensprechen
             let filter = filterElement.value.toUpperCase();
+            let arbeitOptions = arbeitElement.options;
             for (let i = 0; i < arbeitOptions.length; i++) {
                 let node = arbeitOptions[i];
                 let optionText = node.textContent.toUpperCase();
@@ -125,6 +127,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
             }
 
             // Verstecke leer optionGroups
+            let childNodes = arbeitElement.childNodes;
             for (let i = 0; i < childNodes.length; i++) {
                 let node = childNodes[i];
                 if (node instanceof HTMLOptGroupElement) {
