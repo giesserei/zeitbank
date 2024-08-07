@@ -23,7 +23,10 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
         <table class="zb_form">
             <tr>
                 <td class="lb"><label for="filter_arbeit_gattung">Suche:</label></td>
-                <td><input id="filter_arbeit_gattung" type="text" oninput="filterArbeitGattungen()" placeholder="Arbeitsgattung suchen"/></td>
+                <td class="value">
+                    <input id="filter_arbeit_gattung" type="text" oninput="filterArbeitGattungen()" placeholder="Arbeitsgattung suchen"/>
+                    &nbsp; <span style="vertical-align: top; position: relative; top: 3px">(filtert die Auswahl im Arbeitsgattungs-Feld)</span>
+                </td>
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('arbeit_id'); ?></td>
@@ -47,7 +50,10 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('kommentar_antrag'); ?></td>
-                <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?><br/>(max. 1000 Zeichen)</td>
+                <td class="value">
+                    <?php echo $this->form->getInput('kommentar_antrag'); ?>
+                    &nbsp; <span style="vertical-align: top">(max. 1000 Zeichen)</span>
+                    </td>
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('datum_antrag'); ?></td>
