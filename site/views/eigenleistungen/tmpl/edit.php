@@ -41,7 +41,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
 
                     echo $dropdownArbeiten;
                     ?>
-                    &nbsp; *
+                    &nbsp; <span style="vertical-align: top; position: relative; top: 3px">*</span>
                 </td>
             </tr>
             <tr>
@@ -140,6 +140,15 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
                     let shouldShow = groupHasVisibleOptions(node)
                     node.style.display = shouldShow ? '' : 'none';
                 }
+            }
+
+            // Auswahlbox öffnen wenn Filter aktiv
+            if (filter) {
+                arbeitElement.size = 10;
+                arbeitElement.style.width = "320px";
+            } else {
+                arbeitElement.size = 0;
+                arbeitElement.style.width = "";
             }
         }
     </script>
