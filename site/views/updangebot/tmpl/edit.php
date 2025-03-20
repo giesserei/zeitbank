@@ -84,10 +84,12 @@ $titelTausch = $isNew ? "Eintrag erstellen" : "Eintrag bearbeiten";
                 <td class="value">
                     <?php
                     $ablauf = array(
-                            ZeitbankFrontendHelper::getMySqlDateInFuture(30) => '1 Monat (' . ZeitbankFrontendHelper::getViewDateInFuture(30) . ')',
-                            ZeitbankFrontendHelper::getMySqlDateInFuture(60) => '2 Monate (' . ZeitbankFrontendHelper::getViewDateInFuture(60) . ')',
-                            ZeitbankFrontendHelper::getMySqlDateInFuture(90) => '3 Monate (' . ZeitbankFrontendHelper::getViewDateInFuture(90) . ')',
-                            ZeitbankFrontendHelper::getMySqlDateInFuture(180) => '6 Monate (' . ZeitbankFrontendHelper::getViewDateInFuture(180) . ')');
+                            ZeitbankFrontendHelper::getMySqlDateInFuture(30)  => '1 Monat (' .  ZeitbankFrontendHelper::getViewDateInFuture(30)  . ')',
+                            ZeitbankFrontendHelper::getMySqlDateInFuture(60)  => '2 Monate (' . ZeitbankFrontendHelper::getViewDateInFuture(60)  . ')',
+                            ZeitbankFrontendHelper::getMySqlDateInFuture(90)  => '3 Monate (' . ZeitbankFrontendHelper::getViewDateInFuture(90)  . ')',
+                            ZeitbankFrontendHelper::getMySqlDateInFuture(180) => '6 Monate (' . ZeitbankFrontendHelper::getViewDateInFuture(180) . ')',
+                            ZeitbankFrontendHelper::getMySqlDateInFuture(365) => '1 Jahr (' .   ZeitbankFrontendHelper::getViewDateInFuture(365) . ')',
+                            ZeitbankFrontendHelper::getMySqlDateInFuture(730) => '2 Jahre (' .  ZeitbankFrontendHelper::getViewDateInFuture(730) . ')');
                     $options = array();
 
                     foreach ($ablauf as $key => $value) {
