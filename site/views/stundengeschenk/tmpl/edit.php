@@ -48,8 +48,8 @@ JHtml::script("components/com_zeitbank/template/js/jquery.autocomplete.js");
                 <td class="value"><?php echo $this->form->getInput('minuten'); ?></td>
             </tr>
             <tr>
-                <td class="lb"><?php echo $this->form->getLabel('kommentar'); ?></td>
-                <td class="value"><?php echo $this->form->getInput('kommentar'); ?></td>
+                <td class="lb"><?php echo $this->form->getLabel('kommentar_antrag'); ?></td>
+                <td class="value"><?php echo $this->form->getInput('kommentar_antrag'); ?></td>
             </tr>
             <tr>
                 <td class="lb"><?php echo $this->form->getLabel('datum_antrag'); ?></td>
