@@ -150,12 +150,16 @@ class ZeitbankModelReport extends JModelLegacy
         $view = $vorjahr ? "#__mgh_zb_journal_quittiert_vorjahr" : "#__mgh_zb_journal_quittiert_laufend";
 
         $query = "
-        SELECT ROUND((sum(j.minuten) / 60), 0) saldo, k.id, k.bezeichnung, k.gesamtbudget,
-          " . $sqlBudgetProRata . " budget_pro_rata
-        FROM " . $view . " j
-          JOIN #__mgh_zb_arbeit a ON a.id = j.arbeit_id
-          JOIN #__mgh_zb_kategorie k ON k.id = a.kategorie_id
-        WHERE k.id NOT IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . " ," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . ")
+        SELECT
+              coalesce(ROUND((sum(j.minuten) / 60), 0), 0) saldo,
+              k.id,
+              k.bezeichnung,
+              k.gesamtbudget,
+              " . $sqlBudgetProRata . " budget_pro_rata
+        FROM #__mgh_zb_kategorie k
+           INNER JOIN #__mgh_zb_arbeit a ON k.id = a.kategorie_id
+           LEFT JOIN " . $view . " j ON a.id = j.arbeit_id
+        WHERE k.id NOT IN (" . ZeitbankConst::KATEGORIE_ID_STUNDENGESCHENK . " ," . ZeitbankConst::KATEGORIE_ID_STUNDENTAUSCH . "," . ZeitbankConst::KATEGORIE_ID_FREIWILLIG . ")
         GROUP BY k.bezeichnung
         ORDER BY k.bezeichnung";
         $db->setQuery($query);
