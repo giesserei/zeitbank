@@ -15,7 +15,7 @@ JLoader::register('ZeitbankCalc', JPATH_COMPONENT . '/helpers/zeitbank_calc.php'
         damit die Anzahl der Stunden.
     </li>
     <li>Eine Dispensierung ist berücksichtigt, wenn dies beantragt wurde.</li>
-    <li>Die 3 Monate Freistellung bei Einzug sind berücksichtigt.</li>
+    <li>Die 2 Monate Freistellung bei Einzug sind berücksichtigt.</li>
     <li>Die 3 Monate Freistellung bei Geburt sind berücksichtigt, wenn dies mitgeteilt wurde.</li>
     <li>Die Reduzierung des Solls auf 12 Stunden infolge der ersten Ausbildung ist berücksichtigt, wenn dies beantragt
         wurde.
